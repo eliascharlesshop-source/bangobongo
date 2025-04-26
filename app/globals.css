@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 33% 12%;
+    --foreground: 160 80% 87%;
+
+    --card: 210 33% 12%;
+    --card-foreground: 160 80% 87%;
+
+    --popover: 210 33% 12%;
+    --popover-foreground: 160 80% 87%;
+
+    --primary: 152 83% 69%;
+    --primary-foreground: 210 33% 12%;
+
+    --secondary: 152 35% 53%;
+    --secondary-foreground: 210 33% 12%;
+
+    --muted: 210 25% 21%;
+    --muted-foreground: 160 30% 87%;
+
+    --accent: 203 37% 21%;
+    --accent-foreground: 160 80% 87%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 160 80% 87%;
+
+    --border: 203 37% 21%;
+    --input: 203 37% 21%;
+    --ring: 152 83% 69%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 210 33% 12%;
+    --foreground: 160 80% 87%;
+
+    --card: 210 33% 12%;
+    --card-foreground: 160 80% 87%;
+
+    --popover: 210 33% 12%;
+    --popover-foreground: 160 80% 87%;
+
+    --primary: 152 83% 69%;
+    --primary-foreground: 210 33% 12%;
+
+    --secondary: 152 35% 53%;
+    --secondary-foreground: 210 33% 12%;
+
+    --muted: 210 25% 21%;
+    --muted-foreground: 160 30% 87%;
+
+    --accent: 203 37% 21%;
+    --accent-foreground: 160 80% 87%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 160 80% 87%;
+
+    --border: 203 37% 21%;
+    --input: 203 37% 21%;
+    --ring: 152 83% 69%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.music-player-progress {
+  @apply h-1 bg-accent rounded-full overflow-hidden;
+}
+
+.music-player-progress-bar {
+  @apply h-full bg-primary transition-all duration-100;
+}
+
+.album-hover {
+  @apply transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20;
+}
+
+.merch-item {
+  @apply transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20;
+}
+
