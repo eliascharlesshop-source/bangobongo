@@ -37,4 +37,3 @@ export const getWalletAddress = async (): Promise<string | null> => {
 export const formatCryptoPrice = (price: number): string => {
   return price.toFixed(4)
 }
-

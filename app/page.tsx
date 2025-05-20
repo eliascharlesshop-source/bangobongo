@@ -2,8 +2,10 @@ import Image from "next/image"
 import Link from "next/link"
 import { CalendarDays, MapPin, Music, Package, ShoppingBag, ExternalLink, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import MusicPlayer from "@/components/music-player"
 import type { Track, Album, TourDate, GearItem, MerchItem } from "@/types"
+
+// Import the TrackListExample component at the top of the file
+import TrackListExample from "@/components/track-list-example"
 
 // Sample data
 const featuredTracks: Track[] = [
@@ -189,7 +191,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-8">
             <div className="w-full md:w-1/3">
               <h2 className="text-3xl font-bold text-foreground mb-6">Latest Tracks</h2>
-              <MusicPlayer tracks={featuredTracks} />
+              <TrackListExample />
             </div>
 
             <div className="w-full md:w-2/3">
@@ -404,4 +406,3 @@ export default function Home() {
     </div>
   )
 }
-

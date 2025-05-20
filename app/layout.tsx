@@ -4,9 +4,8 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
-
-// Add a comment to clarify our approach to wallet integration
-// This doesn't change functionality but documents our approach
+import { AudioProvider } from "@/contexts/audio-context"
+import FixedMediaPlayerWrapper from "@/components/fixed-media-player-wrapper"
 
 /**
  * Note: This application supports cryptocurrency payments but avoids
@@ -31,13 +30,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <AudioProvider>
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main className="flex-1 pb-[72px]">{children}</main>
+            <Footer />
+            <FixedMediaPlayerWrapper />
+          </div>
+        </AudioProvider>
       </body>
     </html>
   )
 }
-

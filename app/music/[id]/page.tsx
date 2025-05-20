@@ -265,4 +265,3 @@ export default function AlbumDetailPage({ params }: AlbumDetailPageProps) {
     </div>
   )
 }
-

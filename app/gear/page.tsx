@@ -1,7 +1,19 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { Star, ShoppingCart, DollarSign, Award, ThumbsUp, Filter, Search, Info, Play } from "lucide-react"
+import {
+  Star,
+  ShoppingCart,
+  DollarSign,
+  Award,
+  ThumbsUp,
+  Filter,
+  Search,
+  Info,
+  Play,
+  ArrowUpDown,
+  CheckCircle2,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { GearItem, SetupItem } from "@/types"
 
@@ -344,12 +356,7 @@ export default function GearPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <h2 className="text-3xl font-bold text-foreground">My Equipment</h2>
 
-            <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm" className="flex items-center">
-                <Filter className="h-4 w-4 mr-2" />
-                Filter
-              </Button>
-
+            <div className="flex items-center gap-3">
               <div className="relative w-60">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <input
@@ -358,85 +365,127 @@ export default function GearPage() {
                   className="w-full pl-10 pr-4 py-2 bg-background border border-accent rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                 />
               </div>
+
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm" className="flex items-center">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filter
+                </Button>
+
+                <Button variant="outline" size="sm" className="flex items-center">
+                  <ArrowUpDown className="h-4 w-4 mr-2" />
+                  Sort
+                </Button>
+              </div>
             </div>
+          </div>
+
+          <div className="flex overflow-x-auto pb-4 mb-8 gap-2 scrollbar-hide">
+            {Object.keys(gearByCategory).map((category) => (
+              <Button
+                key={category}
+                variant="outline"
+                size="sm"
+                className="whitespace-nowrap first:ml-0 bg-background hover:bg-primary/10 hover:text-primary"
+              >
+                {category}
+              </Button>
+            ))}
           </div>
 
           {Object.entries(gearByCategory).map(([category, items]) => (
             <div key={category} className="mb-16">
-              <h3 className="text-2xl font-semibold text-foreground mb-6">{category}</h3>
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-2xl font-semibold text-foreground">{category}</h3>
+                <Button variant="link" className="text-primary text-sm">
+                  View All {category}
+                </Button>
+              </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {items.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-background rounded-lg overflow-hidden border border-accent group hover:border-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/10"
+                    className="bg-background rounded-lg overflow-hidden border border-accent group hover:border-primary transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 flex flex-col h-full"
                   >
-                    <div className="p-6">
-                      <div className="flex flex-col md:flex-row gap-6">
-                        <div className="md:w-1/3">
-                          <div className="relative aspect-square rounded-md overflow-hidden bg-background-lighter">
-                            <Image
-                              src={item.image || "/placeholder.svg"}
-                              alt={item.name}
-                              fill
-                              className="object-contain p-2"
-                            />
-                            {item.videoReviewLink && (
-                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
-                                <Button
-                                  variant="ghost"
-                                  className="rounded-full h-12 w-12 bg-primary/80 hover:bg-primary text-background"
-                                >
-                                  <Play className="h-6 w-6" />
-                                </Button>
-                              </div>
-                            )}
+                    <div className="relative">
+                      <div className="relative aspect-square overflow-hidden bg-background-lighter">
+                        <Image
+                          src={item.image || "/placeholder.svg"}
+                          alt={item.name}
+                          fill
+                          className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+                        />
+                        {item.videoReviewLink && (
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">
+                            <Button
+                              variant="ghost"
+                              className="rounded-full h-12 w-12 bg-primary/80 hover:bg-primary text-background transform scale-90 group-hover:scale-100 transition-all duration-300"
+                            >
+                              <Play className="h-6 w-6" />
+                            </Button>
                           </div>
+                        )}
+                      </div>
 
-                          {item.isSponsored && (
-                            <div className="mt-2 text-center">
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/20 text-primary">
-                                <Award className="h-3 w-3 mr-1" />
-                                Sponsored
-                              </span>
-                            </div>
+                      {item.isSponsored && (
+                        <div className="absolute top-2 left-2">
+                          <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-primary/20 text-primary font-medium backdrop-blur-sm">
+                            <Award className="h-3 w-3 mr-1" />
+                            Sponsored
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-5 flex flex-col flex-grow">
+                      <div className="mb-2">
+                        <div className="flex justify-between items-start">
+                          <h4 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+                            {item.name}
+                          </h4>
+                          <StarRating rating={item.rating || 0} />
+                        </div>
+
+                        <div className="flex items-center text-sm text-muted-foreground mt-1">
+                          <span className="mr-3">Since {item.yearPurchased}</span>
+                          {item.price && (
+                            <span className="flex items-center font-medium text-primary">
+                              <DollarSign className="h-3 w-3 mr-1" />
+                              {item.price?.toLocaleString("en-US", { style: "currency", currency: "USD" })}
+                            </span>
                           )}
                         </div>
+                      </div>
 
-                        <div className="md:w-2/3">
-                          <div className="flex justify-between items-start">
-                            <h4 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
-                              {item.name}
-                            </h4>
-                            <StarRating rating={item.rating || 0} />
-                          </div>
+                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3 flex-grow">{item.description}</p>
 
-                          <div className="flex items-center text-sm text-muted-foreground mt-1 mb-3">
-                            <span className="mr-3">Since {item.yearPurchased}</span>
-                            {item.price && (
-                              <span className="flex items-center">
-                                <DollarSign className="h-3 w-3 mr-1" />
-                                {item.price?.toLocaleString("en-US", { style: "currency", currency: "USD" })}
-                              </span>
-                            )}
-                          </div>
-
-                          <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{item.description}</p>
-
-                          <div className="flex flex-wrap gap-2">
-                            <Button asChild size="sm">
-                              <Link href={item.affiliateLink || item.link} target="_blank" rel="noopener noreferrer">
-                                <ShoppingCart className="h-4 w-4 mr-2" />
-                                Buy Now
-                              </Link>
-                            </Button>
-
-                            <Button variant="outline" size="sm">
-                              <Info className="h-4 w-4 mr-2" />
-                              Details
-                            </Button>
-                          </div>
+                      {item.features && item.features.length > 0 && (
+                        <div className="mb-4">
+                          <div className="text-xs font-medium text-foreground mb-2">Top Features:</div>
+                          <ul className="text-xs text-muted-foreground space-y-1">
+                            {item.features.slice(0, 2).map((feature, idx) => (
+                              <li key={idx} className="flex items-start">
+                                <CheckCircle2 className="h-3 w-3 text-primary mr-1 mt-0.5 flex-shrink-0" />
+                                <span className="line-clamp-1">{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
                         </div>
+                      )}
+
+                      <div className="flex flex-wrap gap-2 mt-auto pt-2">
+                        <Button asChild size="sm" className="flex-1">
+                          <Link href={item.affiliateLink || item.link} target="_blank" rel="noopener noreferrer">
+                            <ShoppingCart className="h-4 w-4 mr-2" />
+                            Buy Now
+                          </Link>
+                        </Button>
+
+                        <Button variant="outline" size="sm" className="flex-1">
+                          <Info className="h-4 w-4 mr-2" />
+                          Details
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -713,4 +762,3 @@ export default function GearPage() {
     </div>
   )
 }
-

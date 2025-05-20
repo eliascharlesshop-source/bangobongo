@@ -111,4 +111,3 @@ export interface CartItem extends MerchItem {
 }
 
 export type PaymentMethod = "usd" | "crypto"
-

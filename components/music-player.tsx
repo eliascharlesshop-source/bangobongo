@@ -205,4 +205,3 @@ export default function MusicPlayer({ tracks, initialTrackIndex = 0 }: MusicPlay
     </div>
   )
 }
-

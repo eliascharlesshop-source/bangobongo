@@ -940,4 +940,3 @@ export default function MerchPageClient() {
     </div>
   )
 }
-
