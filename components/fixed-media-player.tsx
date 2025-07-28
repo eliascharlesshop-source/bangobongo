@@ -60,6 +60,14 @@ export default function FixedMediaPlayer() {
     removeFromQueue,
     clearQueue,
     playTrack,
+    // New Web Audio API features
+    equalizer,
+    setEqualizer,
+    equalizerSettings,
+    updateEqualizer,
+    isLoading,
+    buffered,
+    audioQuality,
   } = useAudio()
 
   const [isDragging, setIsDragging] = useState<boolean>(false)
@@ -238,13 +246,31 @@ export default function FixedMediaPlayer() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-foreground truncate">{currentTrack.title}</h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-semibold text-foreground truncate">{currentTrack.title}</h3>
+                {audioQuality && (
+                  <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded font-mono">
+                    {audioQuality}
+                  </span>
+                )}
+                {isLoading && (
+                  <div className="h-3 w-3 border border-primary border-t-transparent rounded-full animate-spin" />
+                )}
+              </div>
               <p className="text-xs text-muted-foreground truncate">{currentTrack.artist || "BangoBongo"}</p>
             </div>
           </div>
 
           <div className="space-y-2 mb-3">
             <div className="music-player-progress">
+              {/* Buffer indicator */}
+              <div
+                className="absolute inset-0 bg-primary/30 rounded-full transition-all duration-300"
+                style={{
+                  width: `${buffered}%`,
+                }}
+              />
+              {/* Progress bar */}
               <div
                 className="music-player-progress-bar"
                 style={{
@@ -279,8 +305,15 @@ export default function FixedMediaPlayer() {
               className="bg-primary text-background hover:bg-secondary rounded-full h-10 w-10 flex items-center justify-center shadow-md transition-transform hover:scale-105 active:scale-95"
               onClick={togglePlayPause}
               aria-label={isPlaying ? "Pause" : "Play"}
+              disabled={isLoading}
             >
-              {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 ml-0.5" />}
+              {isLoading ? (
+                <div className="h-5 w-5 border-2 border-background border-t-transparent rounded-full animate-spin" />
+              ) : isPlaying ? (
+                <Pause className="h-5 w-5" />
+              ) : (
+                <Play className="h-5 w-5 ml-0.5" />
+              )}
             </Button>
 
             <Button variant="ghost" size="icon" onClick={playNext}>

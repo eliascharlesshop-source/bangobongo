@@ -5,8 +5,81 @@ export interface Track {
   duration: number
   albumArt: string
   artist?: string
+  audioUrl?: string
   releaseDate?: string
   isExplicit?: boolean
+  category?: "original" | "licensed" | "beat"
+  licenseType?: LicenseType
+  price?: number
+  bpm?: number
+  key?: string
+  genre?: string
+  year?: number
+  tags?: string[]
+  trackoutIncluded?: boolean
+  dittoReleaseId?: string
+  isDistributed?: boolean
+  waveformData?: number[]
+  qualitySettings?: {
+    bitrate: number
+    sampleRate: number
+    format: string
+  }
+}
+
+export type LicenseType = "basic" | "premium" | "trackout" | "unlimited" | "exclusive"
+
+export interface License {
+  id: string
+  type: LicenseType
+  trackId: string
+  customerId: string
+  price: number
+  purchaseDate: string
+  expiryDate?: string
+  usageRights: LicenseRights
+  creditRequired: boolean
+  isActive: boolean
+  downloadCount: number
+  streamCount: number
+  contractTerms: string
+}
+
+export interface LicenseRights {
+  streams: number | "unlimited"
+  downloads: number | "unlimited"
+  distribution: boolean
+  commercialUse: boolean
+  syncRights: boolean
+  exclusivity: boolean
+  modificationRights: boolean
+  resaleRights: boolean
+}
+
+export interface LicenseTier {
+  type: LicenseType
+  name: string
+  price: number
+  description: string
+  rights: LicenseRights
+  leasePeriod?: string
+  popular?: boolean
+  features: string[]
+}
+
+export interface DittoRelease {
+  id: string
+  trackId: string
+  releaseTitle: string
+  artistName: string
+  status: "pending" | "processing" | "live" | "failed"
+  distributionDate?: string
+  platforms: string[]
+  analytics?: {
+    streams: number
+    revenue: number
+    territories: string[]
+  }
 }
 
 export interface Single extends Track {

@@ -1,0 +1,22 @@
+{% comment %}
+  Renders the index template for the store homepage
+{% endcomment %}
+
+{{ content_for_index }}
+
+{% schema %}
+{
+  "name": "Home",
+  "limit": 25,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Homepage sections"
+    },
+    {
+      "type": "paragraph",
+      "content": "Add, remove, or reorder sections to customize your homepage."
+    }
+  ]
+}
+{% endschema %}

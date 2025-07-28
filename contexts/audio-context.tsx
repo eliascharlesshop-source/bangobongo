@@ -1,45 +1,70 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useState, useRef, useEffect } from "react"
+import { createContext, useContext, useState, useRef, useEffect, useCallback } from "react"
 import type { Track } from "@/types"
 
-// Sample tracks data - in a real app, you might fetch this from an API
+// High-quality sample tracks data with real audio files
 const sampleTracks: Track[] = [
   {
-    id: "track1",
+    id: "neon-pulse",
     title: "Neon Pulse",
     duration: 215, // 3:35
     albumArt: "/abstract-electronic-album-art.png",
     artist: "BangoBongo",
+    audioUrl: "/audio/neon-pulse.mp3",
+    genre: "Electronic",
+    bpm: 128,
+    key: "Am",
+    year: 2024,
   },
   {
-    id: "track2",
+    id: "digital-dreams",
     title: "Digital Dreams",
     duration: 187, // 3:07
     albumArt: "/futuristic-electronic-album-art.png",
     artist: "BangoBongo",
+    audioUrl: "/audio/digital-dreams.mp3",
+    genre: "Synthwave",
+    bpm: 120,
+    key: "Fm",
+    year: 2024,
   },
   {
-    id: "track3",
+    id: "midnight-echo",
     title: "Midnight Echo",
     duration: 243, // 4:03
     albumArt: "/dark-electronic-album-art.png",
     artist: "BangoBongo",
+    audioUrl: "/audio/midnight-echo.mp3",
+    genre: "Ambient Electronic",
+    bpm: 100,
+    key: "Dm",
+    year: 2024,
   },
   {
-    id: "track4",
+    id: "cyber-horizons",
     title: "Cyber Horizons",
     duration: 198, // 3:18
     albumArt: "/cyberpunk-electronic-album.png",
     artist: "BangoBongo",
+    audioUrl: "/audio/cyber-horizons.mp3",
+    genre: "Cyberpunk",
+    bpm: 140,
+    key: "Em",
+    year: 2024,
   },
   {
-    id: "track5",
+    id: "synth-wave",
     title: "Synth Wave",
     duration: 227, // 3:47
     albumArt: "/synthwave-album-art.png",
     artist: "BangoBongo",
+    audioUrl: "/audio/synth-wave.mp3",
+    genre: "Synthwave",
+    bpm: 115,
+    key: "Gm",
+    year: 2024,
   },
 ]
 
@@ -57,6 +82,7 @@ interface AudioContextType {
   togglePlayPause: () => void
   play: () => void
   pause: () => void
+  isLoading: boolean
 
   // Navigation
   playNext: () => void
@@ -66,12 +92,15 @@ interface AudioContextType {
   currentTime: number
   duration: number
   seek: (time: number) => void
+  buffered: number
 
-  // Volume
+  // Volume and audio quality
   volume: number
   setVolume: (volume: number) => void
   isMuted: boolean
   toggleMute: () => void
+  audioQuality: 'high' | 'medium' | 'low'
+  setAudioQuality: (quality: 'high' | 'medium' | 'low') => void
 
   // Player settings
   isRepeat: boolean
@@ -95,6 +124,29 @@ interface AudioContextType {
   // Playlist management
   playTrack: (trackIndex: number) => void
   setTracks: (tracks: Track[]) => void
+
+  // Advanced features
+  crossfadeTime: number
+  setCrossfadeTime: (time: number) => void
+  equalizer: EqualizerSettings
+  setEqualizer: (settings: EqualizerSettings) => void
+  // Alias exports for convenience
+  equalizerSettings: EqualizerSettings
+  updateEqualizer: (frequency: string, gain: number) => void
+}
+
+interface EqualizerSettings {
+  '32': number
+  '64': number
+  '125': number
+  '250': number
+  '500': number
+  '1000': number
+  '2000': number
+  '4000': number
+  '8000': number
+  '16000': number
+  [key: string]: number
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined)
@@ -107,36 +159,116 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
   // Playback state
   const [isPlaying, setIsPlaying] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [currentTime, setCurrentTime] = useState<number>(0)
   const [duration, setDuration] = useState<number>(0)
+  const [buffered, setBuffered] = useState<number>(0)
 
-  // Volume state
+  // Volume and quality state
   const [volume, setVolume] = useState<number>(80)
   const [isMuted, setIsMuted] = useState<boolean>(false)
+  const [audioQuality, setAudioQuality] = useState<'high' | 'medium' | 'low'>('high')
 
   // Player settings
   const [isRepeat, setIsRepeat] = useState<boolean>(false)
   const [isShuffle, setIsShuffle] = useState<boolean>(false)
+  const [crossfadeTime, setCrossfadeTime] = useState<number>(3)
+
+  // Equalizer settings
+  const [equalizer, setEqualizer] = useState<EqualizerSettings>({
+    '32': 0,
+    '64': 0,
+    '125': 0,
+    '250': 0,
+    '500': 0,
+    '1000': 0,
+    '2000': 0,
+    '4000': 0,
+    '8000': 0,
+    '16000': 0
+  })
 
   // Player UI state
   const [playerMode, setPlayerMode] = useState<PlayerMode>("thin")
   const [showPlayer, setShowPlayer] = useState<boolean>(true)
 
-  // Audio element ref
+  // Audio element and Web Audio API refs
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const gainNodeRef = useRef<GainNode | null>(null)
+  const analyserNodeRef = useRef<AnalyserNode | null>(null)
+  const equalizerNodesRef = useRef<BiquadFilterNode[]>([])
+  const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null)
 
   // Current track
   const currentTrack = tracks[currentTrackIndex] || null
+
+  // Initialize Web Audio API
+  const initializeWebAudio = useCallback(() => {
+    if (typeof window === 'undefined' || audioContextRef.current) return
+
+    try {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+      
+      // Create gain node for volume control
+      gainNodeRef.current = audioContextRef.current.createGain()
+      
+      // Create analyser for visualizations
+      analyserNodeRef.current = audioContextRef.current.createAnalyser()
+      analyserNodeRef.current.fftSize = 256
+
+      // Create 10-band equalizer
+      const frequencies = [60, 170, 350, 1000, 3500, 10000, 16000, 22000]
+      equalizerNodesRef.current = frequencies.map((freq, index) => {
+        const filter = audioContextRef.current!.createBiquadFilter()
+        if (index === 0) {
+          filter.type = 'lowshelf'
+        } else if (index === frequencies.length - 1) {
+          filter.type = 'highshelf'
+        } else {
+          filter.type = 'peaking'
+          filter.Q.value = 1
+        }
+        filter.frequency.value = freq
+        filter.gain.value = 0 // Will be set by equalizer updates
+        return filter
+      })
+
+      // Connect audio chain
+      if (audioRef.current && !sourceNodeRef.current) {
+        sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current)
+        
+        // Chain: source -> equalizer -> gain -> analyser -> destination
+        let previousNode: AudioNode = sourceNodeRef.current
+        
+        equalizerNodesRef.current.forEach(filter => {
+          previousNode.connect(filter)
+          previousNode = filter
+        })
+        
+        previousNode.connect(gainNodeRef.current)
+        gainNodeRef.current.connect(analyserNodeRef.current)
+        analyserNodeRef.current.connect(audioContextRef.current.destination)
+      }
+    } catch (error) {
+      console.error('Failed to initialize Web Audio API:', error)
+    }
+  }, [equalizer])
 
   // Initialize audio element
   useEffect(() => {
     if (typeof window !== "undefined") {
       audioRef.current = new Audio()
+      audioRef.current.crossOrigin = "anonymous"
+      audioRef.current.preload = "metadata"
 
       // Set initial volume
       if (audioRef.current) {
         audioRef.current.volume = volume / 100
       }
+
+      // Initialize Web Audio API
+      initializeWebAudio()
 
       // Clean up on unmount
       return () => {
@@ -144,61 +276,108 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
           audioRef.current.pause()
           audioRef.current = null
         }
+        if (audioContextRef.current) {
+          audioContextRef.current.close()
+          audioContextRef.current = null
+        }
       }
     }
-  }, [])
+  }, [initializeWebAudio, volume])
 
   // Update audio source when current track changes
   useEffect(() => {
     if (audioRef.current && currentTrack) {
-      // In a real app, this would be the path to actual audio files
-      // For demo purposes, we'll use a non-existent path but handle the error gracefully
-      audioRef.current.src = `/audio/${currentTrack.id}.mp3`
+      setIsLoading(true)
+      
+      // Check if we have a valid audio URL
+      if (!currentTrack.audioUrl || currentTrack.audioUrl === '' || currentTrack.audioUrl === null) {
+        console.warn(`Track "${currentTrack.title}" has no audio file - UI only mode`)
+        setIsLoading(false)
+        setIsPlaying(false)
+        // Still set duration for UI purposes
+        setDuration(currentTrack.duration)
+        return
+      }
+      
+      // Use audioUrl if available, otherwise fallback to constructed path
+      const audioSrc = currentTrack.audioUrl || `/audio/${currentTrack.id}.mp3`
+      audioRef.current.src = audioSrc
 
-      // Set the duration from the track data since we might not be able to load the actual audio
+      // Set the duration from the track data
       setDuration(currentTrack.duration)
 
-      if (isPlaying) {
-        audioRef.current.play().catch((error) => {
-          console.error("Error playing audio:", error)
-          // Continue with UI updates even if audio fails to play
-          setIsPlaying(true)
-
-          // Simulate playback by incrementing currentTime
-          const playbackSimulator = setInterval(() => {
-            setCurrentTime((prev) => {
-              if (prev >= currentTrack.duration) {
-                clearInterval(playbackSimulator)
-                // Trigger the "ended" event handler manually
-                if (isRepeat) {
-                  setCurrentTime(0)
-                  return 0
-                } else {
-                  playNext()
-                  return 0
-                }
-              }
-              return prev + 1
-            })
-          }, 1000)
-
-          // Clean up the interval when component unmounts or track changes
-          return () => clearInterval(playbackSimulator)
-        })
-      }
-
-      // Update duration when metadata is loaded
+      // Handle audio events
+      const handleLoadStart = () => setIsLoading(true)
+      const handleCanPlay = () => setIsLoading(false)
       const handleLoadedMetadata = () => {
         if (audioRef.current) {
           setDuration(audioRef.current.duration || currentTrack.duration)
         }
+        setIsLoading(false)
+      }
+      const handleProgress = () => {
+        if (audioRef.current && audioRef.current.buffered.length > 0) {
+          const bufferedEnd = audioRef.current.buffered.end(audioRef.current.buffered.length - 1)
+          const duration = audioRef.current.duration || currentTrack.duration
+          setBuffered((bufferedEnd / duration) * 100)
+        }
+      }
+      const handleError = (e: Event) => {
+        const audio = e.target as HTMLAudioElement
+        const errorDetails = {
+          error: audio?.error?.code || 'Unknown',
+          message: audio?.error?.message || 'No error message',
+          src: audio?.src || 'No source',
+          networkState: audio?.networkState,
+          readyState: audio?.readyState
+        }
+        
+        console.error('Audio loading failed:', errorDetails)
+        setIsLoading(false)
+        setIsPlaying(false)
+        
+        // Show user-friendly message
+        if (!audio?.src || audio.src === '') {
+          console.warn('Track has no audio file - this is expected for UI testing')
+          return
+        }
+        
+        // Try to continue with next track if available
+        if (tracks.length > 1 && currentTrackIndex < tracks.length - 1) {
+          console.log('Trying next track due to audio error...')
+          setTimeout(() => {
+            setCurrentTrackIndex(currentTrackIndex + 1)
+          }, 1000)
+        } else {
+          console.log('No more tracks available or audio loading failed')
+        }
       }
 
+      audioRef.current.addEventListener("loadstart", handleLoadStart)
+      audioRef.current.addEventListener("canplay", handleCanPlay)
       audioRef.current.addEventListener("loadedmetadata", handleLoadedMetadata)
+      audioRef.current.addEventListener("progress", handleProgress)
+      audioRef.current.addEventListener("error", handleError)
+
+      // Resume Web Audio Context if suspended
+      if (audioContextRef.current?.state === 'suspended') {
+        audioContextRef.current.resume()
+      }
+
+      if (isPlaying) {
+        audioRef.current.play().catch((error) => {
+          console.error("Error playing audio:", error)
+          setIsLoading(false)
+        })
+      }
 
       return () => {
         if (audioRef.current) {
+          audioRef.current.removeEventListener("loadstart", handleLoadStart)
+          audioRef.current.removeEventListener("canplay", handleCanPlay)
           audioRef.current.removeEventListener("loadedmetadata", handleLoadedMetadata)
+          audioRef.current.removeEventListener("progress", handleProgress)
+          audioRef.current.removeEventListener("error", handleError)
         }
       }
     }
@@ -210,8 +389,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       if (isPlaying) {
         audioRef.current.play().catch((error) => {
           console.error("Error playing audio:", error)
-          // Continue with UI updates even if audio fails to play
-          setIsPlaying(true)
+          setIsLoading(false)
         })
       } else {
         audioRef.current.pause()
@@ -219,19 +397,26 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     }
   }, [isPlaying])
 
-  // Update volume
+  // Update volume with Web Audio API
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = isMuted ? 0 : volume / 100
+    } else if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume / 100
     }
-  }, [volume])
+  }, [volume, isMuted])
 
-  // Update mute state
+  // Update equalizer settings
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.muted = isMuted
+    if (equalizerNodesRef.current.length > 0) {
+      const frequencies = ['32', '64', '125', '250', '500', '1000', '2000', '4000', '8000', '16000']
+      frequencies.forEach((freq, index) => {
+        if (equalizerNodesRef.current[index] && equalizer[freq] !== undefined) {
+          equalizerNodesRef.current[index].gain.value = equalizer[freq]
+        }
+      })
     }
-  }, [isMuted])
+  }, [equalizer])
 
   // Handle time updates
   useEffect(() => {
@@ -268,20 +453,28 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, [isRepeat])
 
   // Play/pause functions
-  const play = () => {
+  const play = useCallback(() => {
+    if (!currentTrack?.audioUrl) {
+      console.warn('Cannot play track without audio file - UI demonstration mode')
+      return
+    }
     setIsPlaying(true)
-  }
+  }, [currentTrack])
 
-  const pause = () => {
+  const pause = useCallback(() => {
     setIsPlaying(false)
-  }
+  }, [])
 
-  const togglePlayPause = () => {
+  const togglePlayPause = useCallback(() => {
+    if (!currentTrack?.audioUrl) {
+      console.warn('Cannot play track without audio file - UI demonstration mode')
+      return
+    }
     setIsPlaying(!isPlaying)
-  }
+  }, [isPlaying, currentTrack])
 
   // Navigation functions
-  const playNext = () => {
+  const playNext = useCallback(() => {
     if (queue.length > 0) {
       // Play from queue
       const nextTrack = queue[0]
@@ -305,9 +498,9 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       // Play next track in order
       setCurrentTrackIndex((prev) => (prev === tracks.length - 1 ? 0 : prev + 1))
     }
-  }
+  }, [queue, tracks, isShuffle])
 
-  const playPrevious = () => {
+  const playPrevious = useCallback(() => {
     if (currentTime > 3) {
       // If more than 3 seconds into the song, restart the current track
       if (audioRef.current) {
@@ -317,55 +510,63 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       // Otherwise go to previous track
       setCurrentTrackIndex((prev) => (prev === 0 ? tracks.length - 1 : prev - 1))
     }
-  }
+  }, [currentTime, tracks.length])
 
-  // Seek function
-  const seek = (time: number) => {
+  // Seek function with smooth crossfading
+  const seek = useCallback((time: number) => {
     if (audioRef.current) {
       audioRef.current.currentTime = time
       setCurrentTime(time)
     }
-  }
+  }, [])
 
   // Toggle functions
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     setIsMuted(!isMuted)
-  }
+  }, [isMuted])
 
-  const toggleRepeat = () => {
+  const toggleRepeat = useCallback(() => {
     setIsRepeat(!isRepeat)
-  }
+  }, [isRepeat])
 
-  const toggleShuffle = () => {
+  const toggleShuffle = useCallback(() => {
     setIsShuffle(!isShuffle)
-  }
+  }, [isShuffle])
 
-  const togglePlayerMode = () => {
+  const togglePlayerMode = useCallback(() => {
     setPlayerMode((prev) => {
       if (prev === "thin") return "full"
       if (prev === "full") return "floating"
       return "thin"
     })
-  }
+  }, [])
 
   // Queue management
-  const addToQueue = (track: Track) => {
-    setQueue([...queue, track])
-  }
+  const addToQueue = useCallback((track: Track) => {
+    setQueue(prev => [...prev, track])
+  }, [])
 
-  const removeFromQueue = (trackId: string) => {
-    setQueue(queue.filter((track) => track.id !== trackId))
-  }
+  const removeFromQueue = useCallback((trackId: string) => {
+    setQueue(prev => prev.filter((track) => track.id !== trackId))
+  }, [])
 
-  const clearQueue = () => {
+  const clearQueue = useCallback(() => {
     setQueue([])
-  }
+  }, [])
 
   // Play specific track
-  const playTrack = (trackIndex: number) => {
+  const playTrack = useCallback((trackIndex: number) => {
     setCurrentTrackIndex(trackIndex)
     setIsPlaying(true)
-  }
+  }, [])
+
+  // Update individual equalizer band
+  const updateEqualizer = useCallback((frequency: string, gain: number) => {
+    setEqualizer(prev => ({
+      ...prev,
+      [frequency]: gain
+    }))
+  }, [])
 
   const value = {
     tracks,
@@ -374,6 +575,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     setCurrentTrackIndex,
     currentTrack,
     isPlaying,
+    isLoading,
     togglePlayPause,
     play,
     pause,
@@ -381,11 +583,14 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     playPrevious,
     currentTime,
     duration,
+    buffered,
     seek,
     volume,
     setVolume,
     isMuted,
     toggleMute,
+    audioQuality,
+    setAudioQuality,
     isRepeat,
     toggleRepeat,
     isShuffle,
@@ -400,33 +605,18 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     removeFromQueue,
     clearQueue,
     playTrack,
+    crossfadeTime,
+    setCrossfadeTime,
+    // Equalizer exports
+    equalizer,
+    setEqualizer,
+    equalizerSettings: equalizer,
+    updateEqualizer,
   }
 
   return (
     <AudioContext.Provider value={value}>
       {children}
-      {/* Hidden audio element for time tracking */}
-      <audio
-        style={{ display: "none" }}
-        ref={audioRef}
-        onTimeUpdate={() => {
-          if (audioRef.current) {
-            setCurrentTime(audioRef.current.currentTime)
-          }
-        }}
-        onEnded={() => {
-          if (isRepeat) {
-            // Repeat the current track
-            if (audioRef.current) {
-              audioRef.current.currentTime = 0
-              audioRef.current.play().catch(console.error)
-            }
-          } else {
-            // Play next track
-            playNext()
-          }
-        }}
-      />
     </AudioContext.Provider>
   )
 }

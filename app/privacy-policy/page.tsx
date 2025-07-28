@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | Artist Name",
-  description: "Our privacy policy explains how we collect, use, and protect your personal information.",
+  title: "Privacy Policy | BangoBongo Music",
+  description: "BangoBongo Music privacy policy explains how we collect, use, and protect your personal information when using our platform.",
 }
 
 export default function PrivacyPolicyPage() {

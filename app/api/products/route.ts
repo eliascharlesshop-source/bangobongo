@@ -26,6 +26,46 @@ const createProductSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
+    const useLocal = searchParams.get('local') === 'true'
+
+    // If explicitly requesting local products or if Shopify is not configured
+    if (useLocal) {
+      return getLocalProducts(request)
+    }
+
+    // Try Shopify first, fallback to local if it fails
+    try {
+      const shopifyUrl = new URL('/api/shopify/products', request.url)
+      // Forward all search params to Shopify API
+      searchParams.forEach((value, key) => {
+        if (key !== 'local') {
+          shopifyUrl.searchParams.set(key, value)
+        }
+      })
+
+      const shopifyResponse = await fetch(shopifyUrl.toString())
+      
+      if (shopifyResponse.ok) {
+        const shopifyData = await shopifyResponse.json()
+        return Response.json(shopifyData)
+      } else {
+        console.warn('Shopify API failed, falling back to local products')
+        return getLocalProducts(request)
+      }
+    } catch (error) {
+      console.warn('Shopify fetch failed, falling back to local products:', error)
+      return getLocalProducts(request)
+    }
+
+  } catch (error: any) {
+    console.error('Get products error:', error)
+    return errorResponse('Failed to fetch products', 500)
+  }
+}
+
+async function getLocalProducts(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const featured = searchParams.get('featured')
     const limited = searchParams.get('limited')
@@ -90,6 +130,7 @@ export async function GET(request: NextRequest) {
     
     return successResponse({
       products: formattedProducts,
+      source: 'local',
       pagination: {
         page,
         limit,
@@ -99,8 +140,8 @@ export async function GET(request: NextRequest) {
     })
     
   } catch (error: any) {
-    console.error('Get products error:', error)
-    return errorResponse('Failed to fetch products', 500)
+    console.error('Get local products error:', error)
+    return errorResponse('Failed to fetch local products', 500)
   }
 }
 

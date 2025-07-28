@@ -1,0 +1,148 @@
+{% comment %}
+  Renders the product page template
+{% endcomment %}
+
+{%- assign product_form_id = 'ProductForm-' | append: section.id -%}
+
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+<section class="page-width">
+  <div class="product">
+    <div class="product__media-wrapper">
+      <div class="product__media">
+        {% for media in product.media %}
+          <div class="product__media-item">
+            {% case media.media_type %}
+              {% when 'image' %}
+                <img src="{{ media | image_url: width: 800 }}" alt="{{ media.alt | escape }}" width="800" height="800">
+              {% when 'video' %}
+                {{ media | video_tag: autoplay: false, muted: false, controls: true }}
+              {% when 'external_video' %}
+                {{ media | external_video_tag }}
+              {% when 'model' %}
+                {{ media | model_viewer_tag }}
+            {% endcase %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="product__info">
+      <h1 class="product__title">{{ product.title }}</h1>
+      
+      <div class="product__price">
+        <span class="price">{{ product.selected_or_first_available_variant.price | money }}</span>
+        {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+          <span class="price price--compare">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+        {% endif %}
+      </div>
+
+      <div class="product__description">
+        {{ product.description }}
+      </div>
+
+      <product-form class="product-form">
+        {%- form 'product', product, id: product_form_id, class: 'form', novalidate: 'novalidate', data-type: 'add-to-cart-form' -%}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          
+          {% unless product.has_only_default_variant %}
+            <variant-selects class="no-js-hidden" data-section="{{ section.id }}" data-url="{{ product.url }}">
+              {% for option in product.options_with_values %}
+                <div class="product-form__input product-form__input--dropdown">
+                  <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
+                    {{ option.name }}
+                  </label>
+                  <div class="select">
+                    <select id="Option-{{ section.id }}-{{ forloop.index0 }}" 
+                            class="select__select"
+                            name="options[{{ option.name | escape }}]"
+                            form="{{ product_form_id }}">
+                      {% for value in option.values %}
+                        <option value="{{ value | escape }}" {% if option.selected_value == value %}selected="selected"{% endif %}>
+                          {{ value }}
+                        </option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              {% endfor %}
+            </variant-selects>
+          {% endunless %}
+
+          <div class="product-form__buttons">
+            <button type="submit" name="add" class="btn product-form__cart-submit" {% if product.selected_or_first_available_variant.available == false %}disabled{% endif %}>
+              <span>
+                {%- if product.selected_or_first_available_variant.available -%}
+                  {{ 'products.product.add_to_cart' | t }}
+                {%- else -%}
+                  {{ 'products.product.sold_out' | t }}
+                {%- endif -%}
+              </span>
+            </button>
+          </div>
+        {%- endform -%}
+      </product-form>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "url": {{ request.origin | append: product.url | json }},
+    {% if product.featured_media -%}
+      "image": [
+        {{ product.featured_media | image_url: width: 800 | prepend: "https:" | json }}
+      ],
+    {%- endif %}
+    "description": {{ product.description | strip_html | json }},
+    {% if product.selected_or_first_available_variant.sku != blank -%}
+      "sku": {{ product.selected_or_first_available_variant.sku | json }},
+    {%- endif %}
+    "brand": {
+      "@type": "Brand",
+      "name": {{ shop.name | json }}
+    },
+    "offers": [
+      {%- for variant in product.variants -%}
+        {
+          "@type" : "Offer",
+          {%- if variant.sku != blank -%}
+            "sku": {{ variant.sku | json }},
+          {%- endif -%}
+          "availability" : "http://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
+          "price" : {{ variant.price | divided_by: 100.00 | json }},
+          "priceCurrency" : {{ cart.currency.iso_code | json }},
+          "url" : {{ request.origin | append: variant.url | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Product pages",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Product information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Show vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "Show product rating",
+      "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-product-rating)"
+    }
+  ]
+}
+{% endschema %}

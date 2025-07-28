@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Terms of Service | Artist Name",
-  description: "Our terms of service outline the rules and guidelines for using our website and services.",
+  title: "Terms of Service | BangoBongo Music",
+  description: "BangoBongo Music terms of service outline the rules and guidelines for using our website, music licensing, and services.",
 }
 
 export default function TermsOfServicePage() {

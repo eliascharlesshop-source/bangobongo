@@ -1,14 +1,66 @@
+"use client"
+
+import { useState, useMemo } from "react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { CalendarDays, MapPin, Ticket, Calendar, ChevronRight, Filter, Search, Globe } from "lucide-react"
+import { 
+  CalendarDays, 
+  MapPin, 
+  Ticket, 
+  Calendar, 
+  ChevronRight, 
+  Filter, 
+  Search, 
+  Globe,
+  AlertCircle,
+  Clock
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { useTours } from "@/hooks/use-api"
+import { useNotifications } from "@/contexts/notification-context"
 import type { TourDate } from "@/types"
 
-export const metadata: Metadata = {
-  title: "Tour | BangoBongo",
-  description: "Catch BangoBongo live on tour. View upcoming shows and purchase tickets.",
+interface TourFilters {
+  country: string
+  month: string
+  status: string
+  sortBy: string
+  searchTerm: string
 }
+
+const countries = [
+  "All Countries",
+  "USA", 
+  "Germany",
+  "UK",
+  "Belgium",
+  "Spain", 
+  "Japan",
+  "Netherlands",
+  "France"
+]
+
+const months = [
+  "All Months",
+  "March 2024",
+  "April 2024", 
+  "May 2024",
+  "June 2024",
+  "July 2024",
+  "August 2024"
+]
+
+const sortOptions = [
+  { id: "date", name: "Date" },
+  { id: "city", name: "City A-Z" },
+  { id: "price-low", name: "Price: Low to High" },
+  { id: "price-high", name: "Price: High to Low" },
+]
 
 // Sample tour data
 const tourDates: TourDate[] = [
@@ -205,6 +257,68 @@ const tourDates: TourDate[] = [
   },
 ]
 
+// Sample tour data for development
+const tourDatesSample: TourDate[] = [
+  {
+    id: "tour1",
+    date: "Mar 15, 2024",
+    venue: "Pulse Nightclub",
+    city: "Miami",
+    country: "USA",
+    ticketLink: "#",
+    status: "upcoming",
+    price: {
+      general: 45,
+      vip: 120,
+    },
+    description: "Join BangoBongo for a night of electronic beats and immersive visuals at Miami's premier nightclub.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: {
+      lat: 25.7617,
+      lng: -80.1918,
+    },
+  },
+  {
+    id: "tour2",
+    date: "Apr 2, 2024",
+    venue: "Echo Arena",
+    city: "Los Angeles",
+    country: "USA",
+    ticketLink: "#",
+    status: "upcoming",
+    price: {
+      general: 55,
+      vip: 150,
+    },
+    description:
+      "BangoBongo brings his Neon Nights tour to LA with special guest performers and state-of-the-art production.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: {
+      lat: 34.0522,
+      lng: -118.2437,
+    },
+  },
+  {
+    id: "tour3",
+    date: "Apr 18, 2024",
+    venue: "Neon Gardens",
+    city: "New York",
+    country: "USA",
+    ticketLink: "#",
+    status: "upcoming",
+    price: {
+      general: 60,
+      vip: 180,
+    },
+    description: "Experience the fusion of electronic music and innovative visuals in this special NYC performance.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: {
+      lat: 40.7128,
+      lng: -74.006,
+    },
+  },
+]
+
 // Group tour dates by month
 const groupTourDatesByMonth = (dates: TourDate[]) => {
   const grouped: Record<string, TourDate[]> = {}
@@ -221,7 +335,96 @@ const groupTourDatesByMonth = (dates: TourDate[]) => {
 }
 
 export default function TourPage() {
-  const groupedTourDates = groupTourDatesByMonth(tourDates)
+  const [filters, setFilters] = useState<TourFilters>({
+    country: "All Countries",
+    month: "All Months", 
+    status: "upcoming",
+    sortBy: "date",
+    searchTerm: ""
+  })
+
+  const { showSuccess, showError } = useNotifications()
+  
+  // Use our API hook
+  const { data: toursData, loading, error, refetch } = useTours({
+    upcoming: filters.status === "upcoming",
+    page: 1,
+    limit: 50
+  })
+
+  const tourDates = toursData?.tours || tourDatesSample // Fallback to sample data
+  
+  // Filter and sort tours
+  const filteredTours = useMemo(() => {
+    let filtered = [...tourDates]
+
+    // Search filter
+    if (filters.searchTerm) {
+      filtered = filtered.filter(tour =>
+        tour.city.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        tour.venue.toLowerCase().includes(filters.searchTerm.toLowerCase()) ||
+        tour.country.toLowerCase().includes(filters.searchTerm.toLowerCase())
+      )
+    }
+
+    // Country filter
+    if (filters.country !== "All Countries") {
+      filtered = filtered.filter(tour => tour.country === filters.country)
+    }
+
+    // Month filter
+    if (filters.month !== "All Months") {
+      filtered = filtered.filter(tour => {
+        const tourMonth = tour.date.split(",")[0].split(" ")[0] + " " + tour.date.split(",")[1].trim()
+        return tourMonth === filters.month
+      })
+    }
+
+    // Status filter
+    filtered = filtered.filter(tour => tour.status === filters.status)
+
+    // Sort tours
+    switch (filters.sortBy) {
+      case "city":
+        filtered.sort((a, b) => a.city.localeCompare(b.city))
+        break
+      case "price-low":
+        filtered.sort((a, b) => (a.price?.general || 0) - (b.price?.general || 0))
+        break
+      case "price-high":
+        filtered.sort((a, b) => (b.price?.general || 0) - (a.price?.general || 0))
+        break
+      default: // date
+        filtered.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    }
+
+    return filtered
+  }, [tourDates, filters])
+
+  const groupedTourDates = groupTourDatesByMonth(filteredTours)
+
+  const updateFilter = (key: keyof TourFilters, value: string) => {
+    setFilters(prev => ({ ...prev, [key]: value }))
+  }
+
+  const handleTicketPurchase = (tourId: string) => {
+    showSuccess("Redirecting to Tickets", "Opening ticket vendor page...")
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <CardContent className="p-8 text-center">
+            <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+            <h2 className="text-2xl font-bold mb-2">Error Loading Tours</h2>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button onClick={refetch}>Try Again</Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen">

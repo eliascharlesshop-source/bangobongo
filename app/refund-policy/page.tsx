@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Refund Policy | Artist Name",
-  description: "Our refund policy outlines the conditions under which we offer refunds for our products and services.",
+  title: "Refund Policy | BangoBongo Music", 
+  description: "BangoBongo Music refund policy outlines the conditions under which we offer refunds for music licenses, merchandise, and services.",
 }
 
 export default function RefundPolicyPage() {

@@ -1,0 +1,156 @@
+{% comment %}
+  Renders the collection page template
+{% endcomment %}
+
+{%- paginate collection.products by 24 -%}
+  <div class="collection page-width">
+    <div class="collection__title title-wrapper title-wrapper--no-top-margin">
+      <h1 class="title {{ settings.heading_size }}">{{ collection.title | escape }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="collection__description {{ settings.description_style }}">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="collection-hero">
+      {%- if collection.image -%}
+        <div class="collection-hero__image">
+          <img src="{{ collection.image | image_url: width: 1200 }}" alt="{{ collection.title | escape }}" width="1200" height="600">
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="collection-filters">
+      {%- if collection.products_count > 0 -%}
+        <p class="collection-product-count">{{ 'templates.collection.product_count' | t: count: collection.products_count }}</p>
+      {%- endif -%}
+    </div>
+
+    <div class="collection-product-list">
+      {%- if collection.products.size == 0 -%}
+        <div class="collection collection--empty page-width" id="product-grid" data-id="{{ section.id }}">
+          <div class="loading-overlay gradient"></div>
+          <div class="title-wrapper center">
+            <h2 class="title title--primary">
+              {{ 'sections.collection_template.empty' | t }}<br>
+              {{ 'sections.collection_template.use_fewer_filters_html' | t: link: collection.url, class: "underlined-link link" }}
+            </h2>
+          </div>
+        </div>
+      {%- else -%}
+        <div class="collection-product-grid">
+          {%- for product in collection.products -%}
+            {% render 'card-product',
+              card_product: product,
+              media_aspect_ratio: settings.media_aspect_ratio,
+              image_shape: settings.image_shape,
+              show_secondary_image: settings.show_secondary_image,
+              show_vendor: settings.show_vendor,
+              show_rating: settings.show_rating,
+              lazy_load: lazy_load,
+              show_quick_add: settings.enable_quick_add,
+              section_id: section.id
+            %}
+          {%- endfor -%}
+        </div>
+
+        {%- if paginate.pages > 1 -%}
+          {% render 'pagination', paginate: paginate, anchor: '' %}
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection pages",
+  "class": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 50,
+      "step": 4,
+      "default": 16,
+      "label": "Products per page"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "header",
+      "content": "Product cards"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Adapt to image"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "square",
+          "label": "Square"
+        }
+      ],
+      "default": "adapt",
+      "label": "Image ratio"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": false,
+      "label": "Show second image on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Show vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "Show product rating",
+      "info": "To display a rating, add a product rating app. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#featured-product-rating)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_quick_add",
+      "default": false,
+      "label": "Enable Quick Add",
+      "info": "To display a Quick Add button, the featured collections section must be used and have selected collections. [Learn more](https://help.shopify.com/manual/online-store/themes/theme-structure/theme-features#quick-add)"
+    },
+    {
+      "type": "header",
+      "content": "Collection sidebar"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "default": true,
+      "label": "Enable filtering",
+      "info": "[Customize filters](https://help.shopify.com/manual/online-store/themes/customizing-themes/storefront-filters)"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "default": true,
+      "label": "Enable sorting"
+    }
+  ]
+}
+{% endschema %}

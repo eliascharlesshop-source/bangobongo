@@ -1,8 +1,8 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Cookie Policy | Artist Name",
-  description: "Our cookie policy explains how we use cookies and similar technologies on our website.",
+  title: "Cookie Policy | BangoBongo Music",
+  description: "BangoBongo Music cookie policy explains how we use cookies and similar technologies on our website to enhance your experience.",
 }
 
 export default function CookiePolicyPage() {
