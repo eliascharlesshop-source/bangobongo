@@ -40,7 +40,7 @@
 ## Example .env.local file
 ```env
 # Database
-DATABASE_URL=./bangobongo.db
+DATABASE_URL=./data/bangobongo.db
 
 # Auth
 NEXTAUTH_SECRET=your-secret-key-here

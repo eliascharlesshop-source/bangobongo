@@ -1,6 +1,6 @@
 # Database Schema
 
-The application uses a SQLite database (`bangobongo.db`).
+The application uses a SQLite database (`data/bangobongo.db`).
 
 ## Main Tables
 - `users`: Stores user accounts

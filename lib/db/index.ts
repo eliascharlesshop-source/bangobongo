@@ -7,23 +7,23 @@ let db: Database.Database | null = null
 
 export function getDatabase(): Database.Database {
   if (!db) {
-    // Create database file in the project root
-    const dbPath = join(process.cwd(), 'bangobongo.db')
+    // Create database file in the data directory
+    const dbPath = join(process.cwd(), 'data', 'bangobongo.db')
     db = new Database(dbPath)
-    
+
     // Enable foreign keys
     db.pragma('foreign_keys = ON')
   }
-  
+
   return db
 }
 
 export function initializeDatabase() {
   if (!db) {
-    // Create database file in the project root
-    const dbPath = join(process.cwd(), 'bangobongo.db')
+    // Create database file in the data directory
+    const dbPath = join(process.cwd(), 'data', 'bangobongo.db')
     db = new Database(dbPath)
-    
+
     // Enable foreign keys
     db.pragma('foreign_keys = ON')
   }

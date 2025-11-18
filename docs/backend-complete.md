@@ -92,7 +92,7 @@ The backend for the BangoBongo music artist store has been successfully built an
 
 ### Environment Variables
 ```env
-DATABASE_URL="./bangobongo.db"
+DATABASE_URL="./data/bangobongo.db"
 JWT_SECRET="your-super-secret-jwt-key"
 STRIPE_PUBLISHABLE_KEY="pk_test_..."
 STRIPE_SECRET_KEY="sk_test_..."
