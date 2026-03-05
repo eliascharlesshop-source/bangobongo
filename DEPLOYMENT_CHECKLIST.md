@@ -135,10 +135,10 @@
 
 ## Quick Links
 
-- **Vercel Dashboard**: https://vercel.com/dashboard
+- **Vercel Dashboard**: https://vercel.com/bangobongo/bangobongo
+- **Production URL**: https://bangobongo.vercel.app
 - **Shopify Admin**: https://admin.shopify.com
 - **GitHub Repo**: https://github.com/elicharlese/bangobongo
-- **Production URL**: https://bangobongo.vercel.app (or your custom domain)
 
 ---
 

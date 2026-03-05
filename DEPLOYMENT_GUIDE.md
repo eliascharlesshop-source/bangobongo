@@ -56,10 +56,9 @@ Your store domain (e.g., `your-store.myshopify.com`)
 
 ### Step 2: Add Environment Variables to Vercel
 
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
-2. Select your `bangobongo` project
-3. Go to **Settings** → **Environment Variables**
-4. Add these variables:
+1. Go to [Vercel Dashboard](https://vercel.com/bangobongo/bangobongo)
+2. Go to **Settings** → **Environment Variables**
+3. Add these variables:
 
 ```
 SHOPIFY_DOMAIN=your-store.myshopify.com
