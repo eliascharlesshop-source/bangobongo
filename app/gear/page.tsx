@@ -63,175 +63,10 @@ const sortOptions = [
   { id: "newest", name: "Newest First" },
 ]
 
-// Sample gear data
-const gearItems: GearItem[] = [
-  {
-    id: "gear1",
-    name: "Pioneer DJ CDJ-3000",
-    category: "DJ Controller",
-    image: "/placeholder.svg?height=500&width=500",
-    link: "#",
-    affiliateLink: "https://example.com/affiliate/cdj3000",
-    description:
-      "The CDJ-3000 represents a new frontier in player design. Pioneer DJ's most advanced player ever brings a host of new features that can help you craft unique performances and take your DJ career to new heights.",
-    price: 2299,
-    features: [
-      "9-inch touch screen with higher resolution than the CDJ-2000NXS2",
-      "MPU (micro-processing unit) for advanced track analysis and features",
-      "Key Sync and Key Shift functions to mix harmonically",
-      "8 Hot Cue buttons with gate playback",
-      "Advanced Beat Jump functionality",
-    ],
-    personalNotes:
-      "The CDJ-3000s completely transformed my performance workflow. The responsive jog wheels and improved hot cues make live remixing more intuitive than ever before. The large display makes track navigation effortless in dark club environments.",
-    rating: 5,
-    yearPurchased: 2022,
-    isSponsored: true,
-    alternativeOptions: {
-      budget: "Pioneer DJ XDJ-700",
-      premium: "Denon DJ SC6000M Prime",
-    },
-    videoReviewLink: "#",
-  },
-  {
-    id: "gear2",
-    name: "Pioneer DJ DJM-900NXS2",
-    category: "DJ Mixer",
-    image: "/placeholder.svg?height=500&width=500",
-    link: "#",
-    affiliateLink: "https://example.com/affiliate/djm900nxs2",
-    description:
-      "The DJM-900NXS2 is Pioneer DJ's flagship mixer, known for its professional-grade performance and industry-standard build quality.",
-    price: 1299,
-    features: [
-      "4-channel mixer with built-in effects",
-      "Beat FX with 14 different effects",
-      "Sound Color FX for creative transitions",
-      "32-bit/96 kHz sound card for premium audio quality",
-      "Connect up to 4 CDJs with a single USB cable",
-    ],
-    personalNotes:
-      "This mixer has been the backbone of my setup for years. The sound quality is exceptional, and the effects engine adds a professional polish to every mix. The build quality means it handles the rigors of touring without missing a beat.",
-    rating: 5,
-    yearPurchased: 2021,
-    isSponsored: false,
-    alternativeOptions: {
-      budget: "Pioneer DJ DJM-750MK2",
-      premium: "Allen & Heath Model 1",
-    },
-    videoReviewLink: "#",
-  },
-  {
-    id: "gear3",
-    name: "Ableton Push 3",
-    category: "Controller",
-    image: "/placeholder.svg?height=500&width=500",
-    link: "#",
-    affiliateLink: "https://example.com/affiliate/push3",
-    description:
-      "The latest generation of Ableton's flagship controller features MPE support, an upgraded display, and standalone capabilities.",
-    price: 799,
-    features: [
-      "MPE support for expressive control",
-      "High-resolution color display",
-      "Standalone operation without computer",
-      "64 velocity-sensitive pads",
-      "Built-in sequencer and sampler",
-    ],
-    personalNotes:
-      "The Push 3 has revolutionized my production workflow. Being able to sketch ideas without booting up my laptop has led to more spontaneous creativity. The MPE capabilities open up new dimensions of expression in my performances.",
-    rating: 4,
-    yearPurchased: 2023,
-    isSponsored: false,
-    alternativeOptions: {
-      budget: "Novation Launchpad X",
-      premium: "Native Instruments Maschine+",
-    },
-    videoReviewLink: "#",
-  },
-  {
-    id: "gear4",
-    name: "Universal Audio Apollo Twin X",
-    category: "Audio Interface",
-    image: "/placeholder.svg?height=500&width=500",
-    link: "#",
-    affiliateLink: "https://example.com/affiliate/apollotwinx",
-    description:
-      "Professional 2x6 Thunderbolt 3 audio interface with UAD DSP processing and premium mic preamps.",
-    price: 699,
-    features: [
-      "QUAD Core UAD DSP processing",
-      "2 Unison-enabled mic preamps",
-      "Real-time UAD processing",
-      "Thunderbolt 3 connectivity",
-      "Luna Recording System included",
-    ],
-    personalNotes:
-      "The Apollo Twin X delivers studio-quality sound that's noticeable in every recording. The UAD plugins process in real-time without latency, making the recording process feel natural and inspiring.",
-    rating: 5,
-    yearPurchased: 2022,
-    isSponsored: true,
-    alternativeOptions: {
-      budget: "Focusrite Scarlett 2i2",
-      premium: "Universal Audio Apollo x6",
-    },
-    videoReviewLink: "#",
-  },
-  {
-    id: "gear5",
-    name: "Sennheiser HD 650",
-    category: "Headphones",
-    image: "/placeholder.svg?height=500&width=500",
-    link: "#",
-    affiliateLink: "https://example.com/affiliate/hd650",
-    description:
-      "Open-back dynamic headphones renowned for their natural sound reproduction and comfort during long listening sessions.",
-    price: 399,
-    features: [
-      "Open-back design for natural soundstage",
-      "300-ohm impedance for detailed reproduction",
-      "Replaceable cable and parts",
-      "Comfortable for extended wear",
-      "Legendary Sennheiser sound signature",
-    ],
-    personalNotes:
-      "These headphones have been my reference for mixing and mastering for over a decade. The natural, uncolored sound helps me make decisions that translate well across different playback systems.",
-    rating: 5,
-    yearPurchased: 2020,
-    isSponsored: false,
-    alternativeOptions: {
-      budget: "Audio-Technica ATH-M40x",
-      premium: "Focal Clear MG",
-    },
-    videoReviewLink: "#",
-  },
-]
+// Sample gear data - removed
+const gearItems: GearItem[] = []
 
-const setupItems: SetupItem[] = [
-  {
-    id: "setup1",
-    title: "Live Performance Rig",
-    description:
-      "My go-to setup for live shows and club performances, designed for reliability and creative expression.",
-    image: "/placeholder.svg?height=800&width=1200",
-    gearIncluded: ["Pioneer DJ CDJ-3000", "Pioneer DJ DJM-900NXS2", "Sennheiser HD-25"],
-  },
-  {
-    id: "setup2",
-    title: "Production Studio",
-    description:
-      "The heart of my music creation process, featuring high-quality audio processing and monitoring equipment.",
-    image: "/placeholder.svg?height=800&width=1200",
-    gearIncluded: ["Ableton Live 11 Suite", "Universal Audio Apollo Twin X", "KRK Rokit 8 G4", "Moog Subsequent 37"],
-  },
-  {
-    id: "setup3",
-    title: "Mobile Setup",
-    description: "My compact travel rig for producing on the road and preparing sets while touring.",
-    image: "/placeholder.svg?height=800&width=1200",
-    gearIncluded: ["Native Instruments Traktor Pro 3", "Ableton Live 11 Suite", "Sennheiser HD-25"],
-  },
-]
+const setupItems: SetupItem[] = []
 
 // Helper function to render star ratings
 const StarRating = ({ rating }: { rating: number }) => {
@@ -247,7 +82,7 @@ const StarRating = ({ rating }: { rating: number }) => {
 export default function GearPage() {
   const [filters, setFilters] = useState<GearFilters>({
     category: "All",
-    priceRange: "all", 
+    priceRange: "all",
     sortBy: "name",
     searchTerm: "",
   })
@@ -282,7 +117,7 @@ export default function GearPage() {
           ...(item.features || []),
           item.personalNotes
         ].filter(Boolean).map(field => field.toLowerCase())
-        
+
         if (!searchFields.some(field => field.includes(searchLower))) {
           return false
         }
@@ -335,7 +170,7 @@ export default function GearPage() {
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">My Gear</h1>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Explore the equipment and setup I use for producing and performing electronic music. 
+          Explore the equipment and setup I use for producing and performing electronic music.
           Each piece has been carefully chosen and tested in real-world scenarios.
         </p>
       </div>
@@ -354,7 +189,7 @@ export default function GearPage() {
               />
             </div>
           </div>
-          
+
           <Select value={filters.category} onValueChange={(value) => updateFilter("category", value)}>
             <SelectTrigger className="w-[200px]">
               <Filter className="h-4 w-4 mr-2" />
@@ -440,18 +275,18 @@ export default function GearPage() {
                   </div>
                 )}
               </div>
-              
+
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-xl font-bold">{item.name}</h3>
                   {item.rating && <StarRating rating={item.rating} />}
                 </div>
-                
+
                 <p className="text-muted-foreground mb-2">{item.category}</p>
                 <p className="text-2xl font-bold text-primary mb-4">${item.price}</p>
-                
+
                 <p className="text-sm mb-4 line-clamp-3">{item.description}</p>
-                
+
                 {item.features && item.features.length > 0 && (
                   <div className="mb-4">
                     <h4 className="font-semibold mb-2">Key Features:</h4>
@@ -470,7 +305,7 @@ export default function GearPage() {
                     </ul>
                   </div>
                 )}
-                
+
                 {item.personalNotes && (
                   <div className="mb-4 p-3 bg-muted rounded-lg">
                     <div className="flex items-center mb-2">
@@ -482,7 +317,7 @@ export default function GearPage() {
                     </p>
                   </div>
                 )}
-                
+
                 <div className="flex gap-2">
                   {item.affiliateLink && (
                     <Button asChild className="flex-1">
@@ -492,7 +327,7 @@ export default function GearPage() {
                       </Link>
                     </Button>
                   )}
-                  
+
                   {item.videoReviewLink && (
                     <Button variant="outline" asChild>
                       <Link href={item.videoReviewLink} target="_blank">
@@ -501,7 +336,7 @@ export default function GearPage() {
                     </Button>
                   )}
                 </div>
-                
+
                 {item.alternativeOptions && (
                   <div className="mt-4 pt-4 border-t">
                     <p className="text-xs text-muted-foreground mb-2">Alternative Options:</p>
@@ -525,8 +360,8 @@ export default function GearPage() {
       {!loading && filteredAndSortedGear.length === 0 && (
         <div className="text-center py-12">
           <div className="text-muted-foreground mb-4">No gear found matching your criteria.</div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => setFilters({ category: "All", priceRange: "all", sortBy: "name", searchTerm: "" })}
           >
             Clear Filters

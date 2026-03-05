@@ -1,17 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  Settings, 
-  Save, 
-  Upload, 
-  Eye, 
-  EyeOff, 
-  Key, 
-  Globe, 
-  Mail, 
-  Bell, 
-  Shield, 
+import {
+  Settings,
+  Save,
+  Upload,
+  Eye,
+  EyeOff,
+  Key,
+  Globe,
+  Mail,
+  Bell,
+  Shield,
   Palette,
   Database,
   Cloud,
@@ -28,12 +28,12 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 
@@ -124,83 +124,12 @@ export default function AdminSettings() {
 
   const fetchSettings = async () => {
     try {
-      // Simulate API call - replace with actual settings API
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setSettings({
-        site: {
-          name: 'BangoBongo',
-          description: 'Electronic music producer and artist platform',
-          url: 'https://bangobongo.com',
-          logo: '/placeholder-logo.png',
-          favicon: '/placeholder-logo.svg',
-          contactEmail: 'hello@bangobongo.com',
-          socialMedia: {
-            spotify: 'https://spotify.com/artist/bangobongo',
-            instagram: 'https://instagram.com/bangobongo',
-            twitter: 'https://twitter.com/bangobongo',
-            youtube: 'https://youtube.com/bangobongo'
-          }
-        },
-        music: {
-          autoDistribution: true,
-          defaultRoyaltyRate: 70,
-          distributionPartners: ['Ditto Music', 'DistroKid', 'CD Baby'],
-          enableLicensing: true,
-          licenseTypes: ['Basic', 'Premium', 'Exclusive']
-        },
-        store: {
-          currency: 'USD',
-          taxRate: 8.5,
-          shippingEnabled: true,
-          freeShippingThreshold: 50,
-          inventoryTracking: true,
-          lowStockThreshold: 10
-        },
-        users: {
-          allowRegistration: true,
-          requireEmailVerification: true,
-          enableVipProgram: true,
-          vipRequirements: {
-            minimumSpent: 200,
-            minimumPurchases: 5
-          }
-        },
-        notifications: {
-          emailNotifications: true,
-          pushNotifications: false,
-          newOrderAlerts: true,
-          lowStockAlerts: true,
-          newUserAlerts: false,
-          distributionAlerts: true
-        },
-        integrations: {
-          shopify: {
-            enabled: true,
-            apiKey: 'sk_********',
-            secretKey: '********'
-          },
-          stripe: {
-            enabled: true,
-            publicKey: 'pk_********',
-            secretKey: 'sk_********'
-          },
-          ditto: {
-            enabled: true,
-            apiKey: 'dt_********'
-          },
-          analytics: {
-            googleAnalytics: 'GA-********',
-            facebookPixel: 'FB-********'
-          }
-        },
-        security: {
-          twoFactorAuth: true,
-          sessionTimeout: 24,
-          passwordComplexity: true,
-          ipWhitelist: ['192.168.1.1', '10.0.0.1']
-        }
-      })
+      // Fetch settings from API
+      const response = await fetch('/api/admin/settings')
+      const data = await response.json()
+      if (data.success) {
+        setSettings(data.settings)
+      }
     } catch (error) {
       console.error('Failed to fetch settings:', error)
     } finally {
@@ -211,9 +140,15 @@ export default function AdminSettings() {
   const saveSettings = async () => {
     setSaving(true)
     try {
-      // Simulate API call - replace with actual save endpoint
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      console.log('Settings saved:', settings)
+      const response = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings)
+      })
+      const data = await response.json()
+      if (data.success) {
+        console.log('Settings saved successfully')
+      }
     } catch (error) {
       console.error('Failed to save settings:', error)
     } finally {
@@ -223,7 +158,7 @@ export default function AdminSettings() {
 
   const updateSetting = (section: keyof AdminSettings, key: string, value: any) => {
     if (!settings) return
-    
+
     setSettings({
       ...settings,
       [section]: {
@@ -235,7 +170,7 @@ export default function AdminSettings() {
 
   const updateNestedSetting = (section: keyof AdminSettings, subsection: string, key: string, value: any) => {
     if (!settings) return
-    
+
     setSettings({
       ...settings,
       [section]: {
@@ -316,7 +251,7 @@ export default function AdminSettings() {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="siteDescription">Description</Label>
                 <Textarea
@@ -703,7 +638,7 @@ export default function AdminSettings() {
                     onCheckedChange={(checked) => updateNestedSetting('integrations', 'shopify', 'enabled', checked)}
                   />
                 </div>
-                
+
                 {settings?.integrations.shopify.enabled && (
                   <div className="space-y-4">
                     <div className="space-y-2">
@@ -757,7 +692,7 @@ export default function AdminSettings() {
                     onCheckedChange={(checked) => updateNestedSetting('integrations', 'stripe', 'enabled', checked)}
                   />
                 </div>
-                
+
                 {settings?.integrations.stripe.enabled && (
                   <div className="space-y-4">
                     <div className="space-y-2">

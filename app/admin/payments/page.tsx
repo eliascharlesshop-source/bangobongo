@@ -1,12 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  CreditCard, 
-  DollarSign, 
-  TrendingUp, 
-  Download, 
-  Search, 
+import {
+  CreditCard,
+  DollarSign,
+  TrendingUp,
+  Download,
+  Search,
   Filter,
   MoreHorizontal,
   Eye,
@@ -24,26 +24,26 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table"
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select"
 
 interface Transaction {
@@ -98,130 +98,26 @@ export default function PaymentsManagement() {
 
   const fetchPaymentData = async () => {
     try {
-      // Simulate API calls - replace with actual payment API endpoints
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setTransactions([
-        {
-          id: 'txn_001',
-          type: 'payment',
-          amount: 45.00,
-          currency: 'USD',
-          status: 'completed',
-          description: 'BangoBongo Hoodie purchase',
-          customerName: 'John Smith',
-          customerEmail: 'john@example.com',
-          paymentMethod: 'Visa ****4242',
-          timestamp: '2024-01-20 14:30:00',
-          stripeId: 'pi_1234567890',
-          orderId: 'ORD-001'
-        },
-        {
-          id: 'txn_002',
-          type: 'payment',
-          amount: 85.00,
-          currency: 'USD',
-          status: 'completed',
-          description: 'Digital Dreams Vinyl + T-Shirt',
-          customerName: 'Sarah Johnson',
-          customerEmail: 'sarah@example.com',
-          paymentMethod: 'Mastercard ****8888',
-          timestamp: '2024-01-19 16:45:00',
-          stripeId: 'pi_0987654321',
-          orderId: 'ORD-002'
-        },
-        {
-          id: 'txn_003',
-          type: 'payment',
-          amount: 199.00,
-          currency: 'USD',
-          status: 'failed',
-          description: 'Studio Headphones purchase',
-          customerName: 'Mike Wilson',
-          customerEmail: 'mike@example.com',
-          paymentMethod: 'Visa ****1234',
-          timestamp: '2024-01-19 10:15:00',
-          stripeId: 'pi_1122334455'
-        },
-        {
-          id: 'txn_004',
-          type: 'refund',
-          amount: -25.00,
-          currency: 'USD',
-          status: 'completed',
-          description: 'Refund for cancelled order',
-          customerName: 'Emily Davis',
-          customerEmail: 'emily@example.com',
-          paymentMethod: 'Visa ****5678',
-          timestamp: '2024-01-18 12:20:00',
-          stripeId: 're_9988776655',
-          orderId: 'ORD-003'
-        },
-        {
-          id: 'txn_005',
-          type: 'payout',
-          amount: -850.50,
-          currency: 'USD',
-          status: 'pending',
-          description: 'Weekly payout to bank account',
-          paymentMethod: 'Bank Transfer ****1234',
-          timestamp: '2024-01-18 09:00:00'
-        },
-        {
-          id: 'txn_006',
-          type: 'fee',
-          amount: -12.75,
-          currency: 'USD',
-          status: 'completed',
-          description: 'Stripe processing fees',
-          paymentMethod: 'Stripe',
-          timestamp: '2024-01-17 23:59:00'
-        }
-      ])
+      // Fetch transactions from API
+      const transactionsResponse = await fetch('/api/admin/payments/transactions')
+      const transactionsData = await transactionsResponse.json()
+      if (transactionsData.success) {
+        setTransactions(transactionsData.transactions || [])
+      }
 
-      setPayouts([
-        {
-          id: 'payout_001',
-          amount: 850.50,
-          currency: 'USD',
-          status: 'pending',
-          payoutDate: '2024-01-22',
-          transactionCount: 15,
-          feeAmount: 25.50,
-          netAmount: 825.00
-        },
-        {
-          id: 'payout_002',
-          amount: 1250.75,
-          currency: 'USD',
-          status: 'paid',
-          payoutDate: '2024-01-15',
-          transactionCount: 22,
-          feeAmount: 37.50,
-          netAmount: 1213.25
-        },
-        {
-          id: 'payout_003',
-          amount: 680.25,
-          currency: 'USD',
-          status: 'paid',
-          payoutDate: '2024-01-08',
-          transactionCount: 12,
-          feeAmount: 20.40,
-          netAmount: 659.85
-        }
-      ])
+      // Fetch payouts from API
+      const payoutsResponse = await fetch('/api/admin/payments/payouts')
+      const payoutsData = await payoutsResponse.json()
+      if (payoutsData.success) {
+        setPayouts(payoutsData.payouts || [])
+      }
 
-      setAnalytics({
-        totalRevenue: 8750.25,
-        revenueChange: 12.5,
-        totalTransactions: 156,
-        transactionsChange: 8.3,
-        avgTransactionValue: 56.09,
-        avgChange: 4.2,
-        successRate: 94.2,
-        rateChange: 1.8
-      })
+      // Fetch analytics from API
+      const analyticsResponse = await fetch('/api/admin/payments/analytics')
+      const analyticsData = await analyticsResponse.json()
+      if (analyticsData.success) {
+        setAnalytics(analyticsData.analytics || null)
+      }
     } catch (error) {
       console.error('Failed to fetch payment data:', error)
     } finally {
@@ -231,10 +127,10 @@ export default function PaymentsManagement() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': 
+      case 'completed':
       case 'paid': return 'bg-green-100 text-green-800'
       case 'pending': return 'bg-yellow-100 text-yellow-800'
-      case 'failed': 
+      case 'failed':
       case 'cancelled': return 'bg-red-100 text-red-800'
       default: return 'bg-gray-100 text-gray-800'
     }
@@ -282,8 +178,8 @@ export default function PaymentsManagement() {
 
   const filteredTransactions = transactions.filter(transaction => {
     const matchesSearch = transaction.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         transaction.customerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         transaction.id.toLowerCase().includes(searchQuery.toLowerCase())
+      transaction.customerName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      transaction.id.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === 'all' || transaction.status === filterStatus
     const matchesType = filterType === 'all' || transaction.type === filterType
     return matchesSearch && matchesStatus && matchesType
@@ -602,7 +498,7 @@ export default function PaymentsManagement() {
                       <span className="text-sm font-medium">{method.method}</span>
                       <div className="flex items-center gap-2">
                         <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className="h-full bg-primary rounded-full"
                             style={{ width: `${method.percentage}%` }}
                           />

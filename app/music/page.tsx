@@ -3,18 +3,18 @@
 import { useState, useMemo } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { 
-  Play, 
-  Calendar, 
-  Clock, 
-  ExternalLink, 
-  Music, 
-  Filter, 
+import {
+  Play,
+  Calendar,
+  Clock,
+  ExternalLink,
+  Music,
+  Filter,
   Search,
   Disc3,
   Heart,
   AlertCircle,
-  Download 
+  Download
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -41,169 +41,10 @@ const sortOptions = [
   { id: "duration", name: "Duration" },
 ]
 
-// Sample data
-const singles: Single[] = [
-  {
-    id: "single1",
-    title: "Neon Pulse",
-    duration: 215, // 3:35
-    albumArt: "/placeholder.svg?height=300&width=300",
-    releaseYear: 2023,
-    releaseDate: "Oct 15, 2023",
-  },
-  {
-    id: "single2",
-    title: "Digital Dreams",
-    duration: 187, // 3:07
-    albumArt: "/placeholder.svg?height=300&width=300",
-    releaseYear: 2023,
-    releaseDate: "Aug 22, 2023",
-  },
-  {
-    id: "single3",
-    title: "Midnight Echo",
-    duration: 243, // 4:03
-    albumArt: "/placeholder.svg?height=300&width=300",
-    releaseYear: 2023,
-    releaseDate: "Jun 10, 2023",
-  },
-  {
-    id: "single4",
-    title: "Cyber Horizons",
-    duration: 198, // 3:18
-    albumArt: "/placeholder.svg?height=300&width=300",
-    releaseYear: 2023,
-    releaseDate: "Apr 5, 2023",
-  },
-  {
-    id: "single5",
-    title: "Synth Wave",
-    duration: 227, // 3:47
-    albumArt: "/placeholder.svg?height=300&width=300",
-    releaseYear: 2022,
-    releaseDate: "Dec 12, 2022",
-  },
-]
-
-const eps: Album[] = [
-  {
-    id: "ep1",
-    title: "Neon Nights EP",
-    year: 2023,
-    tracks: 4,
-    cover: "/placeholder.svg?height=400&width=400",
-    type: "ep",
-    trackList: [
-      {
-        id: "ep1_track1",
-        title: "Neon Intro",
-        duration: 120,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-      {
-        id: "ep1_track2",
-        title: "City Lights",
-        duration: 205,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-      {
-        id: "ep1_track3",
-        title: "Midnight Drive",
-        duration: 230,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-      {
-        id: "ep1_track4",
-        title: "Neon Dreams",
-        duration: 245,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-    ],
-  },
-  {
-    id: "ep2",
-    title: "Digital Dreamscape EP",
-    year: 2022,
-    tracks: 5,
-    cover: "/placeholder.svg?height=400&width=400",
-    type: "ep",
-    trackList: [
-      {
-        id: "ep2_track1",
-        title: "Digital Dawn",
-        duration: 185,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-      {
-        id: "ep2_track2",
-        title: "Virtual Reality",
-        duration: 210,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-      {
-        id: "ep2_track3",
-        title: "Pixel Pulse",
-        duration: 195,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-      {
-        id: "ep2_track4",
-        title: "Binary Beats",
-        duration: 225,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-      {
-        id: "ep2_track5",
-        title: "Digital Dusk",
-        duration: 240,
-        albumArt: "/placeholder.svg?height=400&width=400",
-      },
-    ],
-  },
-  {
-    id: "ep3",
-    title: "Cosmic Frequencies EP",
-    year: 2022,
-    tracks: 3,
-    cover: "/placeholder.svg?height=400&width=400",
-    type: "ep",
-  },
-]
-
-const albums: Album[] = [
-  {
-    id: "album1",
-    title: "Hyperspace Journey",
-    year: 2023,
-    tracks: 12,
-    cover: "/placeholder.svg?height=500&width=500",
-    type: "album",
-  },
-  {
-    id: "album2",
-    title: "Electric Pulse",
-    year: 2022,
-    tracks: 10,
-    cover: "/placeholder.svg?height=500&width=500",
-    type: "album",
-  },
-  {
-    id: "album3",
-    title: "Synth Chronicles",
-    year: 2021,
-    tracks: 14,
-    cover: "/placeholder.svg?height=500&width=500",
-    type: "album",
-  },
-  {
-    id: "album4",
-    title: "Cosmic Beats",
-    year: 2020,
-    tracks: 11,
-    cover: "/placeholder.svg?height=500&width=500",
-    type: "album",
-  },
-]
+// Sample data - removed
+const singles: Single[] = []
+const eps: Album[] = []
+const albums: Album[] = []
 
 // Helper function to format time
 const formatTime = (time: number): string => {
@@ -226,27 +67,27 @@ export default function MusicPage() {
 
   // Combine sample data for fallback
   const allMusic = useMemo(() => {
-    if (apiMusic?.tracks) {
-      return apiMusic.tracks
+    if (apiMusic?.music) {
+      return apiMusic.music
     }
-    
+
     // Transform our sample data to unified format
     const transformedSingles = singles.map(single => ({
       ...single,
       type: 'single' as const,
       year: single.releaseYear,
     }))
-    
+
     const transformedEPs = eps.map(ep => ({
       ...ep,
       type: 'ep' as const,
     }))
-    
+
     const transformedAlbums = albums.map(album => ({
       ...album,
       type: 'album' as const,
     }))
-    
+
     return [...transformedSingles, ...transformedEPs, ...transformedAlbums]
   }, [apiMusic])
 
@@ -256,7 +97,7 @@ export default function MusicPage() {
       if (filters.type !== "All") {
         const typeMap = {
           "Singles": "single",
-          "EPs": "ep", 
+          "EPs": "ep",
           "Albums": "album"
         }
         if (item.type !== typeMap[filters.type as keyof typeof typeMap]) {
@@ -277,7 +118,7 @@ export default function MusicPage() {
           item.type,
           item.year.toString()
         ].map(field => field.toLowerCase())
-        
+
         if (!searchFields.some(field => field.includes(searchLower))) {
           return false
         }
@@ -349,7 +190,7 @@ export default function MusicPage() {
               />
             </div>
           </div>
-          
+
           <Select value={filters.type} onValueChange={(value) => updateFilter("type", value)}>
             <SelectTrigger className="w-[150px]">
               <Filter className="h-4 w-4 mr-2" />
@@ -475,8 +316,8 @@ export default function MusicPage() {
       {!loading && filteredAndSortedMusic.length === 0 && (
         <div className="text-center py-12">
           <div className="text-muted-foreground mb-4">No music found matching your criteria.</div>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={() => setFilters({ type: "All", year: "All Years", sortBy: "newest", searchTerm: "" })}
           >
             Clear Filters

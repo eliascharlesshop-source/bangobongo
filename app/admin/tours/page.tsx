@@ -1,12 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  Plus, 
-  Search, 
-  Calendar, 
-  MapPin, 
-  Users, 
+import {
+  Plus,
+  Search,
+  Calendar,
+  MapPin,
+  Users,
   DollarSign,
   Clock,
   Edit,
@@ -25,26 +25,26 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table"
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select"
 
 interface Show {
@@ -90,113 +90,19 @@ export default function TourManagement() {
 
   const fetchTourData = async () => {
     try {
-      // Simulate API calls - replace with actual API endpoints
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setShows([
-        {
-          id: '1',
-          title: 'BangoBongo Live: Digital Dreams Tour',
-          venue: 'Echo Arena',
-          city: 'Los Angeles',
-          state: 'CA',
-          country: 'USA',
-          date: '2024-03-15',
-          time: '20:00',
-          capacity: 2500,
-          ticketsSold: 1850,
-          ticketPrice: 45.00,
-          status: 'confirmed',
-          description: 'An immersive electronic music experience featuring tracks from the Digital Dreams album.',
-          imageUrl: '/cyberpunk-electronic-album.png',
-          ticketUrl: 'https://tickets.example.com/bangobongo-la'
-        },
-        {
-          id: '2',
-          title: 'BangoBongo Live: Synthwave Night',
-          venue: 'The Observatory',
-          city: 'San Francisco',
-          state: 'CA',
-          country: 'USA',
-          date: '2024-03-22',
-          time: '21:00',
-          capacity: 1200,
-          ticketsSold: 956,
-          ticketPrice: 38.00,
-          status: 'confirmed',
-          description: 'A night of synthwave and electronic beats in an intimate venue.',
-          imageUrl: '/synthwave-album-art.png',
-          ticketUrl: 'https://tickets.example.com/bangobongo-sf'
-        },
-        {
-          id: '3',
-          title: 'BangoBongo at Electric Festival',
-          venue: 'Festival Grounds',
-          city: 'Austin',
-          state: 'TX',
-          country: 'USA',
-          date: '2024-04-05',
-          time: '18:30',
-          capacity: 5000,
-          ticketsSold: 3200,
-          ticketPrice: 75.00,
-          status: 'scheduled',
-          description: 'Headlining performance at the annual Electric Festival.',
-          imageUrl: '/futuristic-electronic-album-art.png'
-        },
-        {
-          id: '4',
-          title: 'BangoBongo Acoustic Session',
-          venue: 'Blue Note',
-          city: 'New York',
-          state: 'NY',
-          country: 'USA',
-          date: '2024-04-18',
-          time: '19:00',
-          capacity: 300,
-          ticketsSold: 125,
-          ticketPrice: 65.00,
-          status: 'scheduled',
-          description: 'An intimate acoustic performance featuring reimagined electronic tracks.',
-          imageUrl: '/dark-electronic-album-art.png'
-        }
-      ])
+      // Fetch shows from API
+      const showsResponse = await fetch('/api/tours')
+      const showsData = await showsResponse.json()
+      if (showsData.success) {
+        setShows(showsData.tours || [])
+      }
 
-      setVenues([
-        {
-          id: '1',
-          name: 'Echo Arena',
-          address: '123 Music Blvd',
-          city: 'Los Angeles',
-          state: 'CA',
-          capacity: 2500,
-          contactEmail: 'booking@echoarena.com',
-          contactPhone: '+1 (555) 123-4567',
-          notes: 'Great sound system, LED stage setup available'
-        },
-        {
-          id: '2',
-          name: 'The Observatory',
-          address: '456 Mission St',
-          city: 'San Francisco',
-          state: 'CA',
-          capacity: 1200,
-          contactEmail: 'events@observatory.com',
-          contactPhone: '+1 (555) 987-6543',
-          notes: 'Intimate venue, strong local following'
-        },
-        {
-          id: '3',
-          name: 'Festival Grounds',
-          address: '789 Festival Way',
-          city: 'Austin',
-          state: 'TX',
-          capacity: 5000,
-          contactEmail: 'festivals@austingrounds.com',
-          contactPhone: '+1 (555) 456-7890',
-          notes: 'Outdoor venue, weather dependent'
-        }
-      ])
+      // Fetch venues from API
+      const venuesResponse = await fetch('/api/tours/venues')
+      const venuesData = await venuesResponse.json()
+      if (venuesData.success) {
+        setVenues(venuesData.venues || [])
+      }
     } catch (error) {
       console.error('Failed to fetch tour data:', error)
     } finally {
@@ -234,8 +140,8 @@ export default function TourManagement() {
 
   const filteredShows = shows.filter(show => {
     const matchesSearch = show.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         show.venue.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         show.city.toLowerCase().includes(searchQuery.toLowerCase())
+      show.venue.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      show.city.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === 'all' || show.status === filterStatus
     return matchesSearch && matchesStatus
   })
@@ -386,7 +292,7 @@ export default function TourManagement() {
                   {filteredShows.map((show) => {
                     const sellThrough = calculateSellThrough(show.ticketsSold, show.capacity)
                     const revenue = calculateRevenue(show.ticketsSold, show.ticketPrice)
-                    
+
                     return (
                       <TableRow key={show.id}>
                         <TableCell>
@@ -560,10 +466,10 @@ export default function TourManagement() {
                 <div className="space-y-4">
                   {venues.map((venue) => {
                     const venueShows = shows.filter(show => show.venue === venue.name)
-                    const totalRevenue = venueShows.reduce((sum, show) => 
+                    const totalRevenue = venueShows.reduce((sum, show) =>
                       sum + calculateRevenue(show.ticketsSold, show.ticketPrice), 0)
                     const totalTickets = venueShows.reduce((sum, show) => sum + show.ticketsSold, 0)
-                    
+
                     return (
                       <div key={venue.id} className="flex items-center justify-between">
                         <div>
@@ -593,7 +499,7 @@ export default function TourManagement() {
                     .slice(0, 5)
                     .map((show) => {
                       const sellThrough = calculateSellThrough(show.ticketsSold, show.capacity)
-                      
+
                       return (
                         <div key={show.id} className="flex items-center justify-between">
                           <div>

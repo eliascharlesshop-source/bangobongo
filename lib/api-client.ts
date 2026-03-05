@@ -20,7 +20,7 @@ class ApiClient {
   }
 
   private async request<T>(
-    endpoint: string, 
+    endpoint: string,
     options: {
       method?: HttpMethod
       headers?: Record<string, string>
@@ -29,7 +29,7 @@ class ApiClient {
     } = {}
   ): Promise<T> {
     const { method = 'GET', headers = {}, body, token } = options
-    
+
     const config: RequestInit = {
       method,
       headers: {
@@ -45,17 +45,36 @@ class ApiClient {
 
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, config)
-      
+
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
+        // Check if response is JSON before parsing
+        const contentType = response.headers.get('content-type')
+        let errorData: any = {}
+
+        if (contentType && contentType.includes('application/json')) {
+          errorData = await response.json().catch(() => ({}))
+        } else {
+          // If not JSON, try to get text for debugging
+          const text = await response.text().catch(() => '')
+          errorData = { error: text || `HTTP ${response.status}` }
+        }
+
         const error: ApiError = new Error(errorData.error || `HTTP ${response.status}`)
         error.status = response.status
         error.code = errorData.code
         throw error
       }
 
+      // Check if response is JSON before parsing
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        const error: ApiError = new Error('Expected JSON response but received ' + (contentType || 'unknown content type'))
+        error.status = response.status
+        throw error
+      }
+
       const data: ApiResponse<T> = await response.json()
-      
+
       if (!data.success && data.error) {
         const error: ApiError = new Error(data.error)
         error.code = 'API_ERROR'
@@ -101,7 +120,7 @@ class ApiClient {
           return acc
         }, {} as Record<string, string>)
       ).toString() : ''
-      
+
       return this.request<{ products: any[]; total: number; pages: number }>(`/products${query}`)
     },
 
@@ -170,7 +189,7 @@ class ApiClient {
           return acc
         }, {} as Record<string, string>)
       ).toString() : ''
-      
+
       return this.request<{ orders: any[]; total: number; pages: number }>(`/orders${query}`, { token })
     },
 
@@ -191,8 +210,8 @@ class ApiClient {
           return acc
         }, {} as Record<string, string>)
       ).toString() : ''
-      
-      return this.request<{ tracks: any[]; total: number; pages: number }>(`/music${query}`)
+
+      return this.request<{ music: any[]; pagination: { page: number; limit: number; total: number; pages: number } }>(`/music${query}`)
     },
 
     get: (id: string) =>
@@ -215,7 +234,7 @@ class ApiClient {
           return acc
         }, {} as Record<string, string>)
       ).toString() : ''
-      
+
       return this.request<{ tours: any[]; total: number }>(`/tours${query}`)
     },
 

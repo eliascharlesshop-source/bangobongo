@@ -20,7 +20,15 @@ const nextConfig = {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,
     parallelServerCompiles: true,
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+  // Optimize build performance
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  // Optimize output
+  output: 'standalone',
   // PWA settings
   headers: async () => {
     return [

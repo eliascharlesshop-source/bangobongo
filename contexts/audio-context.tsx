@@ -4,69 +4,8 @@ import type React from "react"
 import { createContext, useContext, useState, useRef, useEffect, useCallback } from "react"
 import type { Track } from "@/types"
 
-// High-quality sample tracks data with real audio files
-const sampleTracks: Track[] = [
-  {
-    id: "neon-pulse",
-    title: "Neon Pulse",
-    duration: 215, // 3:35
-    albumArt: "/abstract-electronic-album-art.png",
-    artist: "BangoBongo",
-    audioUrl: "/audio/neon-pulse.mp3",
-    genre: "Electronic",
-    bpm: 128,
-    key: "Am",
-    year: 2024,
-  },
-  {
-    id: "digital-dreams",
-    title: "Digital Dreams",
-    duration: 187, // 3:07
-    albumArt: "/futuristic-electronic-album-art.png",
-    artist: "BangoBongo",
-    audioUrl: "/audio/digital-dreams.mp3",
-    genre: "Synthwave",
-    bpm: 120,
-    key: "Fm",
-    year: 2024,
-  },
-  {
-    id: "midnight-echo",
-    title: "Midnight Echo",
-    duration: 243, // 4:03
-    albumArt: "/dark-electronic-album-art.png",
-    artist: "BangoBongo",
-    audioUrl: "/audio/midnight-echo.mp3",
-    genre: "Ambient Electronic",
-    bpm: 100,
-    key: "Dm",
-    year: 2024,
-  },
-  {
-    id: "cyber-horizons",
-    title: "Cyber Horizons",
-    duration: 198, // 3:18
-    albumArt: "/cyberpunk-electronic-album.png",
-    artist: "BangoBongo",
-    audioUrl: "/audio/cyber-horizons.mp3",
-    genre: "Cyberpunk",
-    bpm: 140,
-    key: "Em",
-    year: 2024,
-  },
-  {
-    id: "synth-wave",
-    title: "Synth Wave",
-    duration: 227, // 3:47
-    albumArt: "/synthwave-album-art.png",
-    artist: "BangoBongo",
-    audioUrl: "/audio/synth-wave.mp3",
-    genre: "Synthwave",
-    bpm: 115,
-    key: "Gm",
-    year: 2024,
-  },
-]
+// High-quality sample tracks data - removed
+const sampleTracks: Track[] = []
 
 type PlayerMode = "full" | "thin" | "floating"
 
@@ -209,10 +148,10 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
     try {
       audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
-      
+
       // Create gain node for volume control
       gainNodeRef.current = audioContextRef.current.createGain()
-      
+
       // Create analyser for visualizations
       analyserNodeRef.current = audioContextRef.current.createAnalyser()
       analyserNodeRef.current.fftSize = 256
@@ -237,15 +176,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       // Connect audio chain
       if (audioRef.current && !sourceNodeRef.current) {
         sourceNodeRef.current = audioContextRef.current.createMediaElementSource(audioRef.current)
-        
+
         // Chain: source -> equalizer -> gain -> analyser -> destination
         let previousNode: AudioNode = sourceNodeRef.current
-        
+
         equalizerNodesRef.current.forEach(filter => {
           previousNode.connect(filter)
           previousNode = filter
         })
-        
+
         previousNode.connect(gainNodeRef.current)
         gainNodeRef.current.connect(analyserNodeRef.current)
         analyserNodeRef.current.connect(audioContextRef.current.destination)
@@ -288,7 +227,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (audioRef.current && currentTrack) {
       setIsLoading(true)
-      
+
       // Check if we have a valid audio URL
       if (!currentTrack.audioUrl || currentTrack.audioUrl === '' || currentTrack.audioUrl === null) {
         console.warn(`Track "${currentTrack.title}" has no audio file - UI only mode`)
@@ -296,12 +235,19 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         setIsPlaying(false)
         // Still set duration for UI purposes
         setDuration(currentTrack.duration)
+        // Clear the audio source to prevent errors
+        audioRef.current.src = ''
+        audioRef.current.removeAttribute('src')
         return
       }
-      
+
       // Use audioUrl if available, otherwise fallback to constructed path
       const audioSrc = currentTrack.audioUrl || `/audio/${currentTrack.id}.mp3`
-      audioRef.current.src = audioSrc
+
+      // Only set src if we have a valid URL
+      if (audioSrc && audioSrc !== '') {
+        audioRef.current.src = audioSrc
+      }
 
       // Set the duration from the track data
       setDuration(currentTrack.duration)
@@ -324,32 +270,19 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       }
       const handleError = (e: Event) => {
         const audio = e.target as HTMLAudioElement
-        const errorDetails = {
-          error: audio?.error?.code || 'Unknown',
-          message: audio?.error?.message || 'No error message',
-          src: audio?.src || 'No source',
-          networkState: audio?.networkState,
-          readyState: audio?.readyState
-        }
-        
-        console.error('Audio loading failed:', errorDetails)
+
         setIsLoading(false)
         setIsPlaying(false)
-        
-        // Show user-friendly message
+
+        // Show user-friendly message only for unexpected errors
         if (!audio?.src || audio.src === '') {
-          console.warn('Track has no audio file - this is expected for UI testing')
+          console.info('Track has no audio file - UI demonstration mode active')
           return
         }
-        
-        // Try to continue with next track if available
-        if (tracks.length > 1 && currentTrackIndex < tracks.length - 1) {
-          console.log('Trying next track due to audio error...')
-          setTimeout(() => {
-            setCurrentTrackIndex(currentTrackIndex + 1)
-          }, 1000)
-        } else {
-          console.log('No more tracks available or audio loading failed')
+
+        // Log error details only in development
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('Audio file not found:', audio.src.split('/').pop(), '- UI will continue to work')
         }
       }
 

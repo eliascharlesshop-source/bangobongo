@@ -4,151 +4,12 @@ import { CalendarDays, MapPin, Music, Package, ShoppingBag, ExternalLink, Play }
 import { Button } from "@/components/ui/button"
 import type { Track, Album, TourDate, GearItem, MerchItem } from "@/types"
 
-// Import the TrackListExample component at the top of the file
-import TrackListExample from "@/components/track-list-example"
-
-// Sample data
-const featuredTracks: Track[] = [
-  {
-    id: "track1",
-    title: "Neon Pulse",
-    duration: 215, // 3:35
-    albumArt: "/placeholder.svg?height=300&width=300",
-  },
-  {
-    id: "track2",
-    title: "Digital Dreams",
-    duration: 187, // 3:07
-    albumArt: "/placeholder.svg?height=300&width=300",
-  },
-  {
-    id: "track3",
-    title: "Midnight Echo",
-    duration: 243, // 4:03
-    albumArt: "/placeholder.svg?height=300&width=300",
-  },
-]
-
-const albums: Album[] = [
-  {
-    id: "album1",
-    title: "Neon Nights",
-    year: 2023,
-    tracks: 8,
-    cover: "/placeholder.svg?height=400&width=400",
-  },
-  {
-    id: "album2",
-    title: "Digital Dreamscape",
-    year: 2022,
-    tracks: 6,
-    cover: "/placeholder.svg?height=400&width=400",
-  },
-  {
-    id: "album3",
-    title: "Cosmic Beats",
-    year: 2021,
-    tracks: 10,
-    cover: "/placeholder.svg?height=400&width=400",
-  },
-]
-
-const tourDates: TourDate[] = [
-  {
-    id: "tour1",
-    date: "Mar 15, 2024",
-    venue: "Pulse Nightclub",
-    city: "Miami, FL",
-    country: "USA",
-    ticketLink: "#",
-  },
-  {
-    id: "tour2",
-    date: "Apr 2, 2024",
-    venue: "Echo Arena",
-    city: "Los Angeles, CA",
-    country: "USA",
-    ticketLink: "#",
-  },
-  {
-    id: "tour3",
-    date: "Apr 18, 2024",
-    venue: "Neon Gardens",
-    city: "New York, NY",
-    country: "USA",
-    ticketLink: "#",
-  },
-  {
-    id: "tour4",
-    date: "May 5, 2024",
-    venue: "Digital Dreams Festival",
-    city: "Chicago, IL",
-    country: "USA",
-    ticketLink: "#",
-  },
-]
-
-const favoriteGear: GearItem[] = [
-  {
-    id: "gear1",
-    name: "Pioneer DJ CDJ-3000",
-    category: "Hardware",
-    image: "/placeholder.svg?height=200&width=200",
-    link: "#",
-  },
-  {
-    id: "gear2",
-    name: "Ableton Live 11",
-    category: "Software",
-    image: "/placeholder.svg?height=200&width=200",
-    link: "#",
-  },
-  {
-    id: "gear3",
-    name: "Native Instruments Traktor Pro",
-    category: "Software",
-    image: "/placeholder.svg?height=200&width=200",
-    link: "#",
-  },
-  {
-    id: "gear4",
-    name: "Sennheiser HD-25",
-    category: "Headphones",
-    image: "/placeholder.svg?height=200&width=200",
-    link: "#",
-  },
-]
-
-const merchItems: MerchItem[] = [
-  {
-    id: "merch1",
-    name: "BangoBongo T-Shirt",
-    price: 29.99,
-    image: "/placeholder.svg?height=300&width=300",
-    cryptoPrice: 0.015,
-  },
-  {
-    id: "merch2",
-    name: "Neon Nights Hoodie",
-    price: 59.99,
-    image: "/placeholder.svg?height=300&width=300",
-    cryptoPrice: 0.03,
-  },
-  {
-    id: "merch3",
-    name: "Digital Dreams Vinyl",
-    price: 24.99,
-    image: "/placeholder.svg?height=300&width=300",
-    cryptoPrice: 0.012,
-  },
-  {
-    id: "merch4",
-    name: "BangoBongo Snapback",
-    price: 19.99,
-    image: "/placeholder.svg?height=300&width=300",
-    cryptoPrice: 0.01,
-  },
-]
+// Sample data - removed
+const featuredTracks: Track[] = []
+const albums: Album[] = []
+const tourDates: TourDate[] = []
+const favoriteGear: GearItem[] = []
+const merchItems: MerchItem[] = []
 
 export default function Home() {
   return (
@@ -189,12 +50,7 @@ export default function Home() {
       <section id="music" className="py-16 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-8">
-            <div className="w-full md:w-1/3">
-              <h2 className="text-3xl font-bold text-foreground mb-6">Latest Tracks</h2>
-              <TrackListExample />
-            </div>
-
-            <div className="w-full md:w-2/3">
+            <div className="w-full">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-3xl font-bold text-foreground">Albums & EPs</h2>
                 <Link href="/music" className="text-primary hover:text-secondary transition-colors">

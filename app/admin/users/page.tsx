@@ -1,15 +1,15 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreHorizontal, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  Users, 
+import {
+  Plus,
+  Search,
+  Filter,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  Eye,
+  Users,
   Mail,
   Calendar,
   Shield,
@@ -29,26 +29,26 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table"
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
@@ -91,120 +91,19 @@ export default function UserManagement() {
 
   const fetchUserData = async () => {
     try {
-      // Simulate API calls - replace with actual API endpoints
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setUsers([
-        {
-          id: '1',
-          name: 'John Smith',
-          email: 'john@example.com',
-          avatar: '/placeholder-user.jpg',
-          role: 'customer',
-          status: 'active',
-          joinedAt: '2024-01-15',
-          lastActive: '2024-01-20',
-          totalPurchases: 3,
-          totalSpent: 127.50,
-          favoriteGenres: ['Electronic', 'Synthwave'],
-          location: 'Los Angeles, CA',
-          verified: true
-        },
-        {
-          id: '2',
-          name: 'Sarah Johnson',
-          email: 'sarah@example.com',
-          role: 'vip',
-          status: 'active',
-          joinedAt: '2023-08-20',
-          lastActive: '2024-01-19',
-          totalPurchases: 12,
-          totalSpent: 485.75,
-          favoriteGenres: ['Electronic', 'Ambient'],
-          location: 'New York, NY',
-          verified: true
-        },
-        {
-          id: '3',
-          name: 'Mike Wilson',
-          email: 'mike@example.com',
-          role: 'customer',
-          status: 'active',
-          joinedAt: '2024-01-10',
-          lastActive: '2024-01-18',
-          totalPurchases: 1,
-          totalSpent: 45.00,
-          favoriteGenres: ['Electronic'],
-          location: 'Chicago, IL',
-          verified: false
-        },
-        {
-          id: '4',
-          name: 'Emily Davis',
-          email: 'emily@example.com',
-          role: 'customer',
-          status: 'inactive',
-          joinedAt: '2023-12-05',
-          lastActive: '2023-12-20',
-          totalPurchases: 0,
-          totalSpent: 0,
-          favoriteGenres: [],
-          location: 'Austin, TX',
-          verified: false
-        },
-        {
-          id: '5',
-          name: 'Admin User',
-          email: 'admin@bangobongo.com',
-          role: 'admin',
-          status: 'active',
-          joinedAt: '2023-01-01',
-          lastActive: '2024-01-20',
-          totalPurchases: 0,
-          totalSpent: 0,
-          favoriteGenres: ['Electronic', 'Synthwave', 'Ambient'],
-          location: 'BangoBongo HQ',
-          verified: true
-        }
-      ])
+      // Fetch users from API
+      const usersResponse = await fetch('/api/admin/users')
+      const usersData = await usersResponse.json()
+      if (usersData.success) {
+        setUsers(usersData.users || [])
+      }
 
-      setActivities([
-        {
-          id: '1',
-          userId: '1',
-          type: 'purchase',
-          description: 'Purchased BangoBongo Hoodie',
-          timestamp: '2 hours ago'
-        },
-        {
-          id: '2',
-          userId: '2',
-          type: 'stream',
-          description: 'Streamed "Digital Dreams" 15 times',
-          timestamp: '4 hours ago'
-        },
-        {
-          id: '3',
-          userId: '3',
-          type: 'follow',
-          description: 'Followed BangoBongo on Spotify',
-          timestamp: '1 day ago'
-        },
-        {
-          id: '4',
-          userId: '2',
-          type: 'purchase',
-          description: 'Purchased Digital Dreams Vinyl',
-          timestamp: '2 days ago'
-        },
-        {
-          id: '5',
-          userId: '1',
-          type: 'share',
-          description: 'Shared "Midnight Pulse" on social media',
-          timestamp: '3 days ago'
-        }
-      ])
+      // Fetch user activities from API
+      const activitiesResponse = await fetch('/api/admin/users/activities')
+      const activitiesData = await activitiesResponse.json()
+      if (activitiesData.success) {
+        setActivities(activitiesData.activities || [])
+      }
     } catch (error) {
       console.error('Failed to fetch user data:', error)
     } finally {
@@ -265,7 +164,7 @@ export default function UserManagement() {
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchQuery.toLowerCase())
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesRole = filterRole === 'all' || user.role === filterRole
     const matchesStatus = filterStatus === 'all' || user.status === filterStatus
     return matchesSearch && matchesRole && matchesStatus
@@ -324,7 +223,7 @@ export default function UserManagement() {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Active Users</p>
                 <p className="text-2xl font-bold">{activeUsers}</p>
-                <p className="text-xs text-green-600">{Math.round((activeUsers/totalUsers)*100)}% of total</p>
+                <p className="text-xs text-green-600">{Math.round((activeUsers / totalUsers) * 100)}% of total</p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
@@ -541,13 +440,13 @@ export default function UserManagement() {
                   {['Los Angeles, CA', 'New York, NY', 'Chicago, IL', 'Austin, TX'].map((location) => {
                     const locationUsers = users.filter(u => u.location === location).length
                     const percentage = Math.round((locationUsers / totalUsers) * 100)
-                    
+
                     return (
                       <div key={location} className="flex items-center justify-between">
                         <span className="text-sm">{location}</span>
                         <div className="flex items-center gap-2">
                           <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                            <div 
+                            <div
                               className="h-full bg-primary rounded-full"
                               style={{ width: `${percentage}%` }}
                             />

@@ -20,28 +20,15 @@ export function generateMetadata({ params }: AlbumDetailPageProps): Metadata {
   }
 }
 
-// Sample track data for the album
+// Sample track data for the album - removed demo data
 const albumData: Album = {
-  id: "album1",
-  title: "Hyperspace Journey",
-  year: 2023,
-  tracks: 12,
+  id: "",
+  title: "",
+  year: 2024,
+  tracks: 0,
   cover: "/placeholder.svg?height=500&width=500",
   type: "album",
-  trackList: [
-    { id: "track1", title: "Hyperspace Intro", duration: 135, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track2", title: "Cosmic Dawn", duration: 224, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track3", title: "Stardust Dreams", duration: 198, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track4", title: "Orbital Groove", duration: 245, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track5", title: "Nebula Nights", duration: 212, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track6", title: "Quantum Pulse", duration: 228, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track7", title: "Galactic Highway", duration: 256, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track8", title: "Interstellar Drift", duration: 203, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track9", title: "Astral Projection", duration: 219, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track10", title: "Wormhole Transit", duration: 185, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track11", title: "Event Horizon", duration: 232, albumArt: "/placeholder.svg?height=500&width=500" },
-    { id: "track12", title: "Hyperspace Outro", duration: 148, albumArt: "/placeholder.svg?height=500&width=500" },
-  ],
+  trackList: [],
 }
 
 // Helper function to format time

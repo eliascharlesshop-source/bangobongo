@@ -5,6 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Menu, X, ShoppingCart, Music } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -52,6 +53,7 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             <Link href="/cart">
               <Button variant="ghost" size="icon">
                 <ShoppingCart className="h-5 w-5" />
@@ -106,6 +108,7 @@ export default function Navbar() {
               Merch
             </Link>
             <div className="flex items-center space-x-4 px-3 py-2">
+              <ThemeToggle />
               <Link href="/cart" onClick={() => setIsMenuOpen(false)}>
                 <Button variant="ghost" size="icon">
                   <ShoppingCart className="h-5 w-5" />

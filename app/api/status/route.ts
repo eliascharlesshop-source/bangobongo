@@ -38,12 +38,19 @@ export async function GET(request: NextRequest) {
   // Test 2: Shopify Storefront API
   try {
     const shopifyResponse = await fetch(`${baseUrl}/api/shopify/products?limit=1`)
-    const shopifyData = await shopifyResponse.json()
-    
+    let shopifyData: any = {}
+
+    if (shopifyResponse.ok) {
+      const contentType = shopifyResponse.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        shopifyData = await shopifyResponse.json()
+      }
+    }
+
     results.tests.push({
       name: 'Shopify Storefront API',
       status: shopifyResponse.ok ? 'PASS' : 'FAIL',
-      details: shopifyResponse.ok ? 
+      details: shopifyResponse.ok ?
         `${shopifyData.data?.source || 'unknown'} source with ${shopifyData.data?.products?.length || 0} products` :
         `HTTP ${shopifyResponse.status}`,
       critical: false
@@ -51,7 +58,7 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     results.tests.push({
       name: 'Shopify Storefront API',
-      status: 'ERROR', 
+      status: 'ERROR',
       details: error.message,
       critical: false
     })
@@ -60,12 +67,19 @@ export async function GET(request: NextRequest) {
   // Test 3: Products API (unified)
   try {
     const productsResponse = await fetch(`${baseUrl}/api/products?limit=1`)
-    const productsData = await productsResponse.json()
-    
+    let productsData: any = {}
+
+    if (productsResponse.ok) {
+      const contentType = productsResponse.headers.get('content-type')
+      if (contentType && contentType.includes('application/json')) {
+        productsData = await productsResponse.json()
+      }
+    }
+
     results.tests.push({
       name: 'Products API (Unified)',
       status: productsResponse.ok ? 'PASS' : 'FAIL',
-      details: productsResponse.ok ? 
+      details: productsResponse.ok ?
         `${productsData.data?.products?.length || 0} products available` :
         `HTTP ${productsResponse.status}`,
       critical: false
@@ -85,8 +99,8 @@ export async function GET(request: NextRequest) {
     results.tests.push({
       name: 'Admin Music API',
       status: adminMusicResponse.status === 403 ? 'PASS' : adminMusicResponse.ok ? 'PASS' : 'FAIL',
-      details: adminMusicResponse.status === 403 ? 
-        'Correctly requires authentication' : 
+      details: adminMusicResponse.status === 403 ?
+        'Correctly requires authentication' :
         adminMusicResponse.ok ? 'Admin API accessible' : `HTTP ${adminMusicResponse.status}`,
       critical: false
     })
@@ -107,7 +121,7 @@ export async function GET(request: NextRequest) {
     critical: false,
     notes: [
       'Music player UI functional',
-      'Equalizer controls available', 
+      'Equalizer controls available',
       'Professional audio processing chain',
       'No external audio dependencies required for UI testing'
     ]
@@ -123,14 +137,14 @@ export async function GET(request: NextRequest) {
   }
 
   const overallStatus = summary.criticalIssues > 0 ? 'CRITICAL_ISSUES' :
-                       summary.failed > 0 || summary.errors > 0 ? 'NEEDS_ATTENTION' : 'HEALTHY'
+    summary.failed > 0 || summary.errors > 0 ? 'NEEDS_ATTENTION' : 'HEALTHY'
 
-  console.log('🔍 System status check complete:', { 
-    status: overallStatus, 
-    passed: summary.passed, 
+  console.log('🔍 System status check complete:', {
+    status: overallStatus,
+    passed: summary.passed,
     failed: summary.failed,
     errors: summary.errors,
-    critical: summary.criticalIssues 
+    critical: summary.criticalIssues
   })
 
   return successResponse({
@@ -142,10 +156,10 @@ export async function GET(request: NextRequest) {
       readyForDevelopment: summary.passed >= summary.total * 0.6 // 60% pass rate for dev
     },
     recommendations: [
-      overallStatus === 'HEALTHY' ? '✅ All systems operational!' : 
-      overallStatus === 'CRITICAL_ISSUES' ? '🚨 Critical issues need immediate attention' :
-      '⚠️ Some non-critical issues detected',
-      
+      overallStatus === 'HEALTHY' ? '✅ All systems operational!' :
+        overallStatus === 'CRITICAL_ISSUES' ? '🚨 Critical issues need immediate attention' :
+          '⚠️ Some non-critical issues detected',
+
       '🎵 Music Player: Web Audio API ready with professional EQ',
       '🛒 E-commerce: ' + (process.env.SHOPIFY_DOMAIN ? 'Shopify integration configured' : 'Using demo products'),
       '⚙️ Admin: Content management system operational',

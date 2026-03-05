@@ -9,6 +9,7 @@ import { NotificationProvider } from "@/contexts/notification-context"
 import { ErrorBoundary } from "@/components/error-boundary"
 import FixedMediaPlayerWrapper from "@/components/fixed-media-player-wrapper"
 import { Toaster } from "@/components/ui/toaster"
+import { ThemeProvider } from "@/components/theme-provider"
 
 /**
  * Note: This application supports cryptocurrency payments but avoids
@@ -76,7 +77,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
@@ -87,24 +88,26 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="BangoBongo" />
       </head>
-      <body className={inter.className}>
-        <ErrorBoundary>
-          <NotificationProvider>
-            <AudioProvider>
-              <div className="min-h-screen flex flex-col">
-                <Navbar />
-                <main className="flex-1 pb-[72px]">
-                  <ErrorBoundary>
-                    {children}
-                  </ErrorBoundary>
-                </main>
-                <Footer />
-                <FixedMediaPlayerWrapper />
-              </div>
-              <Toaster />
-            </AudioProvider>
-          </NotificationProvider>
-        </ErrorBoundary>
+      <body className={inter.className} suppressHydrationWarning>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <ErrorBoundary>
+            <NotificationProvider>
+              <AudioProvider>
+                <div className="min-h-screen flex flex-col">
+                  <Navbar />
+                  <main className="flex-1 pb-[72px]">
+                    <ErrorBoundary>
+                      {children}
+                    </ErrorBoundary>
+                  </main>
+                  <Footer />
+                  <FixedMediaPlayerWrapper />
+                </div>
+                <Toaster />
+              </AudioProvider>
+            </NotificationProvider>
+          </ErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   )

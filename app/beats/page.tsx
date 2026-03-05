@@ -8,13 +8,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
-import { 
-  Play, 
-  Pause, 
-  Download, 
-  Star, 
-  Clock, 
-  Music, 
+import {
+  Play,
+  Pause,
+  Download,
+  Star,
+  Clock,
+  Music,
   Zap,
   Crown,
   Infinity,
@@ -119,6 +119,13 @@ export default function BeatsStore() {
   const fetchLicenseTiers = async () => {
     try {
       const response = await fetch('/api/licenses')
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error('Expected JSON response')
+      }
       const data = await response.json()
       if (data.success) {
         const tiersArray = Object.values(data.tiers).map((tier: any) => ({
@@ -180,11 +187,11 @@ export default function BeatsStore() {
 
   const filteredTracks = tracks.filter(track => {
     const matchesSearch = track.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-                         track.tags.some(tag => tag.toLowerCase().includes(filters.searchQuery.toLowerCase()))
+      track.tags.some(tag => tag.toLowerCase().includes(filters.searchQuery.toLowerCase()))
     const matchesGenre = !filters.genre || track.genre === filters.genre
     const matchesKey = !filters.key || track.key === filters.key
     const matchesBpm = track.bpm >= filters.bpmRange[0] && track.bpm <= filters.bpmRange[1]
-    
+
     return matchesSearch && matchesGenre && matchesKey && matchesBpm
   })
 
@@ -205,7 +212,7 @@ export default function BeatsStore() {
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold">BangoBongo Beats Store</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Professional beats and instrumentals with flexible licensing options. 
+          Professional beats and instrumentals with flexible licensing options.
           Perfect for artists, content creators, and music producers.
         </p>
       </div>
@@ -299,8 +306,8 @@ export default function BeatsStore() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     <div className="relative">
-                      <img 
-                        src={track.albumArt} 
+                      <img
+                        src={track.albumArt}
                         alt={track.title}
                         className="w-16 h-16 rounded-lg object-cover"
                       />
@@ -313,7 +320,7 @@ export default function BeatsStore() {
                         {currentlyPlaying === track.id ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                       </Button>
                     </div>
-                    
+
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-bold">{track.title}</h3>
@@ -346,7 +353,7 @@ export default function BeatsStore() {
                     <div className="text-right">
                       <p className="text-sm text-muted-foreground">Starting at</p>
                       <p className="text-2xl font-bold">${track.price}</p>
-                      <Button 
+                      <Button
                         onClick={() => setSelectedTrack(track)}
                         className="mt-2"
                       >
@@ -363,7 +370,7 @@ export default function BeatsStore() {
         {/* License Options */}
         <div className="space-y-4">
           <h2 className="text-2xl font-bold">Licensing Options</h2>
-          
+
           {selectedTrack ? (
             <div className="space-y-4">
               <Card>
@@ -372,8 +379,8 @@ export default function BeatsStore() {
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-3">
-                    <img 
-                      src={selectedTrack.albumArt} 
+                    <img
+                      src={selectedTrack.albumArt}
                       alt={selectedTrack.title}
                       className="w-12 h-12 rounded object-cover"
                     />
@@ -420,7 +427,7 @@ export default function BeatsStore() {
                           </li>
                         ))}
                       </ul>
-                      <Button 
+                      <Button
                         className="w-full"
                         variant={tier.popular ? "default" : "outline"}
                         onClick={() => handlePurchaseLicense(selectedTrack.id, tier.type)}

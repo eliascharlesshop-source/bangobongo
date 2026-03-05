@@ -4,14 +4,14 @@ import { useState, useMemo } from "react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { 
-  CalendarDays, 
-  MapPin, 
-  Ticket, 
-  Calendar, 
-  ChevronRight, 
-  Filter, 
-  Search, 
+import {
+  CalendarDays,
+  MapPin,
+  Ticket,
+  Calendar,
+  ChevronRight,
+  Filter,
+  Search,
   Globe,
   AlertCircle,
   Clock
@@ -35,11 +35,11 @@ interface TourFilters {
 
 const countries = [
   "All Countries",
-  "USA", 
+  "USA",
   "Germany",
   "UK",
   "Belgium",
-  "Spain", 
+  "Spain",
   "Japan",
   "Netherlands",
   "France"
@@ -48,7 +48,7 @@ const countries = [
 const months = [
   "All Months",
   "March 2024",
-  "April 2024", 
+  "April 2024",
   "May 2024",
   "June 2024",
   "July 2024",
@@ -62,262 +62,11 @@ const sortOptions = [
   { id: "price-high", name: "Price: High to Low" },
 ]
 
-// Sample tour data
-const tourDates: TourDate[] = [
-  {
-    id: "tour1",
-    date: "Mar 15, 2024",
-    venue: "Pulse Nightclub",
-    city: "Miami",
-    country: "USA",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 45,
-      vip: 120,
-    },
-    description: "Join BangoBongo for a night of electronic beats and immersive visuals at Miami's premier nightclub.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 25.7617,
-      lng: -80.1918,
-    },
-  },
-  {
-    id: "tour2",
-    date: "Apr 2, 2024",
-    venue: "Echo Arena",
-    city: "Los Angeles",
-    country: "USA",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 55,
-      vip: 150,
-    },
-    description:
-      "BangoBongo brings his Neon Nights tour to LA with special guest performers and state-of-the-art production.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 34.0522,
-      lng: -118.2437,
-    },
-  },
-  {
-    id: "tour3",
-    date: "Apr 18, 2024",
-    venue: "Neon Gardens",
-    city: "New York",
-    country: "USA",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 60,
-      vip: 180,
-    },
-    description: "Experience the fusion of electronic music and innovative visuals in this special NYC performance.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 40.7128,
-      lng: -74.006,
-    },
-  },
-  {
-    id: "tour4",
-    date: "May 5, 2024",
-    venue: "Digital Dreams Festival",
-    city: "Chicago",
-    country: "USA",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 85,
-      vip: 220,
-    },
-    description: "BangoBongo headlines the Digital Dreams Festival with a 2-hour set featuring new unreleased tracks.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 41.8781,
-      lng: -87.6298,
-    },
-  },
-  {
-    id: "tour5",
-    date: "May 20, 2024",
-    venue: "Techno Temple",
-    city: "Berlin",
-    country: "Germany",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 50,
-      vip: 140,
-    },
-    description: "BangoBongo makes his European tour debut at Berlin's legendary Techno Temple.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 52.52,
-      lng: 13.405,
-    },
-  },
-  {
-    id: "tour6",
-    date: "Jun 8, 2024",
-    venue: "Warehouse Project",
-    city: "Manchester",
-    country: "UK",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 45,
-      vip: 125,
-    },
-    description: "A special warehouse set featuring extended play and collaborative performances.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 53.4808,
-      lng: -2.2426,
-    },
-  },
-  {
-    id: "tour7",
-    date: "Jun 15, 2024",
-    venue: "Fabric",
-    city: "London",
-    country: "UK",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 55,
-      vip: 150,
-    },
-    description: "BangoBongo takes over Room 1 at the iconic Fabric nightclub for an unforgettable night.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 51.5074,
-      lng: -0.1278,
-    },
-  },
-  {
-    id: "tour8",
-    date: "Jul 1, 2024",
-    venue: "Tomorrowland",
-    city: "Boom",
-    country: "Belgium",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 110,
-      vip: 300,
-    },
-    description: "BangoBongo performs on the main stage at one of the world's biggest electronic music festivals.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 51.0897,
-      lng: 4.3651,
-    },
-  },
-  {
-    id: "tour9",
-    date: "Jul 20, 2024",
-    venue: "Ibiza Club",
-    city: "Ibiza",
-    country: "Spain",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 70,
-      vip: 200,
-    },
-    description: "Summer residency kickoff at Ibiza's premier nightlife destination.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 38.9067,
-      lng: 1.4206,
-    },
-  },
-  {
-    id: "tour10",
-    date: "Aug 15, 2024",
-    venue: "Fuji Rock Festival",
-    city: "Tokyo",
-    country: "Japan",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 95,
-      vip: 250,
-    },
-    description: "BangoBongo makes his Japanese debut at the legendary Fuji Rock Festival.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 35.6762,
-      lng: 139.6503,
-    },
-  },
-]
+// Sample tour data - removed
+const tourDates: TourDate[] = []
 
-// Sample tour data for development
-const tourDatesSample: TourDate[] = [
-  {
-    id: "tour1",
-    date: "Mar 15, 2024",
-    venue: "Pulse Nightclub",
-    city: "Miami",
-    country: "USA",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 45,
-      vip: 120,
-    },
-    description: "Join BangoBongo for a night of electronic beats and immersive visuals at Miami's premier nightclub.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 25.7617,
-      lng: -80.1918,
-    },
-  },
-  {
-    id: "tour2",
-    date: "Apr 2, 2024",
-    venue: "Echo Arena",
-    city: "Los Angeles",
-    country: "USA",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 55,
-      vip: 150,
-    },
-    description:
-      "BangoBongo brings his Neon Nights tour to LA with special guest performers and state-of-the-art production.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 34.0522,
-      lng: -118.2437,
-    },
-  },
-  {
-    id: "tour3",
-    date: "Apr 18, 2024",
-    venue: "Neon Gardens",
-    city: "New York",
-    country: "USA",
-    ticketLink: "#",
-    status: "upcoming",
-    price: {
-      general: 60,
-      vip: 180,
-    },
-    description: "Experience the fusion of electronic music and innovative visuals in this special NYC performance.",
-    image: "/placeholder.svg?height=500&width=800",
-    coordinates: {
-      lat: 40.7128,
-      lng: -74.006,
-    },
-  },
-]
+// Sample tour data for development - removed
+const tourDatesSample: TourDate[] = []
 
 // Group tour dates by month
 const groupTourDatesByMonth = (dates: TourDate[]) => {
@@ -337,14 +86,14 @@ const groupTourDatesByMonth = (dates: TourDate[]) => {
 export default function TourPage() {
   const [filters, setFilters] = useState<TourFilters>({
     country: "All Countries",
-    month: "All Months", 
+    month: "All Months",
     status: "upcoming",
     sortBy: "date",
     searchTerm: ""
   })
 
   const { showSuccess, showError } = useNotifications()
-  
+
   // Use our API hook
   const { data: toursData, loading, error, refetch } = useTours({
     upcoming: filters.status === "upcoming",
@@ -353,7 +102,7 @@ export default function TourPage() {
   })
 
   const tourDates = toursData?.tours || tourDatesSample // Fallback to sample data
-  
+
   // Filter and sort tours
   const filteredTours = useMemo(() => {
     let filtered = [...tourDates]

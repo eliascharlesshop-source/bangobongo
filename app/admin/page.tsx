@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { 
-  LayoutDashboard, 
-  Music, 
-  ShoppingBag, 
+import {
+  LayoutDashboard,
+  Music,
+  ShoppingBag,
   Calendar,
   Users,
   Settings,
@@ -76,69 +76,14 @@ export default function AdminDashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // Simulate API calls - replace with actual API endpoints
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setStats({
-        music: {
-          totalTracks: 24,
-          distributedTracks: 18,
-          totalStreams: 125420,
-          monthlyRevenue: 1234.56
-        },
-        store: {
-          totalProducts: 12,
-          totalOrders: 89,
-          monthlyRevenue: 2845.50,
-          inventoryAlerts: 3
-        },
-        tours: {
-          upcomingShows: 8,
-          ticketsSold: 1250,
-          totalRevenue: 18500.00
-        },
-        analytics: {
-          websiteVisitors: 8420,
-          conversionRate: 2.4,
-          topTrack: "Digital Dreams",
-          topProduct: "BangoBongo Hoodie"
-        }
-      })
+      // Fetch actual dashboard data from API
+      const response = await fetch('/api/admin/dashboard')
+      const data = await response.json()
 
-      setRecentActivity([
-        {
-          id: '1',
-          type: 'music',
-          title: 'New track uploaded',
-          description: '"Midnight Pulse" uploaded and queued for distribution',
-          timestamp: '2 hours ago',
-          status: 'success'
-        },
-        {
-          id: '2',
-          type: 'order',
-          title: 'New merchandise order',
-          description: 'Order #1234 - BangoBongo T-Shirt x2',
-          timestamp: '4 hours ago',
-          status: 'pending'
-        },
-        {
-          id: '3',
-          type: 'tour',
-          title: 'Venue confirmed',
-          description: 'Echo Arena - Los Angeles show confirmed',
-          timestamp: '1 day ago',
-          status: 'success'
-        },
-        {
-          id: '4',
-          type: 'music',
-          title: 'Distribution complete',
-          description: '"Electronic Dreams" now live on all platforms',
-          timestamp: '2 days ago',
-          status: 'success'
-        }
-      ])
+      if (data.success) {
+        setStats(data.stats)
+        setRecentActivity(data.recentActivity || [])
+      }
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error)
     } finally {
@@ -364,7 +309,7 @@ export default function AdminDashboard() {
                   <span>{stats?.music.distributedTracks}/{stats?.music.totalTracks}</span>
                 </div>
                 <Progress value={(stats?.music.distributedTracks || 0) / (stats?.music.totalTracks || 1) * 100} />
-                
+
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span className="text-sm text-muted-foreground">Total Tracks</span>

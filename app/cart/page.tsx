@@ -12,22 +12,7 @@ import { getWalletAddress } from "@/lib/wallet-utils"
 
 // Sample cart items
 const initialCartItems: CartItem[] = [
-  {
-    id: "merch1",
-    name: "BangoBongo T-Shirt",
-    price: 29.99,
-    image: "/placeholder.svg?height=300&width=300",
-    quantity: 1,
-    cryptoPrice: 0.015,
-  },
-  {
-    id: "merch2",
-    name: "Neon Nights Hoodie",
-    price: 59.99,
-    image: "/placeholder.svg?height=300&width=300",
-    quantity: 1,
-    cryptoPrice: 0.03,
-  },
+  // Cart starts empty
 ]
 
 export default function CartPage() {

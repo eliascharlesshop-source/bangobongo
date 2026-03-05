@@ -1,16 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  Plus, 
-  Search, 
-  Filter, 
-  MoreHorizontal, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  Package, 
-  ShoppingCart, 
+import {
+  Plus,
+  Search,
+  Filter,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  Eye,
+  Package,
+  ShoppingCart,
   TrendingUp,
   AlertTriangle,
   CheckCircle,
@@ -21,26 +21,26 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from "@/components/ui/table"
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from "@/components/ui/select"
 
 interface Product {
@@ -84,95 +84,19 @@ export default function StoreManagement() {
 
   const fetchStoreData = async () => {
     try {
-      // Simulate API calls - replace with actual API endpoints
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      setProducts([
-        {
-          id: '1',
-          name: 'BangoBongo Hoodie',
-          category: 'merch',
-          price: 45.00,
-          stock: 25,
-          sold: 48,
-          status: 'active',
-          image: '/placeholder.jpg',
-          createdAt: '2024-01-15'
-        },
-        {
-          id: '2',
-          name: 'Digital Dreams Vinyl',
-          category: 'vinyl',
-          price: 35.00,
-          stock: 12,
-          sold: 23,
-          status: 'active',
-          image: '/dark-electronic-album-art.png',
-          createdAt: '2024-01-10'
-        },
-        {
-          id: '3',
-          name: 'BangoBongo T-Shirt',
-          category: 'merch',
-          price: 25.00,
-          stock: 5,
-          sold: 67,
-          status: 'active',
-          image: '/placeholder.jpg',
-          createdAt: '2024-01-05'
-        },
-        {
-          id: '4',
-          name: 'Studio Headphones',
-          category: 'gear',
-          price: 199.00,
-          stock: 0,
-          sold: 15,
-          status: 'active',
-          image: '/placeholder.jpg',
-          createdAt: '2024-01-01'
-        }
-      ])
+      // Fetch products from API
+      const productsResponse = await fetch('/api/products')
+      const productsData = await productsResponse.json()
+      if (productsData.success) {
+        setProducts(productsData.products || [])
+      }
 
-      setOrders([
-        {
-          id: 'ORD-001',
-          customerName: 'John Smith',
-          customerEmail: 'john@example.com',
-          items: [
-            { productName: 'BangoBongo Hoodie', quantity: 1, price: 45.00 }
-          ],
-          total: 45.00,
-          status: 'processing',
-          createdAt: '2024-01-20',
-          shippingAddress: '123 Main St, Los Angeles, CA'
-        },
-        {
-          id: 'ORD-002',
-          customerName: 'Sarah Johnson',
-          customerEmail: 'sarah@example.com',
-          items: [
-            { productName: 'Digital Dreams Vinyl', quantity: 1, price: 35.00 },
-            { productName: 'BangoBongo T-Shirt', quantity: 2, price: 25.00 }
-          ],
-          total: 85.00,
-          status: 'shipped',
-          createdAt: '2024-01-19',
-          shippingAddress: '456 Oak Ave, New York, NY'
-        },
-        {
-          id: 'ORD-003',
-          customerName: 'Mike Wilson',
-          customerEmail: 'mike@example.com',
-          items: [
-            { productName: 'Studio Headphones', quantity: 1, price: 199.00 }
-          ],
-          total: 199.00,
-          status: 'delivered',
-          createdAt: '2024-01-18',
-          shippingAddress: '789 Pine St, Chicago, IL'
-        }
-      ])
+      // Fetch orders from API
+      const ordersResponse = await fetch('/api/orders')
+      const ordersData = await ordersResponse.json()
+      if (ordersData.success) {
+        setOrders(ordersData.orders || [])
+      }
     } catch (error) {
       console.error('Failed to fetch store data:', error)
     } finally {
@@ -209,7 +133,7 @@ export default function StoreManagement() {
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         order.id.toLowerCase().includes(searchQuery.toLowerCase())
+      order.id.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesStatus = filterStatus === 'all' || order.status === filterStatus
     return matchesSearch && matchesStatus
   })
@@ -627,7 +551,7 @@ export default function StoreManagement() {
                     const categoryProducts = products.filter(p => p.category === category)
                     const totalSold = categoryProducts.reduce((sum, p) => sum + p.sold, 0)
                     const totalRevenue = categoryProducts.reduce((sum, p) => sum + (p.price * p.sold), 0)
-                    
+
                     return (
                       <div key={category} className="space-y-2">
                         <div className="flex justify-between">
@@ -637,10 +561,10 @@ export default function StoreManagement() {
                           </span>
                         </div>
                         <div className="h-2 bg-muted rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className="h-full bg-primary rounded-full"
-                            style={{ 
-                              width: `${(totalSold / products.reduce((sum, p) => sum + p.sold, 0)) * 100}%` 
+                            style={{
+                              width: `${(totalSold / products.reduce((sum, p) => sum + p.sold, 0)) * 100}%`
                             }}
                           />
                         </div>

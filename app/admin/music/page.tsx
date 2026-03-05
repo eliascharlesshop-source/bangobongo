@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
-import { 
+import {
   Upload,
   Music,
   Globe,
@@ -81,52 +81,27 @@ export default function MusicManagement() {
   }, [])
 
   const fetchTracks = async () => {
-    // Mock data - replace with actual API call
-    setTracks([
-      {
-        id: 'track_1',
-        title: 'Electronic Dreams',
-        duration: 180,
-        albumArt: '/abstract-electronic-album-art.png',
-        category: 'original',
-        genre: 'Electronic',
-        bpm: 128,
-        key: 'C Minor',
-        isDistributed: true,
-        dittoReleaseId: 'ditto_rel_1',
-        distributionStatus: 'live',
-        releaseDate: '2024-01-15'
-      },
-      {
-        id: 'track_2',
-        title: 'Midnight Vibes',
-        duration: 165,
-        albumArt: '/synthwave-album-art.png',
-        category: 'licensed',
-        genre: 'Synthwave',
-        bpm: 140,
-        key: 'A Minor',
-        price: 29,
-        isDistributed: false
+    try {
+      const response = await fetch('/api/music')
+      const data = await response.json()
+      if (data.success) {
+        setTracks(data.music || [])
       }
-    ])
+    } catch (error) {
+      console.error('Failed to fetch tracks:', error)
+    }
   }
 
   const fetchDittoReleases = async () => {
-    // Mock data
-    setDittoReleases([
-      {
-        id: 'ditto_rel_1',
-        trackId: 'track_1',
-        status: 'live',
-        platforms: ['Spotify', 'Apple Music', 'Amazon Music', 'YouTube Music'],
-        analytics: {
-          streams: 15420,
-          revenue: 234.56,
-          territories: ['US', 'UK', 'CA', 'AU', 'DE']
-        }
+    try {
+      const response = await fetch('/api/ditto')
+      const data = await response.json()
+      if (data.success) {
+        setDittoReleases(data.releases || [])
       }
-    ])
+    } catch (error) {
+      console.error('Failed to fetch Ditto releases:', error)
+    }
   }
 
   const handleUploadTrack = async (e: React.FormEvent) => {
@@ -137,14 +112,14 @@ export default function MusicManagement() {
     try {
       // Step 1: Upload track files
       setDistributionProgress(20)
-      
+
       // Step 2: Create track in database
       setDistributionProgress(40)
-      
+
       // Step 3: Auto-distribute to Ditto if original track
       if (newTrack.category === 'original' && newTrack.autoDistribute) {
         setDistributionProgress(60)
-        
+
         const response = await fetch('/api/ditto/advanced', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -156,7 +131,7 @@ export default function MusicManagement() {
 
         const data = await response.json()
         setDistributionProgress(80)
-        
+
         if (data.success) {
           alert(`Track uploaded and submitted to Ditto Music! Estimated live date: ${data.estimatedLiveDate}`)
         } else {
@@ -165,9 +140,9 @@ export default function MusicManagement() {
       } else {
         alert('Track uploaded successfully!')
       }
-      
+
       setDistributionProgress(100)
-      
+
       // Reset form
       setNewTrack({
         title: '',
@@ -179,20 +154,20 @@ export default function MusicManagement() {
         isExplicit: false,
         autoDistribute: true
       })
-      
+
       fetchTracks()
-      
+
     } catch (error) {
       alert(`Upload failed: ${error}`)
     }
-    
+
     setLoading(false)
     setTimeout(() => setDistributionProgress(0), 2000)
   }
 
   const handleDistributeTrack = async (trackId: string) => {
     setLoading(true)
-    
+
     try {
       const response = await fetch('/api/ditto/advanced', {
         method: 'POST',
@@ -201,7 +176,7 @@ export default function MusicManagement() {
       })
 
       const data = await response.json()
-      
+
       if (data.success) {
         alert(`Track successfully submitted to Ditto Music for global distribution!`)
         fetchTracks()
@@ -212,7 +187,7 @@ export default function MusicManagement() {
     } catch (error) {
       alert(`Distribution failed: ${error}`)
     }
-    
+
     setLoading(false)
   }
 
@@ -220,7 +195,7 @@ export default function MusicManagement() {
     try {
       const response = await fetch(`/api/ditto/advanced?trackId=${trackId}&analytics=true`)
       const data = await response.json()
-      
+
       if (data.success) {
         setSelectedTrack(prev => prev ? {
           ...prev,
@@ -431,12 +406,12 @@ export default function MusicManagement() {
               <Card key={track.id}>
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
-                    <img 
-                      src={track.albumArt} 
+                    <img
+                      src={track.albumArt}
                       alt={track.title}
                       className="w-16 h-16 rounded-lg object-cover"
                     />
-                    
+
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-bold">{track.title}</h3>
@@ -459,7 +434,7 @@ export default function MusicManagement() {
                         <Eye className="w-4 h-4" />
                       </Button>
                       {track.category === 'original' && !track.isDistributed && (
-                        <Button 
+                        <Button
                           size="sm"
                           onClick={() => handleDistributeTrack(track.id)}
                           disabled={loading}
@@ -469,8 +444,8 @@ export default function MusicManagement() {
                         </Button>
                       )}
                       {track.isDistributed && (
-                        <Button 
-                          variant="outline" 
+                        <Button
+                          variant="outline"
                           size="sm"
                           onClick={() => checkDistributionStatus(track.id)}
                         >
@@ -558,19 +533,19 @@ export default function MusicManagement() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Total Streams</p>
-                    <p className="text-2xl font-bold">125.4K</p>
+                    <p className="text-2xl font-bold">{dittoReleases.reduce((sum, r) => sum + (r.analytics?.streams || 0), 0).toLocaleString()}</p>
                   </div>
                   <TrendingUp className="w-8 h-8 text-blue-500" />
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Revenue</p>
-                    <p className="text-2xl font-bold">$1,234.56</p>
+                    <p className="text-2xl font-bold">${dittoReleases.reduce((sum, r) => sum + (r.analytics?.revenue || 0), 0).toFixed(2)}</p>
                   </div>
                   <TrendingUp className="w-8 h-8 text-green-500" />
                 </div>
@@ -582,7 +557,7 @@ export default function MusicManagement() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-muted-foreground">Distributed Tracks</p>
-                    <p className="text-2xl font-bold">8</p>
+                    <p className="text-2xl font-bold">{tracks.filter(t => t.isDistributed).length}</p>
                   </div>
                   <Globe className="w-8 h-8 text-purple-500" />
                 </div>
