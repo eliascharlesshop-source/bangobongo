@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { NextRequest } from 'next/server'
-import { getDatabase } from './db'
+import { getDatabase } from './db/index-with-sqlite'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
 
@@ -37,7 +37,7 @@ export function generateToken(user: User): string {
     email: user.email,
     role: user.role
   }
-  
+
   return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' })
 }
 
@@ -54,16 +54,16 @@ export function verifyToken(token: string): JWTPayload | null {
 export async function getUserFromToken(token: string): Promise<User | null> {
   const payload = verifyToken(token)
   if (!payload) return null
-  
+
   const db = getDatabase()
   const user = db.prepare(`
     SELECT id, email, first_name, last_name, role, wallet_address
     FROM users 
     WHERE id = ?
   `).get(payload.userId) as any
-  
+
   if (!user) return null
-  
+
   return {
     id: user.id,
     email: user.email,
@@ -80,7 +80,7 @@ export function getTokenFromRequest(request: NextRequest): string | null {
   if (authHeader && authHeader.startsWith('Bearer ')) {
     return authHeader.substring(7)
   }
-  
+
   // Also check cookies
   const token = request.cookies.get('auth-token')?.value
   return token || null
@@ -90,7 +90,7 @@ export function getTokenFromRequest(request: NextRequest): string | null {
 export async function authenticateRequest(request: NextRequest): Promise<User | null> {
   const token = getTokenFromRequest(request)
   if (!token) return null
-  
+
   return getUserFromToken(token)
 }
 
@@ -122,16 +122,16 @@ export async function createUser(userData: {
 }): Promise<User> {
   const db = getDatabase()
   const { v4: uuidv4 } = require('uuid')
-  
+
   // Check if user already exists
   const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(userData.email)
   if (existingUser) {
     throw new Error('User already exists')
   }
-  
+
   const userId = uuidv4()
   const hashedPassword = await hashPassword(userData.password)
-  
+
   db.prepare(`
     INSERT INTO users (id, email, password_hash, first_name, last_name, wallet_address)
     VALUES (?, ?, ?, ?, ?, ?)
@@ -143,7 +143,7 @@ export async function createUser(userData: {
     userData.lastName || null,
     userData.walletAddress || null
   )
-  
+
   return {
     id: userId,
     email: userData.email,
@@ -157,18 +157,18 @@ export async function createUser(userData: {
 // Authenticate user
 export async function authenticateUser(email: string, password: string): Promise<User | null> {
   const db = getDatabase()
-  
+
   const user = db.prepare(`
     SELECT id, email, password_hash, first_name, last_name, role, wallet_address
     FROM users 
     WHERE email = ?
   `).get(email) as any
-  
+
   if (!user) return null
-  
+
   const isValidPassword = await verifyPassword(password, user.password_hash)
   if (!isValidPassword) return null
-  
+
   return {
     id: user.id,
     email: user.email,

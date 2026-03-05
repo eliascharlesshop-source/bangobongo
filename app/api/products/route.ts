@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getDatabase } from '@/lib/db'
+import { getDatabase } from '@/lib/db/index-with-sqlite'
 import { requireAdmin } from '@/lib/auth'
 import { successResponse, errorResponse, validationErrorResponse } from '@/lib/api-response'
 
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       })
 
       const shopifyResponse = await fetch(shopifyUrl.toString())
-      
+
       if (shopifyResponse.ok) {
         const shopifyData = await shopifyResponse.json()
         return Response.json(shopifyData)
@@ -74,8 +74,24 @@ async function getLocalProducts(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = (page - 1) * limit
 
-    const db = getDatabase()
-    
+    let db
+    try {
+      db = getDatabase()
+    } catch (dbError) {
+      // Database not available - return empty products instead of error
+      console.warn('Database not available, returning empty products:', dbError)
+      return successResponse({
+        products: [],
+        source: 'local',
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          pages: 0
+        }
+      })
+    }
+
     // Build query
     let query = `
       SELECT p.*, c.name as category_name, c.slug as category_slug
@@ -84,36 +100,36 @@ async function getLocalProducts(request: NextRequest) {
       WHERE 1=1
     `
     const params: any[] = []
-    
+
     if (category) {
       query += ' AND (c.slug = ? OR p.category_id = ?)'
       params.push(category, category)
     }
-    
+
     if (featured === 'true') {
       query += ' AND p.is_featured = 1'
     }
-    
+
     if (limited === 'true') {
       query += ' AND p.is_limited = 1'
     }
-    
+
     if (search) {
       query += ' AND (p.name LIKE ? OR p.description LIKE ? OR p.tags LIKE ?)'
       const searchTerm = `%${search}%`
       params.push(searchTerm, searchTerm, searchTerm)
     }
-    
+
     // Get total count
     const countQuery = query.replace('SELECT p.*, c.name as category_name, c.slug as category_slug', 'SELECT COUNT(*) as count')
     const totalCount = db.prepare(countQuery).get(...params) as { count: number }
-    
+
     // Add pagination
     query += ' ORDER BY p.created_at DESC LIMIT ? OFFSET ?'
     params.push(limit, offset)
-    
+
     const products = db.prepare(query).all(...params) as any[]
-    
+
     // Parse JSON fields
     const formattedProducts = products.map(product => ({
       ...product,
@@ -127,7 +143,7 @@ async function getLocalProducts(request: NextRequest) {
         slug: product.category_slug
       }
     }))
-    
+
     return successResponse({
       products: formattedProducts,
       source: 'local',
@@ -138,7 +154,7 @@ async function getLocalProducts(request: NextRequest) {
         pages: Math.ceil(totalCount.count / limit)
       }
     })
-    
+
   } catch (error: any) {
     console.error('Get local products error:', error)
     return errorResponse('Failed to fetch local products', 500)
@@ -149,22 +165,22 @@ export async function POST(request: NextRequest) {
   try {
     // Require admin access
     await requireAdmin(request)
-    
+
     const body = await request.json()
-    
+
     // Validate input
     const validation = createProductSchema.safeParse(body)
     if (!validation.success) {
       const errors = validation.error.errors.map(err => err.message)
       return validationErrorResponse(errors)
     }
-    
+
     const data = validation.data
     const { v4: uuidv4 } = require('uuid')
     const productId = uuidv4()
-    
+
     const db = getDatabase()
-    
+
     // Insert product
     db.prepare(`
       INSERT INTO products (
@@ -191,7 +207,7 @@ export async function POST(request: NextRequest) {
       data.relatedAlbum || null,
       data.relatedTour || null
     )
-    
+
     // Get the created product
     const product = db.prepare(`
       SELECT p.*, c.name as category_name, c.slug as category_slug
@@ -199,7 +215,7 @@ export async function POST(request: NextRequest) {
       LEFT JOIN categories c ON p.category_id = c.id
       WHERE p.id = ?
     `).get(productId) as any
-    
+
     const formattedProduct = {
       ...product,
       images: product.images ? JSON.parse(product.images) : [],
@@ -212,16 +228,16 @@ export async function POST(request: NextRequest) {
         slug: product.category_slug
       }
     }
-    
+
     return successResponse(formattedProduct, 'Product created successfully')
-    
+
   } catch (error: any) {
     console.error('Create product error:', error)
-    
+
     if (error.message === 'Authentication required' || error.message === 'Admin access required') {
       return errorResponse(error.message, 403)
     }
-    
+
     return errorResponse('Failed to create product', 500)
   }
 }

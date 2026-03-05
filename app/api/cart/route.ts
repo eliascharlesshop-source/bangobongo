@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getDatabase } from '@/lib/db'
+import { getDatabase } from '@/lib/db/index-with-sqlite'
 import { requireAuth } from '@/lib/auth'
 import { successResponse, errorResponse } from '@/lib/api-response'
 
@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const user = await requireAuth(request)
     const db = getDatabase()
-    
+
     const cartItems = db.prepare(`
       SELECT 
         ci.*,
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       WHERE ci.user_id = ?
       ORDER BY ci.created_at DESC
     `).all(user.id) as any[]
-    
+
     const formattedItems = cartItems.map(item => ({
       id: item.id,
       productId: item.product_id,
@@ -41,25 +41,25 @@ export async function GET(request: NextRequest) {
       createdAt: item.created_at,
       updatedAt: item.updated_at
     }))
-    
+
     // Calculate totals
     const subtotal = formattedItems.reduce((sum, item) => {
-      const itemPrice = item.discountPercentage > 0 
+      const itemPrice = item.discountPercentage > 0
         ? item.price * (1 - item.discountPercentage / 100)
         : item.price
       return sum + (itemPrice * item.quantity)
     }, 0)
-    
+
     const cryptoSubtotal = formattedItems.reduce((sum, item) => {
-      const itemPrice = item.discountPercentage > 0 
+      const itemPrice = item.discountPercentage > 0
         ? item.cryptoPrice * (1 - item.discountPercentage / 100)
         : item.cryptoPrice
       return sum + (itemPrice * item.quantity)
     }, 0)
-    
+
     const shipping = 4.99
     const cryptoShipping = 0.0025
-    
+
     return successResponse({
       items: formattedItems,
       summary: {
@@ -73,14 +73,14 @@ export async function GET(request: NextRequest) {
         cryptoTotal: Number((cryptoSubtotal + cryptoShipping).toFixed(8))
       }
     })
-    
+
   } catch (error: any) {
     console.error('Get cart error:', error)
-    
+
     if (error.message === 'Authentication required') {
       return errorResponse(error.message, 401)
     }
-    
+
     return errorResponse('Failed to fetch cart', 500)
   }
 }
@@ -89,19 +89,19 @@ export async function DELETE(request: NextRequest) {
   try {
     const user = await requireAuth(request)
     const db = getDatabase()
-    
+
     // Clear all cart items for user
     db.prepare('DELETE FROM cart_items WHERE user_id = ?').run(user.id)
-    
+
     return successResponse(null, 'Cart cleared successfully')
-    
+
   } catch (error: any) {
     console.error('Clear cart error:', error)
-    
+
     if (error.message === 'Authentication required') {
       return errorResponse(error.message, 401)
     }
-    
+
     return errorResponse('Failed to clear cart', 500)
   }
 }

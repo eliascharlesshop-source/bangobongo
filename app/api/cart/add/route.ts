@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getDatabase } from '@/lib/db'
+import { getDatabase } from '@/lib/db/index-with-sqlite'
 import { requireAuth } from '@/lib/auth'
 import { successResponse, errorResponse, validationErrorResponse, notFoundResponse } from '@/lib/api-response'
 
@@ -15,32 +15,32 @@ export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth(request)
     const body = await request.json()
-    
+
     // Validate input
     const validation = addToCartSchema.safeParse(body)
     if (!validation.success) {
       const errors = validation.error.errors.map(err => err.message)
       return validationErrorResponse(errors)
     }
-    
+
     const { productId, quantity, selectedSize, selectedColor } = validation.data
     const db = getDatabase()
-    
+
     // Check if product exists and is in stock
     const product = db.prepare(`
       SELECT id, name, price, crypto_price, in_stock, sizes, colors
       FROM products 
       WHERE id = ?
     `).get(productId) as any
-    
+
     if (!product) {
       return notFoundResponse()
     }
-    
+
     if (!product.in_stock) {
       return errorResponse('Product is out of stock', 400)
     }
-    
+
     // Validate size and color if provided
     if (selectedSize && product.sizes) {
       const availableSizes = JSON.parse(product.sizes)
@@ -48,23 +48,23 @@ export async function POST(request: NextRequest) {
         return errorResponse('Invalid size selected', 400)
       }
     }
-    
+
     if (selectedColor && product.colors) {
       const availableColors = JSON.parse(product.colors)
       if (!availableColors.includes(selectedColor)) {
         return errorResponse('Invalid color selected', 400)
       }
     }
-    
+
     const { v4: uuidv4 } = require('uuid')
-    
+
     // Check if item already exists in cart
     const existingItem = db.prepare(`
       SELECT id, quantity 
       FROM cart_items 
       WHERE user_id = ? AND product_id = ? AND selected_size = ? AND selected_color = ?
     `).get(user.id, productId, selectedSize || null, selectedColor || null) as any
-    
+
     if (existingItem) {
       // Update quantity
       const newQuantity = existingItem.quantity + quantity
@@ -73,9 +73,9 @@ export async function POST(request: NextRequest) {
         SET quantity = ?, updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `).run(newQuantity, existingItem.id)
-      
+
       const cartItemId = existingItem.id
-      
+
       // Get updated cart item
       const updatedItem = db.prepare(`
         SELECT 
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
         JOIN products p ON ci.product_id = p.id
         WHERE ci.id = ?
       `).get(cartItemId) as any
-      
+
       return successResponse({
         id: updatedItem.id,
         productId: updatedItem.product_id,
@@ -107,12 +107,12 @@ export async function POST(request: NextRequest) {
     } else {
       // Add new item
       const cartItemId = uuidv4()
-      
+
       db.prepare(`
         INSERT INTO cart_items (id, user_id, product_id, quantity, selected_size, selected_color)
         VALUES (?, ?, ?, ?, ?, ?)
       `).run(cartItemId, user.id, productId, quantity, selectedSize || null, selectedColor || null)
-      
+
       // Get created cart item
       const newItem = db.prepare(`
         SELECT 
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
         JOIN products p ON ci.product_id = p.id
         WHERE ci.id = ?
       `).get(cartItemId) as any
-      
+
       return successResponse({
         id: newItem.id,
         productId: newItem.product_id,
@@ -142,14 +142,14 @@ export async function POST(request: NextRequest) {
         discountPercentage: newItem.discount_percentage
       }, 'Item added to cart successfully')
     }
-    
+
   } catch (error: any) {
     console.error('Add to cart error:', error)
-    
+
     if (error.message === 'Authentication required') {
       return errorResponse(error.message, 401)
     }
-    
+
     return errorResponse('Failed to add item to cart', 500)
   }
 }

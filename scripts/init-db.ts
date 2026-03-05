@@ -1,14 +1,14 @@
-import { initializeDatabase } from '../lib/db'
+import { initializeDatabase } from '../lib/db/index-with-sqlite'
 import { createUser, hashPassword } from '../lib/auth'
 
 async function initDB() {
   try {
     console.log('Initializing database...')
-    
+
     // Initialize database with schema
     initializeDatabase()
     console.log('✅ Database schema created')
-    
+
     // Create default admin user
     try {
       await createUser({
@@ -17,12 +17,12 @@ async function initDB() {
         firstName: 'Admin',
         lastName: 'User'
       })
-      
+
       // Update role to admin
       const { getDatabase } = require('../lib/db')
       const db = getDatabase()
       db.prepare('UPDATE users SET role = ? WHERE email = ?').run('admin', 'admin@bangobongo.com')
-      
+
       console.log('✅ Default admin user created (admin@bangobongo.com / admin123)')
     } catch (error: any) {
       if (error.message === 'User already exists') {
@@ -31,11 +31,11 @@ async function initDB() {
         throw error
       }
     }
-    
+
     // Create default categories
     const { v4: uuidv4 } = require('uuid')
     const db = require('../lib/db').getDatabase()
-    
+
     const categories = [
       { name: 'T-Shirts', slug: 't-shirts', description: 'Comfortable cotton t-shirts with unique designs' },
       { name: 'Hoodies', slug: 'hoodies', description: 'Warm and cozy hoodies for all seasons' },
@@ -44,7 +44,7 @@ async function initDB() {
       { name: 'Digital Music', slug: 'digital', description: 'Digital downloads and streaming' },
       { name: 'Posters', slug: 'posters', description: 'Art prints and posters' }
     ]
-    
+
     for (const category of categories) {
       try {
         const categoryId = uuidv4()
@@ -61,14 +61,14 @@ async function initDB() {
         }
       }
     }
-    
+
     console.log('\n🎉 Database initialization complete!')
     console.log('\nNext steps:')
     console.log('1. Copy .env.example to .env and configure your environment variables')
     console.log('2. Set up your Stripe keys for payment processing')
     console.log('3. Run the development server: npm run dev')
     console.log('4. Access admin panel at /admin with admin@bangobongo.com / admin123')
-    
+
   } catch (error) {
     console.error('❌ Database initialization failed:', error)
     process.exit(1)

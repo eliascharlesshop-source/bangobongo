@@ -10,10 +10,62 @@ if (!SHOPIFY_DOMAIN || !SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
   console.warn('Shopify configuration missing. Using fallback product data.')
 }
 
-// Fallback products for demo when Shopify is not configured - removed
-const fallbackProducts: any[] = []
-
-// Old demo data removed - configure Shopify integration to display products
+// Fallback products for demo when Shopify is not configured
+const fallbackProducts: any[] = [
+  {
+    id: 'demo-tshirt-1',
+    name: 'Classic Band T-Shirt',
+    price: 29.99,
+    cryptoPrice: 0.00039,
+    description: 'Premium cotton t-shirt with iconic band logo',
+    category: 'Clothing',
+    imageUrl: '/placeholder.jpg',
+    images: ['/placeholder.jpg'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    colors: ['Black', 'White'],
+    tags: ['clothing', 'featured'],
+    inStock: true,
+    isFeatured: true,
+    isLimited: false,
+    discountPercentage: 0,
+    inventory: 50
+  },
+  {
+    id: 'demo-vinyl-1',
+    name: 'Latest Album - Vinyl',
+    price: 34.99,
+    cryptoPrice: 0.00045,
+    description: 'Limited edition vinyl pressing of our latest album',
+    category: 'Vinyl Records',
+    imageUrl: '/placeholder.jpg',
+    images: ['/placeholder.jpg'],
+    sizes: [],
+    colors: [],
+    tags: ['vinyl', 'limited-edition', 'featured'],
+    inStock: true,
+    isFeatured: true,
+    isLimited: true,
+    discountPercentage: 0,
+    inventory: 100
+  },
+  {
+    id: 'demo-hoodie-1',
+    name: 'Tour Hoodie 2024',
+    price: 59.99,
+    cryptoPrice: 0.00078,
+    description: 'Comfortable hoodie from the 2024 world tour',
+    category: 'Clothing',
+    imageUrl: '/placeholder.jpg',
+    images: ['/placeholder.jpg'],
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    colors: ['Black', 'Gray'],
+    tags: ['clothing', 'tour'],
+    inStock: true,
+    isFeatured: false,
+    isLimited: false,
+    discountPercentage: 0,
+    inventory: 75
+  }
 ]
 
 // Shopify GraphQL query

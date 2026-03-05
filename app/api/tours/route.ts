@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getDatabase } from '@/lib/db'
+import { getDatabase } from '@/lib/db/index-with-sqlite'
 import { requireAdmin } from '@/lib/auth'
 import { successResponse, errorResponse, validationErrorResponse } from '@/lib/api-response'
 
@@ -37,41 +37,41 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit
 
     const db = getDatabase()
-    
+
     // Build query
     let query = 'SELECT * FROM tours WHERE 1=1'
     const params: any[] = []
-    
+
     if (upcoming === 'true') {
       query += ' AND date >= date("now")'
     }
-    
+
     if (city) {
       query += ' AND city LIKE ?'
       params.push(`%${city}%`)
     }
-    
+
     if (country) {
       query += ' AND country = ?'
       params.push(country)
     }
-    
+
     if (active === 'true') {
       query += ' AND is_active = 1'
     } else if (active === 'false') {
       query += ' AND is_active = 0'
     }
-    
+
     // Get total count
     const countQuery = query.replace('SELECT *', 'SELECT COUNT(*) as count')
     const totalCount = db.prepare(countQuery).get(...params) as { count: number }
-    
+
     // Add pagination and ordering
     query += ' ORDER BY date ASC LIMIT ? OFFSET ?'
     params.push(limit, offset)
-    
+
     const tours = db.prepare(query).all(...params) as any[]
-    
+
     return successResponse({
       tours,
       pagination: {
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(totalCount.count / limit)
       }
     })
-    
+
   } catch (error: any) {
     console.error('Get tours error:', error)
     return errorResponse('Failed to fetch tours', 500)
@@ -92,22 +92,22 @@ export async function POST(request: NextRequest) {
   try {
     // Require admin access
     await requireAdmin(request)
-    
+
     const body = await request.json()
-    
+
     // Validate input
     const validation = createTourSchema.safeParse(body)
     if (!validation.success) {
       const errors = validation.error.errors.map(err => err.message)
       return validationErrorResponse(errors)
     }
-    
+
     const data = validation.data
     const { v4: uuidv4 } = require('uuid')
     const tourId = uuidv4()
-    
+
     const db = getDatabase()
-    
+
     // Insert tour
     db.prepare(`
       INSERT INTO tours (
@@ -136,19 +136,19 @@ export async function POST(request: NextRequest) {
       data.doors || null,
       data.showTime || null
     )
-    
+
     // Get the created tour
     const tour = db.prepare('SELECT * FROM tours WHERE id = ?').get(tourId) as any
-    
+
     return successResponse(tour, 'Tour created successfully')
-    
+
   } catch (error: any) {
     console.error('Create tour error:', error)
-    
+
     if (error.message === 'Authentication required' || error.message === 'Admin access required') {
       return errorResponse(error.message, 403)
     }
-    
+
     return errorResponse('Failed to create tour', 500)
   }
 }

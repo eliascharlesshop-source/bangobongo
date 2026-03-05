@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getDatabase } from '@/lib/db'
+import { getDatabase } from '@/lib/db/index-with-sqlite'
 import { requireAdmin } from '@/lib/auth'
 import { successResponse, errorResponse, notFoundResponse, validationErrorResponse } from '@/lib/api-response'
 
@@ -29,18 +29,18 @@ export async function GET(
 ) {
   try {
     const db = getDatabase()
-    
+
     const product = db.prepare(`
       SELECT p.*, c.name as category_name, c.slug as category_slug
       FROM products p
       LEFT JOIN categories c ON p.category_id = c.id
       WHERE p.id = ?
     `).get(params.id) as any
-    
+
     if (!product) {
       return notFoundResponse()
     }
-    
+
     const formattedProduct = {
       ...product,
       images: product.images ? JSON.parse(product.images) : [],
@@ -53,9 +53,9 @@ export async function GET(
         slug: product.category_slug
       }
     }
-    
+
     return successResponse(formattedProduct)
-    
+
   } catch (error: any) {
     console.error('Get product error:', error)
     return errorResponse('Failed to fetch product', 500)
@@ -69,33 +69,33 @@ export async function PUT(
   try {
     // Require admin access
     await requireAdmin(request)
-    
+
     const body = await request.json()
-    
+
     // Validate input
     const validation = updateProductSchema.safeParse(body)
     if (!validation.success) {
       const errors = validation.error.errors.map(err => err.message)
       return validationErrorResponse(errors)
     }
-    
+
     const data = validation.data
     const db = getDatabase()
-    
+
     // Check if product exists
     const existingProduct = db.prepare('SELECT id FROM products WHERE id = ?').get(params.id)
     if (!existingProduct) {
       return notFoundResponse()
     }
-    
+
     // Build update query
     const updateFields: string[] = []
     const updateValues: any[] = []
-    
+
     Object.entries(data).forEach(([key, value]) => {
       if (value !== undefined) {
         const dbField = key.replace(/([A-Z])/g, '_$1').toLowerCase()
-        
+
         if (['images', 'sizes', 'colors', 'tags'].includes(key)) {
           updateFields.push(`${dbField} = ?`)
           updateValues.push(JSON.stringify(value))
@@ -105,21 +105,21 @@ export async function PUT(
         }
       }
     })
-    
+
     if (updateFields.length === 0) {
       return errorResponse('No fields to update', 400)
     }
-    
+
     updateFields.push('updated_at = CURRENT_TIMESTAMP')
     updateValues.push(params.id)
-    
+
     // Update product
     db.prepare(`
       UPDATE products 
       SET ${updateFields.join(', ')}
       WHERE id = ?
     `).run(...updateValues)
-    
+
     // Get updated product
     const product = db.prepare(`
       SELECT p.*, c.name as category_name, c.slug as category_slug
@@ -127,7 +127,7 @@ export async function PUT(
       LEFT JOIN categories c ON p.category_id = c.id
       WHERE p.id = ?
     `).get(params.id) as any
-    
+
     const formattedProduct = {
       ...product,
       images: product.images ? JSON.parse(product.images) : [],
@@ -140,16 +140,16 @@ export async function PUT(
         slug: product.category_slug
       }
     }
-    
+
     return successResponse(formattedProduct, 'Product updated successfully')
-    
+
   } catch (error: any) {
     console.error('Update product error:', error)
-    
+
     if (error.message === 'Authentication required' || error.message === 'Admin access required') {
       return errorResponse(error.message, 403)
     }
-    
+
     return errorResponse('Failed to update product', 500)
   }
 }
@@ -161,27 +161,27 @@ export async function DELETE(
   try {
     // Require admin access
     await requireAdmin(request)
-    
+
     const db = getDatabase()
-    
+
     // Check if product exists
     const existingProduct = db.prepare('SELECT id FROM products WHERE id = ?').get(params.id)
     if (!existingProduct) {
       return notFoundResponse()
     }
-    
+
     // Delete product
     db.prepare('DELETE FROM products WHERE id = ?').run(params.id)
-    
+
     return successResponse(null, 'Product deleted successfully')
-    
+
   } catch (error: any) {
     console.error('Delete product error:', error)
-    
+
     if (error.message === 'Authentication required' || error.message === 'Admin access required') {
       return errorResponse(error.message, 403)
     }
-    
+
     return errorResponse('Failed to delete product', 500)
   }
 }

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getDatabase } from '@/lib/db'
+import { getDatabase } from '@/lib/db/index-with-sqlite'
 import { requireAdmin } from '@/lib/auth'
 import { successResponse, errorResponse, validationErrorResponse } from '@/lib/api-response'
 
@@ -36,7 +36,7 @@ const updateMusicSchema = createMusicSchema.partial()
 export async function GET(request: NextRequest) {
   try {
     await requireAdmin(request)
-    
+
     const { searchParams } = new URL(request.url)
     const album = searchParams.get('album')
     const genre = searchParams.get('genre')
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit
 
     const db = getDatabase()
-    
+
     // Build query
     let query = `
       SELECT 
@@ -58,43 +58,43 @@ export async function GET(request: NextRequest) {
       WHERE 1=1
     `
     const params: any[] = []
-    
+
     if (album) {
       query += ' AND album LIKE ?'
       params.push(`%${album}%`)
     }
-    
+
     if (genre) {
       query += ' AND genre = ?'
       params.push(genre)
     }
-    
+
     if (featured === 'true') {
       query += ' AND is_featured = 1'
     }
-    
+
     if (published === 'true') {
       query += ' AND is_published = 1'
     } else if (published === 'false') {
       query += ' AND is_published = 0'
     }
-    
+
     if (search) {
       query += ' AND (title LIKE ? OR artist LIKE ? OR album LIKE ? OR genre LIKE ?)'
       const searchTerm = `%${search}%`
       params.push(searchTerm, searchTerm, searchTerm, searchTerm)
     }
-    
+
     // Get total count for pagination
     const countQuery = query.replace('SELECT *, (play_count + like_count + download_count) as engagement_score', 'SELECT COUNT(*) as count')
     const totalCount = db.prepare(countQuery).get(...params) as { count: number }
-    
+
     // Add ordering and pagination
     query += ' ORDER BY engagement_score DESC, created_at DESC LIMIT ? OFFSET ?'
     params.push(limit, offset)
-    
+
     const music = db.prepare(query).all(...params) as any[]
-    
+
     // Parse JSON fields and format data
     const formattedMusic = music.map(track => ({
       ...track,
@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
       cryptoPrice: track.crypto_price,
       engagementScore: track.engagement_score
     }))
-    
+
     // Get additional statistics
     const stats = {
       total: totalCount.count,
@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
       totalPlays: db.prepare('SELECT SUM(play_count) as total FROM music').get() as { total: number },
       totalLikes: db.prepare('SELECT SUM(like_count) as total FROM music').get() as { total: number }
     }
-    
+
     return successResponse({
       music: formattedMusic,
       stats: {
@@ -140,14 +140,14 @@ export async function GET(request: NextRequest) {
         pages: Math.ceil(totalCount.count / limit)
       }
     })
-    
+
   } catch (error: any) {
     console.error('Admin get music error:', error)
-    
+
     if (error.message === 'Authentication required' || error.message === 'Admin access required') {
       return errorResponse(error.message, 403)
     }
-    
+
     return errorResponse('Failed to fetch music for admin', 500)
   }
 }
@@ -156,22 +156,22 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     await requireAdmin(request)
-    
+
     const body = await request.json()
-    
+
     // Validate input
     const validation = createMusicSchema.safeParse(body)
     if (!validation.success) {
       const errors = validation.error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
       return validationErrorResponse(errors)
     }
-    
+
     const data = validation.data
     const { v4: uuidv4 } = require('uuid')
     const musicId = uuidv4()
-    
+
     const db = getDatabase()
-    
+
     // Insert new music track
     const stmt = db.prepare(`
       INSERT INTO music (
@@ -180,7 +180,7 @@ export async function POST(request: NextRequest) {
         price, crypto_price, streaming_links, play_count, like_count, download_count
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 0)
     `)
-    
+
     stmt.run(
       musicId,
       data.title,
@@ -200,10 +200,10 @@ export async function POST(request: NextRequest) {
       data.cryptoPrice || null,
       data.streamingLinks ? JSON.stringify(data.streamingLinks) : null
     )
-    
+
     // Get the created music track
     const music = db.prepare('SELECT * FROM music WHERE id = ?').get(musicId) as any
-    
+
     const formattedMusic = {
       ...music,
       streamingLinks: music.streaming_links ? JSON.parse(music.streaming_links) : {},
@@ -219,16 +219,16 @@ export async function POST(request: NextRequest) {
       trackNumber: music.track_number,
       cryptoPrice: music.crypto_price
     }
-    
+
     return successResponse(formattedMusic, 'Music track created successfully')
-    
+
   } catch (error: any) {
     console.error('Create music error:', error)
-    
+
     if (error.message === 'Authentication required' || error.message === 'Admin access required') {
       return errorResponse(error.message, 403)
     }
-    
+
     return errorResponse('Failed to create music track', 500)
   }
 }
@@ -237,34 +237,34 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     await requireAdmin(request)
-    
+
     const body = await request.json()
     const { id, ...updateData } = body
-    
+
     if (!id) {
       return errorResponse('Music track ID is required', 400)
     }
-    
+
     // Validate input
     const validation = updateMusicSchema.safeParse(updateData)
     if (!validation.success) {
       const errors = validation.error.errors.map(err => `${err.path.join('.')}: ${err.message}`)
       return validationErrorResponse(errors)
     }
-    
+
     const data = validation.data
     const db = getDatabase()
-    
+
     // Check if track exists
     const existingTrack = db.prepare('SELECT * FROM music WHERE id = ?').get(id)
     if (!existingTrack) {
       return errorResponse('Music track not found', 404)
     }
-    
+
     // Build update query dynamically
     const updateFields = []
     const params = []
-    
+
     if (data.title !== undefined) {
       updateFields.push('title = ?')
       params.push(data.title)
@@ -329,16 +329,16 @@ export async function PUT(request: NextRequest) {
       updateFields.push('streaming_links = ?')
       params.push(JSON.stringify(data.streamingLinks))
     }
-    
+
     updateFields.push('updated_at = CURRENT_TIMESTAMP')
     params.push(id)
-    
+
     const query = `UPDATE music SET ${updateFields.join(', ')} WHERE id = ?`
     db.prepare(query).run(...params)
-    
+
     // Get updated track
     const updatedTrack = db.prepare('SELECT * FROM music WHERE id = ?').get(id) as any
-    
+
     const formattedMusic = {
       ...updatedTrack,
       streamingLinks: updatedTrack.streaming_links ? JSON.parse(updatedTrack.streaming_links) : {},
@@ -354,16 +354,16 @@ export async function PUT(request: NextRequest) {
       trackNumber: updatedTrack.track_number,
       cryptoPrice: updatedTrack.crypto_price
     }
-    
+
     return successResponse(formattedMusic, 'Music track updated successfully')
-    
+
   } catch (error: any) {
     console.error('Update music error:', error)
-    
+
     if (error.message === 'Authentication required' || error.message === 'Admin access required') {
       return errorResponse(error.message, 403)
     }
-    
+
     return errorResponse('Failed to update music track', 500)
   }
 }
@@ -372,34 +372,34 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     await requireAdmin(request)
-    
+
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
-    
+
     if (!id) {
       return errorResponse('Music track ID is required', 400)
     }
-    
+
     const db = getDatabase()
-    
+
     // Check if track exists
     const existingTrack = db.prepare('SELECT * FROM music WHERE id = ?').get(id)
     if (!existingTrack) {
       return errorResponse('Music track not found', 404)
     }
-    
+
     // Delete the track
     db.prepare('DELETE FROM music WHERE id = ?').run(id)
-    
+
     return successResponse({ deleted: true }, 'Music track deleted successfully')
-    
+
   } catch (error: any) {
     console.error('Delete music error:', error)
-    
+
     if (error.message === 'Authentication required' || error.message === 'Admin access required') {
       return errorResponse(error.message, 403)
     }
-    
+
     return errorResponse('Failed to delete music track', 500)
   }
 }
