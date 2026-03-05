@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getDatabase } from '@/lib/db/index-with-sqlite'
+import { getDatabase } from '@/lib/db'
 import { requireAdmin } from '@/lib/auth'
 import { successResponse, errorResponse, validationErrorResponse } from '@/lib/api-response'
 
@@ -40,7 +40,22 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = (page - 1) * limit
 
-    const db = getDatabase()
+    let db
+    try {
+      db = getDatabase()
+    } catch (dbError) {
+      // Database not available - return empty result
+      return successResponse({
+        music: [],
+        pagination: {
+          page,
+          limit,
+          total: 0,
+          pages: 0
+        },
+        message: 'Database not available. Please configure local database or use admin panel to add music.'
+      })
+    }
 
     // Build query
     let query = 'SELECT * FROM music WHERE 1=1'

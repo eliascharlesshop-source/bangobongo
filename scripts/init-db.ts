@@ -1,4 +1,4 @@
-import { initializeDatabase } from '../lib/db/index-with-sqlite'
+import { initializeDatabase } from '../lib/db'
 import { createUser, hashPassword } from '../lib/auth'
 
 async function initDB() {

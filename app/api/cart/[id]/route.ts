@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
-import { getDatabase } from '@/lib/db/index-with-sqlite'
+import { getDatabase } from '@/lib/db'
 import { requireAuth } from '@/lib/auth'
 import { successResponse, errorResponse, validationErrorResponse, notFoundResponse } from '@/lib/api-response'
 

@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { z } from 'zod'
 import Stripe from 'stripe'
-import { getDatabase } from '@/lib/db/index-with-sqlite'
+import { getDatabase } from '@/lib/db'
 import { requireAuth } from '@/lib/auth'
 import { successResponse, errorResponse, validationErrorResponse } from '@/lib/api-response'
 

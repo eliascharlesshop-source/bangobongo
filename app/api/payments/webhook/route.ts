@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
-import { getDatabase } from '@/lib/db/index-with-sqlite'
+import { getDatabase } from '@/lib/db'
 import { successResponse, errorResponse } from '@/lib/api-response'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
