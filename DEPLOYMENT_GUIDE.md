@@ -3,7 +3,7 @@
 ## 1. Monitor Vercel Deployment
 
 ### Check Deployment Status
-1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
+1. Go to [Vercel Dashboard](https://vercel.com/bangobongo-ece)
 2. Find your `bangobongo` project
 3. Click on the latest deployment
 4. Monitor the build logs
@@ -56,9 +56,10 @@ Your store domain (e.g., `your-store.myshopify.com`)
 
 ### Step 2: Add Environment Variables to Vercel
 
-1. Go to [Vercel Dashboard](https://vercel.com/bangobongo/bangobongo)
-2. Go to **Settings** → **Environment Variables**
-3. Add these variables:
+1. Go to [Vercel Dashboard](https://vercel.com/bangobongo-ece)
+2. Select your `bangobongo` project
+3. Go to **Settings** → **Environment Variables**
+4. Add these variables:
 
 ```
 SHOPIFY_DOMAIN=your-store.myshopify.com

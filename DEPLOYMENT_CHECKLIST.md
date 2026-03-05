@@ -12,7 +12,7 @@
 ## Vercel Deployment 🚀
 
 ### 1. Monitor Build
-- [ ] Go to https://vercel.com/dashboard
+- [ ] Go to https://vercel.com/bangobongo-ece
 - [ ] Find `bangobongo` project
 - [ ] Check latest deployment status
 - [ ] Verify build completes successfully
@@ -135,7 +135,7 @@
 
 ## Quick Links
 
-- **Vercel Dashboard**: https://vercel.com/bangobongo/bangobongo
+- **Vercel Dashboard**: https://vercel.com/bangobongo-ece
 - **Production URL**: https://bangobongo.vercel.app
 - **Shopify Admin**: https://admin.shopify.com
 - **GitHub Repo**: https://github.com/elicharlese/bangobongo
