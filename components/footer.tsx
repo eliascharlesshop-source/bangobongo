@@ -10,8 +10,8 @@ export default function Footer() {
           <div className="space-y-4">
             <Link href="/" className="flex items-center">
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BangoBongo-Trans-QW3Y9ZEgbuK4wHE7Q7yUodRXb7YRSA.png"
-                alt="DJ Logo"
+                src="/logo/BangoBongo-Trans.png"
+                alt="BangoBongo Logo"
                 width={50}
                 height={50}
                 className="mr-2"

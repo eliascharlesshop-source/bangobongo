@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     description: 'Experience the future of electronic music with BangoBongo. Professional DJ, producer, and electronic music artist bringing innovative beats and live performances.',
     siteName: 'BangoBongo Music',
     images: [{
-      url: '/placeholder-logo.png',
+      url: '/logo/BangoBongo-Trans.png',
       width: 1200,
       height: 630,
       alt: 'BangoBongo Music Logo'
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     title: 'BangoBongo - Professional Electronic Music Artist',
     description: 'Experience the future of electronic music with BangoBongo.',
     creator: '@bangobongo',
-    images: ['/placeholder-logo.png'],
+    images: ['/logo/BangoBongo-Trans.png'],
   },
   robots: {
     index: true,
@@ -79,9 +79,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/logo/BangoBongo-Trans.png" />
+        <link rel="apple-touch-icon" href="/logo/BangoBongo-Trans.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#8B5CF6" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

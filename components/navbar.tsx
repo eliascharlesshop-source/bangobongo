@@ -17,8 +17,8 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BangoBongo-Trans-QW3Y9ZEgbuK4wHE7Q7yUodRXb7YRSA.png"
-                alt="DJ Logo"
+                src="/logo/BangoBongo-Trans.png"
+                alt="BangoBongo Logo"
                 width={40}
                 height={40}
                 className="mr-2"

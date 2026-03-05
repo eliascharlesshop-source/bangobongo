@@ -7,24 +7,27 @@
   "background_color": "#000000",
   "theme_color": "#8B5CF6",
   "orientation": "portrait-primary",
-  "categories": ["music", "entertainment"],
+  "categories": [
+    "music",
+    "entertainment"
+  ],
   "lang": "en",
   "dir": "ltr",
   "icons": [
     {
-      "src": "/icon-192x192.png",
+      "src": "/logo/BangoBongo-Trans.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/icon-512x512.png", 
+      "src": "/logo/BangoBongo-Trans.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/apple-touch-icon.png",
+      "src": "/logo/BangoBongo-Trans.png",
       "sizes": "180x180",
       "type": "image/png"
     }
@@ -37,7 +40,7 @@
       "form_factor": "wide"
     },
     {
-      "src": "/screenshot-narrow.png", 
+      "src": "/screenshot-narrow.png",
       "sizes": "720x1280",
       "type": "image/png",
       "form_factor": "narrow"
