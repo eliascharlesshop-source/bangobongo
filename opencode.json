@@ -1,6 +1,6 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "theme": "monokai",
+  "theme": "aura",
   "model": "kilo/giga-potato-thinking",
   "provider": {
     "kilocode": {
