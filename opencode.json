@@ -4,7 +4,7 @@
   "provider": {
     "kilocode": {
       "options": {
-        "apiKey": "{env:KILOCODE_API_KEY}"
+        "apiKey": "{env:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbnYiOiJwcm9kdWN0aW9uIiwia2lsb1VzZXJJZCI6Im9hdXRoL2dvb2dsZToxMDEyODE3NzE0ODg1NjEzMDYwMDEiLCJhcGlUb2tlblBlcHBlciI6bnVsbCwidmVyc2lvbiI6MywiaWF0IjoxNzczMjk4Mjk2LCJleHAiOjE5MzA5NzgyOTZ9.oVQxax0YquYIyqJ0KSVzcaog5JFDXBrEHrq1vMapVjo}"
       }
     }
   },
