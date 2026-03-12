@@ -1,6 +1,7 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
-  "model": "Giga Potato Thinking (free) Kilo Gateway",
+  "theme": "monokai",
+  "model": "kilo/giga-potato-thinking",
   "provider": {
     "kilocode": {
       "options": {
@@ -9,13 +10,14 @@
     }
   },
   "permission": {
-    "*": "ask",
+    "*": "allow",
     "bash": {
-      "*": "ask",
+      "*": "allow",
       "git *": "allow",
       "npm *": "allow",
       "pnpm *": "allow",
-      "rm *": "deny"
+      "rm *": "deny",
+      "sudo *": "deny"
     },
     "edit": {
       "*": "ask",
@@ -26,20 +28,13 @@
     },
     "read": "allow"
   },
-  "instructions": ["README.md", "CONTRIBUTING.md"],
-  "formatter": "prettier",
-  "ui": {
-    "sidebar": {
-      "visible": false
-    },
-    "theme": "dark"
-  },
+  "instructions": [
+    "README.md",
+    "CONTRIBUTING.md"
+  ],
   "compaction": {
     "enabled": true,
     "threshold": 50
-  },
-  "fileWatcher": {
-    "enabled": true
   },
   "experimental": {
     "autoApprove": false
