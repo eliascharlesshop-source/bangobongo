@@ -1,0 +1,47 @@
+{
+  "$schema": "https://app.kilo.ai/config.json",
+  "model": "Giga Potato Thinking (free) Kilo Gateway",
+  "provider": {
+    "kilocode": {
+      "options": {
+        "apiKey": "{env:KILOCODE_API_KEY}"
+      }
+    }
+  },
+  "permission": {
+    "*": "ask",
+    "bash": {
+      "*": "ask",
+      "git *": "allow",
+      "npm *": "allow",
+      "pnpm *": "allow",
+      "rm *": "deny"
+    },
+    "edit": {
+      "*": "ask",
+      "*.json": "allow",
+      "*.ts": "allow",
+      "*.tsx": "allow",
+      "*.md": "allow"
+    },
+    "read": "allow"
+  },
+  "instructions": ["README.md", "CONTRIBUTING.md"],
+  "formatter": "prettier",
+  "ui": {
+    "sidebar": {
+      "visible": false
+    },
+    "theme": "dark"
+  },
+  "compaction": {
+    "enabled": true,
+    "threshold": 50
+  },
+  "fileWatcher": {
+    "enabled": true
+  },
+  "experimental": {
+    "autoApprove": false
+  }
+}
