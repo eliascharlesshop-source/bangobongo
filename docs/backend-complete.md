@@ -120,7 +120,7 @@ npm run db:reset
 ```
 
 ### Default Admin Access
-- **Email:** admin@bangobongo.com
+- **Email:** bangobongo.ece@gmail.com
 - **Password:** admin123
 - **Role:** admin
 

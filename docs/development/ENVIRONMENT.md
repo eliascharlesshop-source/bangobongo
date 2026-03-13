@@ -68,7 +68,7 @@ SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your-email@gmail.com
 SMTP_PASS=your-app-password
-FROM_EMAIL=noreply@bangobongo.com
+FROM_EMAIL=bangobongo.ece@gmail.com
 
 # Uploads
 UPLOAD_PATH=./public/uploads

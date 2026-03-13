@@ -280,7 +280,7 @@ POST /api/auth/admin/login
 **Request Body:**
 ```json
 {
-  "email": "admin@bangobongo.com",
+  "email": "bangobongo.ece@gmail.com",
   "password": "secure-password"
 }
 ```
@@ -293,7 +293,7 @@ POST /api/auth/admin/login
     "token": "jwt-token-here",
     "user": {
       "id": "user-id",
-      "email": "admin@bangobongo.com",
+      "email": "bangobongo.ece@gmail.com",
       "role": "admin"
     }
   }

@@ -46,6 +46,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface Show {
   id: string
@@ -112,11 +113,11 @@ export default function TourManagement() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'scheduled': return 'bg-blue-100 text-blue-800'
-      case 'confirmed': return 'bg-green-100 text-green-800'
-      case 'cancelled': return 'bg-red-100 text-red-800'
-      case 'completed': return 'bg-gray-100 text-gray-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'scheduled': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+      case 'confirmed': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'cancelled': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      case 'completed': return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
   }
 
@@ -169,12 +170,15 @@ export default function TourManagement() {
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-3xl font-bold">Tour Management</h1>
-          <p className="text-muted-foreground">Manage shows, venues, and bookings</p>
+          <p className="text-muted-foreground">Manage shows, venues, and ticket sales</p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Schedule Show
-        </Button>
+        <div className="flex gap-2">
+          <ThemeToggle />
+          <Button>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Show
+          </Button>
+        </div>
       </div>
 
       {/* Tour Stats */}
@@ -185,7 +189,7 @@ export default function TourManagement() {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Upcoming Shows</p>
                 <p className="text-2xl font-bold">{upcomingShows}</p>
-                <p className="text-xs text-blue-600">Next: {shows.find(s => new Date(s.date) > new Date())?.date}</p>
+                <p className="text-xs text-blue-600 dark:text-blue-400">Next: {shows.find(s => new Date(s.date) > new Date())?.date}</p>
               </div>
               <Calendar className="h-8 w-8 text-primary" />
             </div>
@@ -198,9 +202,9 @@ export default function TourManagement() {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Tickets Sold</p>
                 <p className="text-2xl font-bold">{totalTicketsSold.toLocaleString()}</p>
-                <p className="text-xs text-green-600">Across all shows</p>
+                <p className="text-xs text-green-600 dark:text-green-400">Across all shows</p>
               </div>
-              <Ticket className="h-8 w-8 text-blue-600" />
+              <Ticket className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
           </CardContent>
         </Card>
@@ -211,9 +215,9 @@ export default function TourManagement() {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
                 <p className="text-2xl font-bold">${totalRevenue.toLocaleString()}</p>
-                <p className="text-xs text-green-600">From ticket sales</p>
+                <p className="text-xs text-green-600 dark:text-green-400">From ticket sales</p>
               </div>
-              <DollarSign className="h-8 w-8 text-green-600" />
+              <DollarSign className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
           </CardContent>
         </Card>
@@ -226,9 +230,9 @@ export default function TourManagement() {
                 <p className="text-2xl font-bold">
                   {Math.round(shows.reduce((sum, show) => sum + calculateSellThrough(show.ticketsSold, show.capacity), 0) / shows.length)}%
                 </p>
-                <p className="text-xs text-purple-600">Capacity utilization</p>
+                <p className="text-xs text-purple-600 dark:text-purple-400">Capacity utilization</p>
               </div>
-              <Users className="h-8 w-8 text-purple-600" />
+              <Users className="h-8 w-8 text-purple-600 dark:text-purple-400" />
             </div>
           </CardContent>
         </Card>
@@ -370,7 +374,7 @@ export default function TourManagement() {
                                   Ticket Link
                                 </DropdownMenuItem>
                               )}
-                              <DropdownMenuItem className="text-red-600">
+                              <DropdownMenuItem className="text-red-600 dark:text-red-400">
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Cancel Show
                               </DropdownMenuItem>

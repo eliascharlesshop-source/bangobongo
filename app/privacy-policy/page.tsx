@@ -102,8 +102,8 @@ export default function PrivacyPolicyPage() {
           <p>
             If you have any questions about this privacy policy or our privacy practices, please contact us at:
             <br />
-            <a href="mailto:privacy@artistname.com" className="text-primary hover:underline">
-              privacy@artistname.com
+            <a href="mailto:bangobongo.ece@gmail.com" className="text-primary hover:underline">
+              bangobongo.ece@gmail.com
             </a>
           </p>
         </section>

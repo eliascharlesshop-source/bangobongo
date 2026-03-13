@@ -106,8 +106,8 @@ export default function CookiePolicyPage() {
           <p>
             If you have any questions about our Cookie Policy, please contact us at:
             <br />
-            <a href="mailto:privacy@artistname.com" className="text-primary hover:underline">
-              privacy@artistname.com
+            <a href="mailto:bangobongo.ece@gmail.com" className="text-primary hover:underline">
+              bangobongo.ece@gmail.com
             </a>
           </p>
         </section>

@@ -70,8 +70,8 @@ export default function RefundPolicyPage() {
           <p>
             If you have any questions about our Returns and Refunds Policy, please contact us at:
             <br />
-            <a href="mailto:support@artistname.com" className="text-primary hover:underline">
-              support@artistname.com
+            <a href="mailto:bangobongo.ece@gmail.com" className="text-primary hover:underline">
+              bangobongo.ece@gmail.com
             </a>
           </p>
         </section>

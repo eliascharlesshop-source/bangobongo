@@ -12,7 +12,7 @@ async function initDB() {
     // Create default admin user
     try {
       await createUser({
-        email: 'admin@bangobongo.com',
+        email: 'bangobongo.ece@gmail.com',
         password: 'admin123',
         firstName: 'Admin',
         lastName: 'User'
@@ -21,9 +21,9 @@ async function initDB() {
       // Update role to admin
       const { getDatabase } = require('../lib/db')
       const db = getDatabase()
-      db.prepare('UPDATE users SET role = ? WHERE email = ?').run('admin', 'admin@bangobongo.com')
+      db.prepare('UPDATE users SET role = ? WHERE email = ?').run('admin', 'bangobongo.ece@gmail.com')
 
-      console.log('✅ Default admin user created (admin@bangobongo.com / admin123)')
+      console.log('✅ Default admin user created (bangobongo.ece@gmail.com / admin123)')
     } catch (error: any) {
       if (error.message === 'User already exists') {
         console.log('ℹ️  Admin user already exists')
@@ -67,7 +67,7 @@ async function initDB() {
     console.log('1. Copy .env.example to .env and configure your environment variables')
     console.log('2. Set up your Stripe keys for payment processing')
     console.log('3. Run the development server: npm run dev')
-    console.log('4. Access admin panel at /admin with admin@bangobongo.com / admin123')
+    console.log('4. Access admin panel at /admin with bangobongo.ece@gmail.com / admin123')
 
   } catch (error) {
     console.error('❌ Database initialization failed:', error)

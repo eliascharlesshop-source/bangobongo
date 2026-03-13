@@ -2,14 +2,37 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
-import { AudioProvider } from "@/contexts/audio-context"
-import { NotificationProvider } from "@/contexts/notification-context"
-import { ErrorBoundary } from "@/components/error-boundary"
-import FixedMediaPlayerWrapper from "@/components/fixed-media-player-wrapper"
+import dynamic from "next/dynamic"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
+
+// Dynamically import heavy components
+const Navbar = dynamic(() => import("@/components/navbar"), {
+  loading: () => <div className="h-16 bg-background/80 backdrop-blur-md border-b border-accent animate-pulse" />,
+  ssr: true
+})
+
+const Footer = dynamic(() => import("@/components/footer"), {
+  loading: () => <div className="h-12 bg-background animate-pulse" />,
+  ssr: true
+})
+
+const AudioProvider = dynamic(() => import("@/contexts/audio-context").then(mod => ({ default: mod.AudioProvider })), {
+  ssr: false
+})
+
+const NotificationProvider = dynamic(() => import("@/contexts/notification-context").then(mod => ({ default: mod.NotificationProvider })), {
+  ssr: false
+})
+
+const ErrorBoundary = dynamic(() => import("@/components/error-boundary").then(mod => ({ default: mod.ErrorBoundary })), {
+  ssr: true
+})
+
+const FixedMediaPlayerWrapper = dynamic(() => import("@/components/fixed-media-player-wrapper"), {
+  loading: () => null,
+  ssr: false
+})
 
 /**
  * Note: This application supports cryptocurrency payments but avoids
@@ -18,7 +41,11 @@ import { ThemeProvider } from "@/components/theme-provider"
  * lib/wallet-utils.ts to safely interact with Web3 wallets.
  */
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: 'swap',
+  preload: true
+})
 
 export const metadata: Metadata = {
   title: {
@@ -86,6 +113,12 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="BangoBongo" />
+        
+        {/* Performance optimizations */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="//v0.blob.com" />
+        <link rel="dns-prefetch" href="//hebbkx1anhila5yf.public.blob.vercel-storage.com" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>

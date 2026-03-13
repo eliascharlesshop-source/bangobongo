@@ -89,8 +89,8 @@ export default function TermsOfServicePage() {
           <p>
             If you have any questions about these Terms, please contact us at:
             <br />
-            <a href="mailto:legal@artistname.com" className="text-primary hover:underline">
-              legal@artistname.com
+            <a href="mailto:bangobongo.ece@gmail.com" className="text-primary hover:underline">
+              bangobongo.ece@gmail.com
             </a>
           </p>
         </section>

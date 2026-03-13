@@ -10,6 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "analyze": "ANALYZE=true next build",
     "init-db": "tsx scripts/init-db.ts",
     "db:reset": "rm -f data/bangobongo.db && npm run init-db"
   },
@@ -70,6 +71,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.3.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.9",
     "@types/jsonwebtoken": "^9.0.5",

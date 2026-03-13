@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   Plus,
   Search,
@@ -14,7 +16,8 @@ import {
   TrendingUp,
   AlertTriangle,
   CheckCircle,
-  XCircle
+  XCircle,
+  Settings
 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -42,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 interface Product {
   id: string
@@ -71,6 +75,7 @@ interface Order {
 }
 
 export default function StoreManagement() {
+  const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
@@ -106,22 +111,22 @@ export default function StoreManagement() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800'
-      case 'draft': return 'bg-yellow-100 text-yellow-800'
-      case 'archived': return 'bg-gray-100 text-gray-800'
-      case 'pending': return 'bg-yellow-100 text-yellow-800'
-      case 'processing': return 'bg-blue-100 text-blue-800'
-      case 'shipped': return 'bg-purple-100 text-purple-800'
-      case 'delivered': return 'bg-green-100 text-green-800'
-      case 'cancelled': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'active': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'draft': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      case 'archived': return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      case 'processing': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+      case 'shipped': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+      case 'delivered': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'cancelled': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
   }
 
   const getStockStatus = (stock: number) => {
-    if (stock === 0) return { icon: <XCircle className="h-4 w-4" />, color: 'text-red-500', text: 'Out of Stock' }
-    if (stock < 10) return { icon: <AlertTriangle className="h-4 w-4" />, color: 'text-yellow-500', text: 'Low Stock' }
-    return { icon: <CheckCircle className="h-4 w-4" />, color: 'text-green-500', text: 'In Stock' }
+    if (stock === 0) return { icon: <XCircle className="h-4 w-4" />, color: 'text-red-500 dark:text-red-400', text: 'Out of Stock' }
+    if (stock < 10) return { icon: <AlertTriangle className="h-4 w-4" />, color: 'text-yellow-500 dark:text-yellow-400', text: 'Low Stock' }
+    return { icon: <CheckCircle className="h-4 w-4" />, color: 'text-green-500 dark:text-green-400', text: 'In Stock' }
   }
 
   const filteredProducts = products.filter(product => {
@@ -159,10 +164,21 @@ export default function StoreManagement() {
           <h1 className="text-3xl font-bold">Store Management</h1>
           <p className="text-muted-foreground">Manage products, orders, and inventory</p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Product
-        </Button>
+        <div className="flex gap-2">
+          <ThemeToggle />
+          <Button asChild>
+            <Link href="/admin/store/products/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Product
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href="/admin/store/settings">
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Store Stats */}
@@ -173,7 +189,7 @@ export default function StoreManagement() {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Products</p>
                 <p className="text-2xl font-bold">{products.length}</p>
-                <p className="text-xs text-green-600">+2 this month</p>
+                <p className="text-xs text-green-600 dark:text-green-400">+2 this month</p>
               </div>
               <Package className="h-8 w-8 text-primary" />
             </div>
@@ -186,9 +202,9 @@ export default function StoreManagement() {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
                 <p className="text-2xl font-bold">{orders.length}</p>
-                <p className="text-xs text-green-600">+15% this month</p>
+                <p className="text-xs text-green-600 dark:text-green-400">+15% this month</p>
               </div>
-              <ShoppingCart className="h-8 w-8 text-blue-600" />
+              <ShoppingCart className="h-8 w-8 text-blue-600 dark:text-blue-400" />
             </div>
           </CardContent>
         </Card>
@@ -201,7 +217,7 @@ export default function StoreManagement() {
                 <p className="text-2xl font-bold">$2,845</p>
                 <p className="text-xs text-green-600">+8% this month</p>
               </div>
-              <TrendingUp className="h-8 w-8 text-green-600" />
+              <TrendingUp className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
           </CardContent>
         </Card>
@@ -212,9 +228,9 @@ export default function StoreManagement() {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Low Stock Items</p>
                 <p className="text-2xl font-bold">{products.filter(p => p.stock < 10).length}</p>
-                <p className="text-xs text-red-600">Needs attention</p>
+                <p className="text-xs text-red-600 dark:text-red-400">Needs attention</p>
               </div>
-              <AlertTriangle className="h-8 w-8 text-red-600" />
+              <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
             </div>
           </CardContent>
         </Card>
@@ -333,15 +349,19 @@ export default function StoreManagement() {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
-                                <Eye className="h-4 w-4 mr-2" />
-                                View
+                              <DropdownMenuItem asChild>
+                                <Link href={`/merch/${product.sku}`} target="_blank">
+                                  <Eye className="h-4 w-4 mr-2" />
+                                  View Live
+                                </Link>
                               </DropdownMenuItem>
-                              <DropdownMenuItem>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
+                              <DropdownMenuItem asChild>
+                                <Link href={`/admin/store/products/${product.id}`}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  Edit
+                                </Link>
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">
+                              <DropdownMenuItem className="text-red-600 dark:text-red-400">
                                 <Trash2 className="h-4 w-4 mr-2" />
                                 Delete
                               </DropdownMenuItem>
@@ -439,13 +459,17 @@ export default function StoreManagement() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" />
-                              View Details
+                            <DropdownMenuItem asChild>
+                              <Link href={`/admin/store/orders/${order.id}`}>
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Details
+                              </Link>
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Update Status
+                            <DropdownMenuItem asChild>
+                              <Link href={`/admin/store/orders/${order.id}`}>
+                                <Edit className="h-4 w-4 mr-2" />
+                                Update Status
+                              </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                               <Package className="h-4 w-4 mr-2" />

@@ -50,6 +50,7 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 interface User {
@@ -113,21 +114,21 @@ export default function UserManagement() {
 
   const getRoleColor = (role: string) => {
     switch (role) {
-      case 'admin': return 'bg-red-100 text-red-800'
-      case 'moderator': return 'bg-purple-100 text-purple-800'
-      case 'vip': return 'bg-yellow-100 text-yellow-800'
-      case 'customer': return 'bg-blue-100 text-blue-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'admin': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      case 'moderator': return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
+      case 'vip': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      case 'customer': return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
   }
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800'
-      case 'inactive': return 'bg-gray-100 text-gray-800'
-      case 'banned': return 'bg-red-100 text-red-800'
-      case 'pending': return 'bg-yellow-100 text-yellow-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'active': return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      case 'inactive': return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+      case 'banned': return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+      case 'pending': return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      default: return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
     }
   }
 
@@ -190,268 +191,238 @@ export default function UserManagement() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
-          <p className="text-muted-foreground">Manage customers, fans, and user accounts</p>
+        {/* Header */}
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold text-foreground mb-2">User Management</h1>
+            <p className="text-muted-foreground">Manage customers, fans, and admin accounts</p>
+          </div>
+          <div className="flex gap-2">
+            <ThemeToggle />
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Add User
+            </Button>
+          </div>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Invite User
-        </Button>
-      </div>
 
-      {/* User Stats */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Users</p>
-                <p className="text-2xl font-bold">{totalUsers}</p>
-                <p className="text-xs text-green-600">+12 this month</p>
-              </div>
-              <Users className="h-8 w-8 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Active Users</p>
-                <p className="text-2xl font-bold">{activeUsers}</p>
-                <p className="text-xs text-green-600">{Math.round((activeUsers / totalUsers) * 100)}% of total</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">VIP Users</p>
-                <p className="text-2xl font-bold">{vipUsers}</p>
-                <p className="text-xs text-yellow-600">Premium members</p>
-              </div>
-              <Crown className="h-8 w-8 text-yellow-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">User Revenue</p>
-                <p className="text-2xl font-bold">${totalRevenue.toFixed(2)}</p>
-                <p className="text-xs text-green-600">From purchases</p>
-              </div>
-              <ShoppingBag className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content */}
-      <Tabs defaultValue="users" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="users">All Users</TabsTrigger>
-          <TabsTrigger value="activity">User Activity</TabsTrigger>
-          <TabsTrigger value="analytics">User Analytics</TabsTrigger>
-          <TabsTrigger value="segments">User Segments</TabsTrigger>
-        </TabsList>
-
-        {/* Users Tab */}
-        <TabsContent value="users" className="space-y-4">
+        {/* User Stats */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
-            <CardHeader>
-              <CardTitle>User Management</CardTitle>
-              <CardDescription>View and manage all user accounts</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {/* Filters */}
-              <div className="flex gap-4 mb-6">
-                <div className="flex-1">
-                  <Input
-                    placeholder="Search users..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="max-w-sm"
-                  />
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Users</p>
+                  <p className="text-2xl font-bold text-foreground">{totalUsers}</p>
+                  <p className="text-xs text-green-600 dark:text-green-400">+12 this month</p>
                 </div>
-                <Select value={filterRole} onValueChange={setFilterRole}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Roles</SelectItem>
-                    <SelectItem value="customer">Customer</SelectItem>
-                    <SelectItem value="vip">VIP</SelectItem>
-                    <SelectItem value="moderator">Moderator</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={filterStatus} onValueChange={setFilterStatus}>
-                  <SelectTrigger className="w-32">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                    <SelectItem value="banned">Banned</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Users className="h-8 w-8 text-primary" />
               </div>
-
-              {/* Users Table */}
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Purchases</TableHead>
-                    <TableHead>Total Spent</TableHead>
-                    <TableHead>Last Active</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={user.avatar} alt={user.name} />
-                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">{user.name}</span>
-                              {user.verified && <CheckCircle className="h-4 w-4 text-blue-500" />}
-                            </div>
-                            <div className="text-sm text-muted-foreground">{user.email}</div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={`${getRoleColor(user.role)} flex items-center gap-1 w-fit`}>
-                          {getRoleIcon(user.role)}
-                          {user.role}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={`${getStatusColor(user.status)} flex items-center gap-1 w-fit`}>
-                          {getStatusIcon(user.status)}
-                          {user.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{user.totalPurchases}</TableCell>
-                      <TableCell>${user.totalSpent.toFixed(2)}</TableCell>
-                      <TableCell>{user.lastActive}</TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>
-                              <Eye className="h-4 w-4 mr-2" />
-                              View Profile
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Edit className="h-4 w-4 mr-2" />
-                              Edit User
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Mail className="h-4 w-4 mr-2" />
-                              Send Message
-                            </DropdownMenuItem>
-                            {user.role !== 'admin' && (
-                              <DropdownMenuItem className="text-red-600">
-                                <Ban className="h-4 w-4 mr-2" />
-                                Ban User
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        {/* Activity Tab */}
-        <TabsContent value="activity" className="space-y-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Recent User Activity</CardTitle>
-              <CardDescription>Latest user actions and engagement</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {activities.map((activity) => {
-                  const user = users.find(u => u.id === activity.userId)
-                  return (
-                    <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg border">
-                      <div className="p-2 rounded-full bg-muted">
-                        {getActivityIcon(activity.type)}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{user?.name}</span>
-                          <Badge variant="outline" className="text-xs">
-                            {activity.type}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">{activity.description}</p>
-                        <p className="text-xs text-muted-foreground mt-1">{activity.timestamp}</p>
-                      </div>
-                    </div>
-                  )
-                })}
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Active Users</p>
+                  <p className="text-2xl font-bold text-foreground">{activeUsers}</p>
+                  <p className="text-xs text-green-600 dark:text-green-400">{Math.round((activeUsers / totalUsers) * 100)}% of total</p>
+                </div>
+                <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        {/* Analytics Tab */}
-        <TabsContent value="analytics" className="space-y-4">
-          <div className="grid gap-6 md:grid-cols-2">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">VIP Users</p>
+                  <p className="text-2xl font-bold text-foreground">{vipUsers}</p>
+                  <p className="text-xs text-yellow-600 dark:text-yellow-400">Premium members</p>
+                </div>
+                <Crown className="h-8 w-8 text-yellow-600 dark:text-yellow-400" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">User Revenue</p>
+                  <p className="text-2xl font-bold text-foreground">${totalRevenue.toFixed(2)}</p>
+                  <p className="text-xs text-green-600 dark:text-green-400">From purchases</p>
+                </div>
+                <ShoppingBag className="h-8 w-8 text-green-600 dark:text-green-400" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Main Content */}
+        <Tabs defaultValue="users" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="users">All Users</TabsTrigger>
+            <TabsTrigger value="activity">User Activity</TabsTrigger>
+            <TabsTrigger value="demographics">Demographics</TabsTrigger>
+            <TabsTrigger value="engagement">Engagement</TabsTrigger>
+            <TabsTrigger value="vip">VIP Management</TabsTrigger>
+          </TabsList>
+
+          {/* Users Tab */}
+          <TabsContent value="users" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>User Demographics</CardTitle>
-                <CardDescription>User distribution by location</CardDescription>
+                <CardTitle>User Management</CardTitle>
+                <CardDescription>View and manage all user accounts</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {/* Filters */}
+                <div className="flex gap-4 mb-6">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Search users..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="max-w-sm"
+                    />
+                  </div>
+                  <Select value={filterRole} onValueChange={setFilterRole}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Role" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Roles</SelectItem>
+                      <SelectItem value="customer">Customer</SelectItem>
+                      <SelectItem value="vip">VIP</SelectItem>
+                      <SelectItem value="moderator">Moderator</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Select value={filterStatus} onValueChange={setFilterStatus}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                      <SelectItem value="banned">Banned</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Users Table */}
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Purchases</TableHead>
+                      <TableHead>Total Spent</TableHead>
+                      <TableHead>Last Active</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredUsers.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={user.avatar} alt={user.name} />
+                              <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium">{user.name}</span>
+                                {user.verified && <CheckCircle className="h-4 w-4 text-blue-500" />}
+                              </div>
+                              <div className="text-sm text-muted-foreground">{user.email}</div>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={`${getRoleColor(user.role)} flex items-center gap-1 w-fit`}>
+                            {getRoleIcon(user.role)}
+                            {user.role}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge className={`${getStatusColor(user.status)} flex items-center gap-1 w-fit`}>
+                            {getStatusIcon(user.status)}
+                            {user.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{user.totalPurchases}</TableCell>
+                        <TableCell>${user.totalSpent.toFixed(2)}</TableCell>
+                        <TableCell>{user.lastActive}</TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Profile
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Edit className="h-4 w-4 mr-2" />
+                                Edit User
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Mail className="h-4 w-4 mr-2" />
+                                Send Message
+                              </DropdownMenuItem>
+                              {user.role !== 'admin' && (
+                                <DropdownMenuItem className="text-red-600">
+                                  <Ban className="h-4 w-4 mr-2" />
+                                  Ban User
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Activity Tab */}
+          <TabsContent value="activity" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent User Activity</CardTitle>
+                <CardDescription>Latest user actions and engagement</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {['Los Angeles, CA', 'New York, NY', 'Chicago, IL', 'Austin, TX'].map((location) => {
-                    const locationUsers = users.filter(u => u.location === location).length
-                    const percentage = Math.round((locationUsers / totalUsers) * 100)
-
+                  {activities.map((activity) => {
+                    const user = users.find(u => u.id === activity.userId)
                     return (
-                      <div key={location} className="flex items-center justify-between">
-                        <span className="text-sm">{location}</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                            <div
-                              className="h-full bg-primary rounded-full"
-                              style={{ width: `${percentage}%` }}
-                            />
+                      <div key={activity.id} className="flex items-start gap-3 p-3 rounded-lg border">
+                        <div className="p-2 rounded-full bg-muted">
+                          {getActivityIcon(activity.type)}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{user?.name}</span>
+                            <Badge variant="outline" className="text-xs">
+                              {activity.type}
+                            </Badge>
                           </div>
-                          <span className="text-sm font-medium">{percentage}%</span>
+                          <p className="text-sm text-muted-foreground">{activity.description}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{activity.timestamp}</p>
                         </div>
                       </div>
                     )
@@ -459,103 +430,138 @@ export default function UserManagement() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>User Engagement</CardTitle>
-                <CardDescription>User activity and engagement levels</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-sm">High Engagement</span>
-                    <span className="text-sm font-medium">
-                      {users.filter(u => u.totalPurchases > 5).length} users
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Medium Engagement</span>
-                    <span className="text-sm font-medium">
-                      {users.filter(u => u.totalPurchases > 1 && u.totalPurchases <= 5).length} users
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Low Engagement</span>
-                    <span className="text-sm font-medium">
-                      {users.filter(u => u.totalPurchases <= 1).length} users
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-sm">Inactive Users</span>
-                    <span className="text-sm font-medium">
-                      {users.filter(u => u.status === 'inactive').length} users
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-4">
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>User Demographics</CardTitle>
+                  <CardDescription>User distribution by location</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {['Los Angeles, CA', 'New York, NY', 'Chicago, IL', 'Austin, TX'].map((location) => {
+                      const locationUsers = users.filter(u => u.location === location).length
+                      const percentage = Math.round((locationUsers / totalUsers) * 100)
 
-        {/* Segments Tab */}
-        <TabsContent value="segments" className="space-y-4">
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Crown className="h-5 w-5 text-yellow-600" />
-                  VIP Members
-                </CardTitle>
-                <CardDescription>High-value customers</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-2xl font-bold">{vipUsers}</p>
-                  <p className="text-sm text-muted-foreground">
-                    ${users.filter(u => u.role === 'vip').reduce((sum, u) => sum + u.totalSpent, 0).toFixed(2)} total spent
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                      return (
+                        <div key={location} className="flex items-center justify-between">
+                          <span className="text-sm">{location}</span>
+                          <div className="flex items-center gap-2">
+                            <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-primary rounded-full"
+                                style={{ width: `${percentage}%` }}
+                              />
+                            </div>
+                            <span className="text-sm font-medium">{percentage}%</span>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ShoppingBag className="h-5 w-5 text-green-600" />
-                  Active Buyers
-                </CardTitle>
-                <CardDescription>Users with recent purchases</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-2xl font-bold">{users.filter(u => u.totalPurchases > 0).length}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {Math.round((users.filter(u => u.totalPurchases > 0).length / totalUsers) * 100)}% conversion rate
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>User Engagement</CardTitle>
+                  <CardDescription>User activity and engagement levels</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="text-sm">High Engagement</span>
+                      <span className="text-sm font-medium">
+                        {users.filter(u => u.totalPurchases > 5).length} users
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Medium Engagement</span>
+                      <span className="text-sm font-medium">
+                        {users.filter(u => u.totalPurchases > 1 && u.totalPurchases <= 5).length} users
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Low Engagement</span>
+                      <span className="text-sm font-medium">
+                        {users.filter(u => u.totalPurchases <= 1).length} users
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm">Inactive Users</span>
+                      <span className="text-sm font-medium">
+                        {users.filter(u => u.status === 'inactive').length} users
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Music className="h-5 w-5 text-primary" />
-                  Music Fans
-                </CardTitle>
-                <CardDescription>Users with favorite genres</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <p className="text-2xl font-bold">{users.filter(u => u.favoriteGenres.length > 0).length}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Most popular: Electronic
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-      </Tabs>
+          {/* Segments Tab */}
+          <TabsContent value="segments" className="space-y-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Crown className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                    VIP Members
+                  </CardTitle>
+                  <CardDescription>High-value customers</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <p className="text-2xl font-bold">{vipUsers}</p>
+                    <p className="text-sm text-muted-foreground">
+                      ${users.filter(u => u.role === 'vip').reduce((sum, u) => sum + u.totalSpent, 0).toFixed(2)} total spent
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ShoppingBag className="h-5 w-5 text-green-600 dark:text-green-400" />
+                    Active Buyers
+                  </CardTitle>
+                  <CardDescription>Users with recent purchases</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <p className="text-2xl font-bold">{users.filter(u => u.totalPurchases > 0).length}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {Math.round((users.filter(u => u.totalPurchases > 0).length / totalUsers) * 100)}% conversion rate
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Music className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                    Music Fans
+                  </CardTitle>
+                  <CardDescription>Users with favorite genres</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <p className="text-2xl font-bold">{users.filter(u => u.favoriteGenres.length > 0).length}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Most popular: Electronic
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   )
 }

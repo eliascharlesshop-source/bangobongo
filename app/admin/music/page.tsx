@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Progress } from '@/components/ui/progress'
+import { ThemeToggle } from '@/components/theme-toggle'
 import {
   Upload,
   Music,
@@ -211,7 +212,7 @@ export default function MusicManagement() {
   const getStatusBadge = (status?: string) => {
     switch (status) {
       case 'live':
-        return <Badge className="bg-green-500"><CheckCircle className="w-3 h-3 mr-1" />Live</Badge>
+        return <Badge className="bg-green-500 dark:bg-green-600"><CheckCircle className="w-3 h-3 mr-1" />Live</Badge>
       case 'processing':
         return <Badge variant="secondary"><Clock className="w-3 h-3 mr-1" />Processing</Badge>
       case 'pending':
@@ -233,6 +234,7 @@ export default function MusicManagement() {
           </p>
         </div>
         <div className="flex gap-2">
+          <ThemeToggle />
           <Button variant="outline">
             <BarChart3 className="w-4 h-4 mr-2" />
             Analytics
@@ -535,7 +537,7 @@ export default function MusicManagement() {
                     <p className="text-sm font-medium text-muted-foreground">Total Streams</p>
                     <p className="text-2xl font-bold">{dittoReleases.reduce((sum, r) => sum + (r.analytics?.streams || 0), 0).toLocaleString()}</p>
                   </div>
-                  <TrendingUp className="w-8 h-8 text-blue-500" />
+                  <TrendingUp className="w-8 h-8 text-blue-500 dark:text-blue-400" />
                 </div>
               </CardContent>
             </Card>
@@ -547,7 +549,7 @@ export default function MusicManagement() {
                     <p className="text-sm font-medium text-muted-foreground">Revenue</p>
                     <p className="text-2xl font-bold">${dittoReleases.reduce((sum, r) => sum + (r.analytics?.revenue || 0), 0).toFixed(2)}</p>
                   </div>
-                  <TrendingUp className="w-8 h-8 text-green-500" />
+                  <TrendingUp className="w-8 h-8 text-green-500 dark:text-green-400" />
                 </div>
               </CardContent>
             </Card>
@@ -559,7 +561,7 @@ export default function MusicManagement() {
                     <p className="text-sm font-medium text-muted-foreground">Distributed Tracks</p>
                     <p className="text-2xl font-bold">{tracks.filter(t => t.isDistributed).length}</p>
                   </div>
-                  <Globe className="w-8 h-8 text-purple-500" />
+                  <Globe className="w-8 h-8 text-purple-500 dark:text-purple-400" />
                 </div>
               </CardContent>
             </Card>

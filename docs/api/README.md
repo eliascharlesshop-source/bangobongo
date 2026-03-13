@@ -351,7 +351,7 @@ POST /api/admin/login
 **Request Body**:
 ```json
 {
-  "email": "admin@bangobongo.com",
+  "email": "bangobongo.ece@gmail.com",
   "password": "admin_password",
   "adminKey": "admin_secret_key"
 }
@@ -721,6 +721,6 @@ export function ProductPage() {
 - **API Documentation**: This page
 - **GitHub Issues**: [Report API bugs](https://github.com/elicharlese/bangobongo/issues)
 - **Discord Community**: Join our developer community
-- **Email Support**: api-support@bangobongo.com
+- **Email Support**: bangobongo.ece@gmail.com
 
 **Need help?** Check our [troubleshooting guide](../user-guides/FAQ.md) or reach out to our support team!

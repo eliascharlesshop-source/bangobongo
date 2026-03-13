@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import { CalendarDays, MapPin, Music, Package, ShoppingBag, ExternalLink, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { Track, Album, TourDate, GearItem, MerchItem } from "@/types"
@@ -11,10 +12,27 @@ const tourDates: TourDate[] = []
 const favoriteGear: GearItem[] = []
 const merchItems: MerchItem[] = []
 
+// Lazy load sections below the fold
+const MusicSection = dynamic(() => import("@/components/sections/music-section"), {
+  loading: () => <div className="py-16 bg-background animate-pulse"><div className="h-64 bg-background-lighter rounded-lg mx-auto max-w-4xl"></div></div>
+})
+
+const TourSection = dynamic(() => import("@/components/sections/tour-section"), {
+  loading: () => <div className="py-16 bg-background-lighter animate-pulse"><div className="h-64 bg-background rounded-lg mx-auto max-w-4xl"></div></div>
+})
+
+const GearSection = dynamic(() => import("@/components/sections/gear-section"), {
+  loading: () => <div className="py-16 bg-background animate-pulse"><div className="h-64 bg-background-lighter rounded-lg mx-auto max-w-4xl"></div></div>
+})
+
+const MerchSection = dynamic(() => import("@/components/sections/merch-section"), {
+  loading: () => <div className="py-16 bg-background-lighter animate-pulse"><div className="h-64 bg-background rounded-lg mx-auto max-w-4xl"></div></div>
+})
+
 export default function Home() {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section - Critical for initial paint */}
       <section className="relative h-[80vh] flex items-center">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-background to-background-lighter">
           <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
@@ -46,200 +64,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Music Section */}
-      <section id="music" className="py-16 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row gap-8">
-            <div className="w-full">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-3xl font-bold text-foreground">Albums & EPs</h2>
-                <Link href="/music" className="text-primary hover:text-secondary transition-colors">
-                  View All
-                </Link>
-              </div>
+      {/* Lazy-loaded sections below the fold */}
+      <MusicSection albums={albums} />
+      <TourSection tourDates={tourDates} />
+      <GearSection favoriteGear={favoriteGear} />
+      <MerchSection merchItems={merchItems} />
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {albums.map((album) => (
-                  <div
-                    key={album.id}
-                    className="bg-background-lighter rounded-lg overflow-hidden border border-accent album-hover transform transition-all duration-300 hover:scale-103 hover:shadow-lg hover:shadow-primary/15"
-                  >
-                    <div className="relative aspect-square">
-                      <Image
-                        src={album.cover || "/placeholder.svg?height=400&width=400"}
-                        alt={album.title}
-                        fill
-                        className="object-cover transition-transform duration-500 hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <Button className="bg-primary text-background hover:bg-secondary rounded-full h-12 w-12 flex items-center justify-center transform translate-y-4 hover:translate-y-0 transition-transform duration-300">
-                          <Play className="h-6 w-6" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-foreground">{album.title}</h3>
-                      <div className="flex justify-between text-sm text-muted-foreground">
-                        <span>{album.year}</span>
-                        <span>{album.tracks} tracks</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Tour Section */}
-      <section id="tour" className="py-16 bg-background-lighter">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Upcoming Shows</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Catch BangoBongo live in action at these upcoming events. Experience the energy and immerse yourself in
-              the music.
-            </p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            {tourDates.map((tour) => (
-              <div
-                key={tour.id}
-                className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 mb-4 bg-background rounded-lg border border-accent hover:border-primary transition-colors"
-              >
-                <div className="flex items-start sm:items-center mb-4 sm:mb-0">
-                  <div className="bg-accent p-3 rounded-lg text-center mr-6 hidden sm:block">
-                    <span className="block text-lg font-bold text-primary">{tour.date.split(",")[0]}</span>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{tour.venue}</h3>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {tour.city}
-                    </div>
-                    <div className="sm:hidden text-xs text-muted-foreground mt-1">{tour.date}</div>
-                  </div>
-                </div>
-                <Button asChild>
-                  <Link href={tour.ticketLink}>Get Tickets</Link>
-                </Button>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-8">
-            <Button asChild variant="outline">
-              <Link href="/tour">
-                <CalendarDays className="h-4 w-4 mr-2" />
-                View All Tour Dates
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Gear Section */}
-      <section id="gear" className="py-16 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Favorite Gear</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Check out the tools and equipment that help create the BangoBongo sound.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {favoriteGear.map((gear) => (
-              <Link
-                key={gear.id}
-                href={gear.link}
-                className="bg-background-lighter rounded-lg overflow-hidden border border-accent hover:border-primary transition-colors"
-              >
-                <div className="relative aspect-square">
-                  <Image
-                    src={gear.image || "/placeholder.svg?height=200&width=200"}
-                    alt={gear.name}
-                    fill
-                    className="object-cover p-4"
-                  />
-                </div>
-                <div className="p-4">
-                  <span className="text-xs text-primary px-2 py-1 rounded-full bg-primary/10 mb-2 inline-block">
-                    {gear.category}
-                  </span>
-                  <h3 className="font-semibold text-foreground">{gear.name}</h3>
-                  <div className="flex items-center text-sm text-muted-foreground mt-2">
-                    <ExternalLink className="h-4 w-4 mr-1" />
-                    Learn More
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
-          <div className="text-center mt-8">
-            <Button asChild variant="outline">
-              <Link href="/gear">
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View Complete Setup
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Merch Section */}
-      <section id="merch" className="py-16 bg-background-lighter">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Merchandise</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Show your support with official BangoBongo merchandise. Available for purchase with USD or cryptocurrency.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {merchItems.map((item) => (
-              <div key={item.id} className="bg-background rounded-lg overflow-hidden border border-accent merch-item">
-                <div className="relative aspect-square">
-                  <Image
-                    src={item.image || "/placeholder.svg?height=300&width=300"}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-foreground">{item.name}</h3>
-                  <div className="flex justify-between items-center mt-2">
-                    <div>
-                      <div className="text-primary font-bold">${item.price.toFixed(2)}</div>
-                      <div className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</div>
-                    </div>
-                    <Button size="sm">
-                      <ShoppingBag className="h-4 w-4 mr-2" />
-                      Add to Cart
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-8">
-            <Button asChild>
-              <Link href="/merch">
-                <Package className="h-4 w-4 mr-2" />
-                Visit Store
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
+      {/* Newsletter Section - Critical for conversion */}
       <section className="py-16 bg-accent">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">

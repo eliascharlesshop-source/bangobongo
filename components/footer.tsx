@@ -95,10 +95,10 @@ export default function Footer() {
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-2 text-muted-foreground" />
                 <a
-                  href="mailto:contact@bangobongo.com"
+                  href="mailto:bangobongo.ece@gmail.com"
                   className="text-muted-foreground hover:text-primary transition-colors"
                 >
-                  contact@bangobongo.com
+                  bangobongo.ece@gmail.com
                 </a>
               </li>
               <li className="text-muted-foreground">
