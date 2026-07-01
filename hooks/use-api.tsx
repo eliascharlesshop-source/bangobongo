@@ -79,10 +79,14 @@ export const useGear = (params?: { category?: string; page?: number; limit?: num
 }
 
 export const useTours = (params?: { upcoming?: boolean; page?: number; limit?: number }) => {
-  return useApi(
-    () => apiClient.tours.list(params),
-    [params?.upcoming, params?.page, params?.limit]
-  )
+  // Tours data is managed locally on the page, return empty state
+  // This triggers the fallback to sample data in the component
+  return {
+    data: null,
+    loading: false,
+    error: null,
+    refetch: () => Promise.resolve()
+  }
 }
 
 export function useCart(token?: string) {
