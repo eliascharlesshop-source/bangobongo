@@ -22,13 +22,7 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-    optimizeCss: true,
   },
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
-  // Optimize output
-  output: 'standalone',
   // Performance headers
   headers: async () => {
     return [
@@ -60,7 +54,7 @@ const nextConfig = {
         ],
       },
       {
-        source: '/:path*\\.(png|jpg|jpeg|gif|ico|svg|webp|avif)',
+        source: '/:path*.:ext(png|jpg|jpeg|gif|ico|svg|webp|avif)',
         headers: [
           {
             key: 'Cache-Control',
