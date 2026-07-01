@@ -225,23 +225,6 @@ class ApiClient {
       })
   }
 
-  // Gear methods
-  gear = {
-    list: (params?: { category?: string; page?: number; limit?: number }) => {
-      const query = params ? '?' + new URLSearchParams(
-        Object.entries(params).reduce((acc, [key, value]) => {
-          if (value !== undefined) acc[key] = String(value)
-          return acc
-        }, {} as Record<string, string>)
-      ).toString() : ''
-
-      return this.request<{ gear: any[]; total: number }>(`/gear${query}`)
-    },
-
-    get: (id: string) =>
-      this.request<{ item: any }>(`/gear/${id}`)
-  }
-
   // Tours methods
   tours = {
     list: (params?: { upcoming?: boolean; city?: string; country?: string }) => {
