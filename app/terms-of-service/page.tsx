@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 
 export const metadata: Metadata = {
   title: "Terms of Service | BangoBongo Music",
@@ -7,7 +8,21 @@ export const metadata: Metadata = {
 
 export default function TermsOfServicePage() {
   return (
-    <main className="container mx-auto px-4 py-16 max-w-4xl">
+    <>
+      {/* Background */}
+      <div className="fixed inset-0 -z-20 w-full h-screen overflow-hidden">
+        <Image
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%201%2C%202026%2C%2003_17_40%20PM-u4ZDFLD05VM5FtWJp8KTL7aIBGV4PB.png"
+          alt="Terms of Service Background"
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* Overlay gradient for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background/90" />
+      </div>
+
+      <main className="relative z-10 container mx-auto px-4 py-16 max-w-4xl">
       <h1 className="text-4xl font-bold mb-8 text-primary">Terms of Service</h1>
 
       <div className="prose prose-lg dark:prose-invert max-w-none">
@@ -96,5 +111,6 @@ export default function TermsOfServicePage() {
         </section>
       </div>
     </main>
+    </>
   )
 }
