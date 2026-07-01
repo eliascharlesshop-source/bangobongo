@@ -62,7 +62,7 @@ const sortOptions = [
   { id: "price-high", name: "Price: High to Low" },
 ]
 
-// Sample tour data for development
+// Cheers Tour — dates
 const tourDatesSample: TourDate[] = [
   {
     id: "1",
@@ -73,8 +73,8 @@ const tourDatesSample: TourDate[] = [
     ticketLink: "#",
     status: "upcoming",
     price: { general: 45, vip: 85 },
-    description: "Join us for an unforgettable night of electronic music at Fabric London.",
-    image: "/placeholder.svg?height=500&width=800",
+    description: "Cheers Tour opens in London. An unforgettable night of electronic music at Fabric.",
+    image: "/images/tour/cheers-tour-card.png",
     coordinates: { lat: 51.5195, lng: -0.0935 }
   },
   {
@@ -86,8 +86,8 @@ const tourDatesSample: TourDate[] = [
     ticketLink: "#",
     status: "upcoming",
     price: { general: 35, vip: 75 },
-    description: "Experience BangoBongo at one of Berlin's most iconic venues.",
-    image: "/placeholder.svg?height=500&width=800",
+    description: "Cheers Tour hits Berlin at one of the world's most iconic venues.",
+    image: "/images/tour/cheers-tour-card.png",
     coordinates: { lat: 52.5200, lng: 13.4050 }
   },
   {
@@ -99,8 +99,8 @@ const tourDatesSample: TourDate[] = [
     ticketLink: "#",
     status: "upcoming",
     price: { general: 55, vip: 95 },
-    description: "Festival appearance with special DJ set.",
-    image: "/placeholder.svg?height=500&width=800",
+    description: "Cheers Tour — festival appearance with a special extended DJ set.",
+    image: "/images/tour/cheers-tour-card.png",
     coordinates: { lat: 52.3676, lng: 4.9041 }
   },
   {
@@ -112,8 +112,8 @@ const tourDatesSample: TourDate[] = [
     ticketLink: "#",
     status: "upcoming",
     price: { general: 50, vip: 90 },
-    description: "Live performance with full production setup.",
-    image: "/placeholder.svg?height=500&width=800",
+    description: "Cheers Tour returns to London with a full live production setup.",
+    image: "/images/tour/cheers-tour-card.png",
     coordinates: { lat: 51.5195, lng: -0.0935 }
   },
   {
@@ -125,8 +125,8 @@ const tourDatesSample: TourDate[] = [
     ticketLink: "#",
     status: "upcoming",
     price: { general: 150, vip: 250 },
-    description: "Headlining slot at Tomorrowland Main Stage.",
-    image: "/placeholder.svg?height=500&width=800",
+    description: "Cheers Tour — headlining slot at Tomorrowland Main Stage.",
+    image: "/images/tour/cheers-tour-card.png",
     coordinates: { lat: 51.1534, lng: 4.6889 }
   },
   {
@@ -138,8 +138,8 @@ const tourDatesSample: TourDate[] = [
     ticketLink: "#",
     status: "upcoming",
     price: { general: 65, vip: 105 },
-    description: "Performing at one of Europe's biggest electronic music festivals.",
-    image: "/placeholder.svg?height=500&width=800",
+    description: "Cheers Tour closes the summer at one of Europe's biggest electronic music festivals.",
+    image: "/images/tour/cheers-tour-card.png",
     coordinates: { lat: 41.3851, lng: 2.1734 }
   }
 ]
@@ -254,18 +254,26 @@ export default function TourPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[50vh] flex items-center">
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-background to-background-lighter">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
+      <section className="relative h-[55vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/tour/cheers-tour-banner.png"
+            alt="Cheers Tour"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent" />
         </div>
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-              <span className="text-primary">World Tour</span> <br />
-              2024
+            <p className="text-sm font-semibold tracking-widest text-primary uppercase mb-3">BangoBongo</p>
+            <h1 className="text-5xl md:text-7xl font-black text-foreground mb-4 tracking-tight">
+              <span className="chrome-text-mint">Cheers</span> Tour
             </h1>
             <p className="text-xl text-muted-foreground mb-8">
-              Experience BangoBongo live across the globe. Check out upcoming shows and secure your tickets.
+              Six nights. Six cities. One unforgettable run — catch BangoBongo live in 2024.
             </p>
           </div>
         </div>
@@ -281,7 +289,7 @@ export default function TourPage() {
 
           <div className="bg-background-lighter rounded-lg overflow-hidden border border-accent p-4 md:p-6 mb-12">
             <div className="relative w-full h-[400px] rounded-lg overflow-hidden">
-              <Image src="/placeholder.svg?height=800&width=1600" alt="Tour Map" fill className="object-cover" />
+              <Image src="/images/tour/cheers-tour-banner.png" alt="Cheers Tour Map" fill className="object-cover opacity-60" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <p className="text-foreground bg-background/80 px-4 py-2 rounded-md">
                   Interactive tour map would be displayed here
