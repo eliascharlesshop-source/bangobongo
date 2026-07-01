@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 
 export const metadata: Metadata = {
   title: "Privacy Policy | BangoBongo Music",
@@ -7,7 +8,21 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="container mx-auto px-4 py-16 max-w-4xl">
+    <>
+      {/* Background */}
+      <div className="fixed inset-0 -z-20 w-full h-screen overflow-hidden">
+        <Image
+          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ChatGPT%20Image%20Jul%201%2C%202026%2C%2003_16_44%20PM-mK8hV7uVAWE7TZFlOUA1uIKsSN5ru6.png"
+          alt="Privacy Policy Background"
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* Overlay gradient for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/60 to-background/90" />
+      </div>
+
+      <main className="relative z-10 container mx-auto px-4 py-16 max-w-4xl">
       <h1 className="text-4xl font-bold mb-8 text-primary">Privacy Policy</h1>
 
       <div className="prose prose-lg dark:prose-invert max-w-none">
@@ -109,5 +124,6 @@ export default function PrivacyPolicyPage() {
         </section>
       </div>
     </main>
+    </>
   )
 }
