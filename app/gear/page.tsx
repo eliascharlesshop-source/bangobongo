@@ -63,10 +63,123 @@ const sortOptions = [
   { id: "newest", name: "Newest First" },
 ]
 
-// Sample gear data - removed
-const gearItems: GearItem[] = []
+// Sample gear data for development
+const gearItems: GearItem[] = [
+  {
+    id: "1",
+    name: "Pioneer CDJ-3000",
+    category: "DJ Controller",
+    image: "/placeholder.svg?height=400&width=400",
+    price: 2499,
+    description: "Professional DJ player with advanced mixing capabilities and standalone features.",
+    features: ["4-channel mixing", "High-resolution audio", "Advanced search functions", "Multi-format support"],
+    rating: 5,
+    yearPurchased: 2022,
+    isSponsored: false,
+    affiliateLink: "#",
+    videoReviewLink: "#",
+    personalNotes: "Industry standard for professional DJ performances. Reliable and feature-rich."
+  },
+  {
+    id: "2",
+    name: "Technics 1200MK7",
+    category: "DJ Mixer",
+    image: "/placeholder.svg?height=400&width=400",
+    price: 3500,
+    description: "Legendary turntable with exceptional build quality and performance reliability.",
+    features: ["Direct drive motor", "Pitch control", "Durable construction", "Professional grade"],
+    rating: 5,
+    yearPurchased: 2021,
+    isSponsored: false,
+    affiliateLink: "#",
+    videoReviewLink: "#",
+    personalNotes: "My primary turntable for vinyl performances. Best investment in my setup."
+  },
+  {
+    id: "3",
+    name: "Ableton Live 12",
+    category: "Production Software",
+    image: "/placeholder.svg?height=400&width=400",
+    price: 799,
+    description: "Complete music production suite with powerful tools for beat making and live performance.",
+    features: ["Max for Live integration", "Advanced clip editing", "Real-time effects", "Live performance mode"],
+    rating: 5,
+    yearPurchased: 2023,
+    isSponsored: false,
+    affiliateLink: "#",
+    videoReviewLink: "#",
+    personalNotes: "Essential for my production workflow. Highly intuitive and powerful."
+  },
+  {
+    id: "4",
+    name: "Audio-Technica AT2035",
+    category: "Audio Interface",
+    image: "/placeholder.svg?height=400&width=400",
+    price: 199,
+    description: "Cardioid condenser microphone for professional recording and streaming.",
+    features: ["48V phantom power", "Low noise floor", "Wide frequency response", "Durable metal body"],
+    rating: 4,
+    yearPurchased: 2022,
+    isSponsored: false,
+    affiliateLink: "#",
+    videoReviewLink: "#",
+    personalNotes: "Great quality for the price. Perfect for studio vocals and podcasting."
+  },
+  {
+    id: "5",
+    name: "Sennheiser HD 25",
+    category: "Headphones",
+    image: "/placeholder.svg?height=400&width=400",
+    price: 149,
+    description: "Professional DJ headphones with excellent sound isolation and comfort.",
+    features: ["Single-sided cable", "Replaceable ear pads", "Closed design", "Professional quality"],
+    rating: 5,
+    yearPurchased: 2020,
+    isSponsored: false,
+    affiliateLink: "#",
+    videoReviewLink: "#",
+    personalNotes: "My go-to headphones for DJing. Reliable and comfortable for long sessions."
+  },
+  {
+    id: "6",
+    name: "Moog Mother-32",
+    category: "Synthesizer",
+    image: "/placeholder.svg?height=400&width=400",
+    price: 599,
+    description: "Compact semi-modular synthesizer with powerful sound design capabilities.",
+    features: ["Keyboard interface", "Modular connectivity", "Built-in sequencer", "MIDI support"],
+    rating: 4,
+    yearPurchased: 2023,
+    isSponsored: false,
+    affiliateLink: "#",
+    videoReviewLink: "#",
+    personalNotes: "Great for live performance and experimentation. Excellent sound quality."
+  }
+]
 
-const setupItems: SetupItem[] = []
+const setupItems: SetupItem[] = [
+  {
+    id: "1",
+    title: "Studio Production Setup",
+    description: "My main production setup for creating beats and tracks.",
+    image: "/placeholder.svg?height=400&width=600",
+    gearIncluded: ["Ableton Live 12", "Audio-Technica AT2035", "Monitor Setup"]
+  },
+  {
+    id: "2",
+    title: "Live DJ Performance",
+    description: "Professional DJ setup for live performances and festivals.",
+    image: "/placeholder.svg?height=400&width=600",
+    gearIncluded: ["Pioneer CDJ-3000", "DJ Mixer", "Technics 1200MK7", "Sennheiser HD 25"]
+  },
+  {
+    id: "3",
+    title: "Modular Sound Design",
+    description: "Experimental setup for creating unique sounds and textures.",
+    image: "/placeholder.svg?height=400&width=600",
+    gearIncluded: ["Moog Mother-32", "Eurorack Modules", "Patch Cables"]
+  }
+]
 
 // Helper function to render star ratings
 const StarRating = ({ rating }: { rating: number }) => {
@@ -92,7 +205,7 @@ export default function GearPage() {
   const { showNotification } = useNotifications()
 
   // Use API data if available, otherwise fallback to sample data
-  const gear = Array.isArray(apiGear) ? apiGear : (apiGear?.gear || gearItems)
+  const gear = (Array.isArray(apiGear) && apiGear.length > 0) ? apiGear : (apiGear?.gear && apiGear.gear.length > 0 ? apiGear.gear : gearItems)
 
   const filteredAndSortedGear = useMemo(() => {
     let filtered = gear.filter((item: any) => {

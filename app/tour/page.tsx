@@ -62,11 +62,87 @@ const sortOptions = [
   { id: "price-high", name: "Price: High to Low" },
 ]
 
-// Sample tour data - removed
-const tourDates: TourDate[] = []
-
-// Sample tour data for development - removed
-const tourDatesSample: TourDate[] = []
+// Sample tour data for development
+const tourDatesSample: TourDate[] = [
+  {
+    id: "1",
+    date: "March 15, 2024",
+    venue: "Fabric London",
+    city: "London",
+    country: "UK",
+    ticketLink: "#",
+    status: "upcoming",
+    price: { general: 45, vip: 85 },
+    description: "Join us for an unforgettable night of electronic music at Fabric London.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: { lat: 51.5195, lng: -0.0935 }
+  },
+  {
+    id: "2",
+    date: "April 22, 2024",
+    venue: "Berghain",
+    city: "Berlin",
+    country: "Germany",
+    ticketLink: "#",
+    status: "upcoming",
+    price: { general: 35, vip: 75 },
+    description: "Experience BangoBongo at one of Berlin's most iconic venues.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: { lat: 52.5200, lng: 13.4050 }
+  },
+  {
+    id: "3",
+    date: "May 10, 2024",
+    venue: "Awakenings Festival",
+    city: "Amsterdam",
+    country: "Netherlands",
+    ticketLink: "#",
+    status: "upcoming",
+    price: { general: 55, vip: 95 },
+    description: "Festival appearance with special DJ set.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: { lat: 52.3676, lng: 4.9041 }
+  },
+  {
+    id: "4",
+    date: "June 5, 2024",
+    venue: "Printworks",
+    city: "London",
+    country: "UK",
+    ticketLink: "#",
+    status: "upcoming",
+    price: { general: 50, vip: 90 },
+    description: "Live performance with full production setup.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: { lat: 51.5195, lng: -0.0935 }
+  },
+  {
+    id: "5",
+    date: "July 12, 2024",
+    venue: "Tomorrowland",
+    city: "Boom",
+    country: "Belgium",
+    ticketLink: "#",
+    status: "upcoming",
+    price: { general: 150, vip: 250 },
+    description: "Headlining slot at Tomorrowland Main Stage.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: { lat: 51.1534, lng: 4.6889 }
+  },
+  {
+    id: "6",
+    date: "August 3, 2024",
+    venue: "Sónar Festival",
+    city: "Barcelona",
+    country: "Spain",
+    ticketLink: "#",
+    status: "upcoming",
+    price: { general: 65, vip: 105 },
+    description: "Performing at one of Europe's biggest electronic music festivals.",
+    image: "/placeholder.svg?height=500&width=800",
+    coordinates: { lat: 41.3851, lng: 2.1734 }
+  }
+]
 
 // Group tour dates by month
 const groupTourDatesByMonth = (dates: TourDate[]) => {
@@ -101,7 +177,7 @@ export default function TourPage() {
     limit: 50
   })
 
-  const tourDates = toursData?.tours || tourDatesSample // Fallback to sample data
+  const tourDates = toursData?.tours && toursData.tours.length > 0 ? toursData.tours : tourDatesSample
 
   // Filter and sort tours
   const filteredTours = useMemo(() => {
