@@ -41,6 +41,11 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
+                <Link href="/studio" className="text-foreground hover:text-primary transition-colors">
+                  Studio
+                </Link>
+              </li>
+              <li>
                 <Link href="/tour" className="text-foreground hover:text-primary transition-colors">
                   Tour
                 </Link>
@@ -91,6 +96,13 @@ export default function Navbar() {
               onClick={() => setIsMenuOpen(false)}
             >
               Music
+            </Link>
+            <Link
+              href="/studio"
+              className="block px-3 py-2 text-foreground hover:text-primary"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Studio
             </Link>
             <Link
               href="/tour"
