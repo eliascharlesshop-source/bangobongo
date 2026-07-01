@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { X, CheckCircle, Package, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { ServiceConfigPanel } from "./service-config-panel"
 import type { Service } from "./studio-services"
 
 interface ServiceDetailProps {
@@ -12,6 +13,7 @@ interface ServiceDetailProps {
 }
 
 export function ServiceDetail({ service, onClose }: ServiceDetailProps) {
+  const [showConfig, setShowConfig] = useState(false)
   const Icon = service.icon
 
   // Close on Escape
@@ -115,13 +117,58 @@ export function ServiceDetail({ service, onClose }: ServiceDetailProps) {
           </div>
         </div>
 
-        {/* Footer CTA */}
-        <div className="p-6 border-t border-primary/10 bg-gradient-to-r from-[#1A2A37] to-[#141D27] sticky bottom-0 backdrop-blur">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-xs text-muted-foreground">Starting at</p>
-              <p className="text-3xl font-black chrome-text-mint">{service.startingAt}</p>
+        {/* Show Config Panel or Footer CTA */}
+        {showConfig ? (
+          <div className="p-6 border-t border-primary/10 sticky bottom-0 bg-background">
+            <ServiceConfigPanel
+              serviceId={service.id}
+              serviceName={service.title}
+              basePrice={parseInt(service.startingAt.replace('$', ''))}
+              addOns={[
+                {
+                  id: 'rush',
+                  name: 'Rush Delivery',
+                  description: '48-hour turnaround',
+                  price: 75,
+                },
+                {
+                  id: 'revisions',
+                  name: 'Unlimited Revisions',
+                  description: 'Up to 5 additional revisions',
+                  price: 150,
+                },
+                {
+                  id: 'stem-export',
+                  name: 'Stem Export',
+                  description: 'Separated stems for mixing',
+                  price: 50,
+                },
+              ]}
+              onClose={() => setShowConfig(false)}
+            />
+          </div>
+        ) : (
+          <div className="p-6 border-t border-primary/10 bg-gradient-to-r from-[#1A2A37] to-[#141D27] sticky bottom-0 backdrop-blur">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-xs text-muted-foreground">Starting at</p>
+                <p className="text-3xl font-black chrome-text-mint">{service.startingAt}</p>
+              </div>
+              <p className="text-xs text-muted-foreground text-right max-w-[160px]">
+                Custom quotes available for larger projects
+              </p>
             </div>
+            <Button
+              variant="chrome"
+              size="lg"
+              onClick={() => setShowConfig(true)}
+              className="w-full"
+            >
+              Configure & Add to Cart
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        )}
             <p className="text-xs text-muted-foreground text-right max-w-[160px]">
               Custom quotes available for larger projects
             </p>

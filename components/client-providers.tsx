@@ -1,6 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
+import { CartProvider } from "@/contexts/cart-context"
 
 const AudioProvider = dynamic(
   () => import("@/contexts/audio-context").then((mod) => ({ default: mod.AudioProvider })),
@@ -19,11 +20,13 @@ const FixedMediaPlayerWrapper = dynamic(
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
-    <NotificationProvider>
-      <AudioProvider>
-        {children}
-        <FixedMediaPlayerWrapper />
-      </AudioProvider>
-    </NotificationProvider>
+    <CartProvider>
+      <NotificationProvider>
+        <AudioProvider>
+          {children}
+          <FixedMediaPlayerWrapper />
+        </AudioProvider>
+      </NotificationProvider>
+    </CartProvider>
   )
 }
