@@ -1,13 +1,19 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ShoppingCart } from 'lucide-react'
 import { useCart } from '@/contexts/cart-context'
 import { Badge } from '@/components/ui/badge'
 
 export function CartIcon() {
+  const [mounted, setMounted] = useState(false)
   const { getItemCount } = useCart()
-  const count = getItemCount()
+  const count = mounted ? getItemCount() : 0
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <Link href="/studio/cart" className="relative inline-flex items-center justify-center">
