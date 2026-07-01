@@ -561,7 +561,6 @@ export default function UserManagement() {
             </div>
           </TabsContent>
         </Tabs>
-      </div>
     </div>
   )
 }
