@@ -68,11 +68,17 @@ export function useMusic(params?: { page?: number; limit?: number; published?: b
 }
 
 export const useGear = (params?: { category?: string; page?: number; limit?: number }) => {
-  return useApi<{ gear: any[]; total: number }>('gear', { params })
+  return useApi(
+    () => apiClient.gear.list(params),
+    [params?.category, params?.page, params?.limit]
+  )
 }
 
 export const useTours = (params?: { upcoming?: boolean; page?: number; limit?: number }) => {
-  return useApi<{ tours: any[]; total: number }>('tours', { params })
+  return useApi(
+    () => apiClient.tours.list(params),
+    [params?.upcoming, params?.page, params?.limit]
+  )
 }
 
 export function useCart(token?: string) {
