@@ -109,7 +109,7 @@ export default function RootLayout({
         <link rel="icon" href="/logo/BangoBongo-Trans.png" />
         <link rel="apple-touch-icon" href="/logo/BangoBongo-Trans.png" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#8B5CF6" />
+        <meta name="theme-color" content="#141D27" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="BangoBongo" />
