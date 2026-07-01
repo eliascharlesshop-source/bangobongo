@@ -28,7 +28,15 @@ import {
   Eye,
   BarChart3,
   Zap,
-  Info
+  Info,
+  Crown,
+  Lock,
+  Disc3,
+  Youtube,
+  Calendar,
+  DollarSign,
+  Headphones,
+  Star
 } from 'lucide-react'
 
 interface Track {
@@ -57,6 +65,21 @@ interface DittoRelease {
     revenue: number
     territories: string[]
   }
+  scheduledReleaseTime?: string
+  youtubeContentId?: string
+  releaseProtection?: boolean
+}
+
+interface DittoProFeature {
+  unlimitedReleases: boolean
+  tvMovieSync: boolean
+  musicPublishing: boolean
+  youtubeContentId: boolean
+  releaseScheduling: boolean
+  prioritySupport: boolean
+  releaseProtection: boolean
+  compilationReleases: boolean
+  exclusiveFeatures: boolean
 }
 
 export default function MusicManagement() {
@@ -65,6 +88,27 @@ export default function MusicManagement() {
   const [selectedTrack, setSelectedTrack] = useState<Track | null>(null)
   const [loading, setLoading] = useState(false)
   const [distributionProgress, setDistributionProgress] = useState(0)
+  const [dittpProFeatures, setDittoProFeatures] = useState<DittoProFeature>({
+    unlimitedReleases: false,
+    tvMovieSync: false,
+    musicPublishing: false,
+    youtubeContentId: false,
+    releaseScheduling: false,
+    prioritySupport: false,
+    releaseProtection: false,
+    compilationReleases: false,
+    exclusiveFeatures: false
+  })
+  const [releaseScheduling, setReleaseScheduling] = useState({
+    trackId: '',
+    releaseTime: '',
+    territories: 'worldwide' as 'worldwide' | 'selected'
+  })
+  const [youtubeContentId, setYoutubeContentId] = useState({
+    trackId: '',
+    oacEmail: '',
+    preferredRepartner: ''
+  })
   const [newTrack, setNewTrack] = useState({
     title: '',
     genre: '',
@@ -247,10 +291,15 @@ export default function MusicManagement() {
       </div>
 
       <Tabs defaultValue="upload" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="upload">Upload Track</TabsTrigger>
           <TabsTrigger value="library">Track Library</TabsTrigger>
           <TabsTrigger value="distribution">Distribution</TabsTrigger>
+          <TabsTrigger value="pro" className="flex items-center gap-2">
+            <Crown className="w-4 h-4" />
+            <span className="hidden sm:inline">Ditto Pro</span>
+            <span className="sm:hidden">Pro</span>
+          </TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
@@ -464,63 +513,478 @@ export default function MusicManagement() {
         </TabsContent>
 
         <TabsContent value="distribution" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4">
+            {/* Release Scheduling */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Globe className="w-5 h-5" />
-                  Ditto Music Status
+                  <Calendar className="w-5 h-5" />
+                  Schedule Release Time
                 </CardTitle>
+                <CardDescription>
+                  Set exact release times for your music to maximize impact
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {dittoReleases.map((release) => (
-                    <div key={release.id} className="flex items-center justify-between p-3 border rounded">
-                      <div>
-                        <h4 className="font-medium">Track {release.trackId}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {release.platforms.join(', ')}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        {getStatusBadge(release.status)}
-                        {release.analytics && (
-                          <div className="text-xs mt-1 space-y-1">
-                            <div>{release.analytics.streams.toLocaleString()} streams</div>
-                            <div>${release.analytics.revenue.toFixed(2)} revenue</div>
-                          </div>
-                        )}
-                      </div>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <Label>Select Track</Label>
+                      <Select value={releaseScheduling.trackId} onValueChange={(value) => setReleaseScheduling(prev => ({ ...prev, trackId: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose a track" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {tracks.filter(t => t.category === 'original').map(track => (
+                            <SelectItem key={track.id} value={track.id}>{track.title}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  ))}
+                    <div>
+                      <Label>Release Date & Time</Label>
+                      <Input 
+                        type="datetime-local" 
+                        value={releaseScheduling.releaseTime}
+                        onChange={(e) => setReleaseScheduling(prev => ({ ...prev, releaseTime: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <Label>Release Territory</Label>
+                      <Select value={releaseScheduling.territories} onValueChange={(value) => setReleaseScheduling(prev => ({ ...prev, territories: value as any }))}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="worldwide">Worldwide</SelectItem>
+                          <SelectItem value="selected">Selected Territories</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <Button className="w-full">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Schedule Release
+                  </Button>
                 </div>
               </CardContent>
             </Card>
 
+            {/* YouTube Content ID & OAC Setup */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Info className="w-5 h-5" />
-                  Distribution Info
+                  <Youtube className="w-5 h-5" />
+                  YouTube Content ID & OAC Setup
                 </CardTitle>
+                <CardDescription>
+                  Claim content on YouTube and monetize your music
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span>Distribution Time:</span>
-                    <span>1-2 weeks</span>
+                <div className="space-y-4">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <Label>Select Track</Label>
+                      <Select value={youtubeContentId.trackId} onValueChange={(value) => setYoutubeContentId(prev => ({ ...prev, trackId: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Choose a track" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {tracks.filter(t => t.category === 'original').map(track => (
+                            <SelectItem key={track.id} value={track.id}>{track.title}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>OAC Email</Label>
+                      <Input 
+                        type="email"
+                        placeholder="your@email.com"
+                        value={youtubeContentId.oacEmail}
+                        onChange={(e) => setYoutubeContentId(prev => ({ ...prev, oacEmail: e.target.value }))}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <Label>Preferred Re-partner</Label>
+                      <Select value={youtubeContentId.preferredRepartner} onValueChange={(value) => setYoutubeContentId(prev => ({ ...prev, preferredRepartner: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a re-partner" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ditto">Ditto (Recommended)</SelectItem>
+                          <SelectItem value="distrokid">DistroKid</SelectItem>
+                          <SelectItem value="cd-baby">CD Baby</SelectItem>
+                          <SelectItem value="routenote">RouteNote</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Platforms:</span>
-                    <span>50+ Global</span>
+                  <Alert>
+                    <Youtube className="w-4 h-4" />
+                    <AlertDescription>
+                      YouTube Content ID allows you to claim user-generated content using your music and collect revenue from ads.
+                    </AlertDescription>
+                  </Alert>
+                  <Button className="w-full">
+                    <Youtube className="w-4 h-4 mr-2" />
+                    Setup YouTube Content ID
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="w-5 h-5" />
+                    Ditto Music Status
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {dittoReleases.map((release) => (
+                      <div key={release.id} className="flex items-center justify-between p-3 border rounded">
+                        <div>
+                          <h4 className="font-medium">Track {release.trackId}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {release.platforms.join(', ')}
+                          </p>
+                          {release.scheduledReleaseTime && (
+                            <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                              <Calendar className="w-3 h-3 inline mr-1" />
+                              Release: {new Date(release.scheduledReleaseTime).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          {getStatusBadge(release.status)}
+                          {release.analytics && (
+                            <div className="text-xs mt-1 space-y-1">
+                              <div>{release.analytics.streams.toLocaleString()} streams</div>
+                              <div>${release.analytics.revenue.toFixed(2)} revenue</div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex justify-between">
-                    <span>Master Rights:</span>
-                    <span className="text-green-600">Retained</span>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Info className="w-5 h-5" />
+                    Distribution Info
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span>Distribution Time:</span>
+                      <span>1-2 weeks</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Platforms:</span>
+                      <span>50+ Global</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Master Rights:</span>
+                      <span className="text-green-600">Retained</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Revenue Share:</span>
+                      <span>85% Artist</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Revenue Share:</span>
-                    <span>85% Artist</span>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="pro" className="space-y-4">
+          <div className="grid gap-4">
+            {/* Ditto Pro Header */}
+            <Card className="border-purple-200 dark:border-purple-800 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Crown className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                    <div>
+                      <CardTitle>Ditto Pro Features</CardTitle>
+                      <CardDescription>Unlock premium features for advanced distribution and monetization</CardDescription>
+                    </div>
+                  </div>
+                  <Badge className="bg-purple-600">Pro</Badge>
+                </div>
+              </CardHeader>
+            </Card>
+
+            {/* Pro Features Grid */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {/* Unlimited Releases */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Music className="w-5 h-5 text-purple-600" />
+                    Unlimited Music Releases
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Release unlimited music for your artist without restrictions
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.unlimitedReleases}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, unlimitedReleases: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.unlimitedReleases ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* TV & Movie Sync */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Headphones className="w-5 h-5 text-purple-600" />
+                    TV & Movie Sync
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Pitch your music for TV shows, movies, and commercials
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.tvMovieSync}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, tvMovieSync: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.tvMovieSync ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Music Publishing */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <DollarSign className="w-5 h-5 text-purple-600" />
+                    Music Publishing Royalties
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Collect performance and mechanical royalties automatically
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.musicPublishing}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, musicPublishing: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.musicPublishing ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* YouTube Content ID */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Youtube className="w-5 h-5 text-red-600" />
+                    YouTube Content ID
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Claim and monetize your content on YouTube automatically
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.youtubeContentId}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, youtubeContentId: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.youtubeContentId ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Release Scheduling */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Calendar className="w-5 h-5 text-blue-600" />
+                    Set Exact Release Times
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Schedule releases to exact times for maximum impact
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.releaseScheduling}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, releaseScheduling: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.releaseScheduling ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Priority Support */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Star className="w-5 h-5 text-yellow-600" />
+                    Priority Support
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Get dedicated support team and faster issue resolution
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.prioritySupport}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, prioritySupport: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.prioritySupport ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Release Protection */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Lock className="w-5 h-5 text-green-600" />
+                    Release Protection Guaranteed
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Legal protection against duplicate releases and piracy
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.releaseProtection}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, releaseProtection: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.releaseProtection ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Compilation Releases */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Disc3 className="w-5 h-5 text-indigo-600" />
+                    Compilation Releases
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Create and distribute compilation albums with multiple artists
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.compilationReleases}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, compilationReleases: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.compilationReleases ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Exclusive Features */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Zap className="w-5 h-5 text-amber-600" />
+                    Exclusive New Features
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Early access to new Ditto Pro features and tools
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <Switch 
+                      checked={dittpProFeatures.exclusiveFeatures}
+                      onCheckedChange={(checked) => setDittoProFeatures(prev => ({ ...prev, exclusiveFeatures: checked }))}
+                    />
+                    <span className="text-sm font-medium">{dittpProFeatures.exclusiveFeatures ? 'Enabled' : 'Disabled'}</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Ditto Pro Perks */}
+              <Card className="md:col-span-2 lg:col-span-3 border-purple-200 dark:border-purple-800">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Crown className="w-5 h-5 text-purple-600" />
+                    Ditto Pro Perks
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="flex gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-sm">Higher Revenue Share</h4>
+                        <p className="text-xs text-muted-foreground">Earn up to 90% on streaming revenue</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-sm">Advanced Analytics</h4>
+                        <p className="text-xs text-muted-foreground">Detailed insights by country, platform, and demographic</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-sm">Custom Metadata</h4>
+                        <p className="text-xs text-muted-foreground">Full control over your music metadata and pricing</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-3 p-3 rounded-lg bg-purple-50 dark:bg-purple-950/30">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="font-medium text-sm">API Access</h4>
+                        <p className="text-xs text-muted-foreground">Connect directly with Ditto REST API for automation</p>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Pro Status Card */}
+            <Card className="bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
+              <CardHeader>
+                <CardTitle className="text-base">Pro Account Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Features Enabled</p>
+                    <p className="text-2xl font-bold">{Object.values(dittpProFeatures).filter(Boolean).length}/{Object.keys(dittpProFeatures).length}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">Account Type</p>
+                    <Badge className="bg-blue-600">Active Pro</Badge>
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1">REST API Access</p>
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800">Connected</Badge>
                   </div>
                 </div>
               </CardContent>

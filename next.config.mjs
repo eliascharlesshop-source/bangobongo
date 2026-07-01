@@ -1,8 +1,4 @@
 /** @type {import('next').NextConfig} */
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
-
 const nextConfig = {
   reactStrictMode: true,
   images: {
@@ -25,15 +21,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   experimental: {
-    webpackBuildWorker: true,
-    parallelServerBuildTraces: true,
-    parallelServerCompiles: true,
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
     optimizeCss: true,
-    scrollRestoration: true,
   },
-  // Optimize build performance
-  swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production',
   },
@@ -70,7 +60,7 @@ const nextConfig = {
         ],
       },
       {
-        source: '/(.*\\.(png|jpg|jpeg|gif|ico|svg|webp|avif))',
+        source: '/:path*\\.(png|jpg|jpeg|gif|ico|svg|webp|avif)',
         headers: [
           {
             key: 'Cache-Control',
@@ -86,4 +76,4 @@ const nextConfig = {
   assetPrefix: process.env.NODE_ENV === 'production' ? undefined : undefined,
 }
 
-module.exports = withBundleAnalyzer(nextConfig)
+export default nextConfig
