@@ -149,15 +149,9 @@ export function StudioServices() {
               <button
                 key={service.id}
                 onClick={() => setActiveService(service)}
-                className="w-full text-left group py-8 flex items-start gap-6 md:gap-10 hover:bg-card/40 transition-colors px-4 -mx-4 rounded-lg"
+                className="w-full text-left group py-8 flex items-start gap-6 md:gap-10 hover:bg-card/60 transition-all duration-300 px-4 -mx-4 rounded-lg hover:rounded-xl"
               >
-                {/* Number */}
-                <span className="text-sm font-mono text-muted-foreground mt-1 w-6 flex-shrink-0">
-                  {service.number}
-                </span>
-
-                {/* Icon */}
-                <div className="w-10 h-10 rounded-lg bg-card chrome-border flex items-center justify-center flex-shrink-0 group-hover:bg-primary/10 transition-colors mt-0.5">
+                <div className="w-12 h-12 rounded-lg chrome-mint flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition-all duration-300 mt-0.5">
                   <Icon className="w-5 h-5 text-primary" />
                 </div>
 

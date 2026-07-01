@@ -116,18 +116,18 @@ export function ServiceDetail({ service, onClose }: ServiceDetailProps) {
         </div>
 
         {/* Footer CTA */}
-        <div className="p-6 border-t border-primary/10 bg-[#1A2A37] sticky bottom-0">
+        <div className="p-6 border-t border-primary/10 bg-gradient-to-r from-[#1A2A37] to-[#141D27] sticky bottom-0 backdrop-blur">
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-xs text-muted-foreground">Starting at</p>
-              <p className="text-3xl font-black text-primary">{service.startingAt}</p>
+              <p className="text-3xl font-black chrome-text-mint">{service.startingAt}</p>
             </div>
             <p className="text-xs text-muted-foreground text-right max-w-[160px]">
               Custom quotes available for larger projects
             </p>
           </div>
           <Button
-            className="w-full bg-primary text-background hover:bg-primary/90 font-semibold glow-primary"
+            variant="chrome"
             size="lg"
             asChild
           >

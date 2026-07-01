@@ -42,7 +42,7 @@ export function StudioCTA() {
             <h2 className="text-5xl md:text-6xl font-black tracking-tight text-balance mb-6">
               Let&apos;s Make
               <br />
-              <span className="text-primary">Something.</span>
+              <span className="chrome-text-mint">Something.</span>
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-10 max-w-md">
               Fill in the form and we will get back to you within 24 hours with
@@ -67,7 +67,7 @@ export function StudioCTA() {
           </div>
 
           {/* Right — form */}
-          <div className="bg-card chrome-border rounded-2xl p-8">
+          <div className="chrome-glass rounded-2xl p-8 backdrop-blur-sm">
             {submitted ? (
               <div className="flex flex-col items-center justify-center py-16 text-center gap-4">
                 <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-2">
@@ -154,8 +154,9 @@ export function StudioCTA() {
 
                 <Button
                   type="submit"
+                  variant="chrome"
                   size="lg"
-                  className="w-full bg-primary text-background hover:bg-primary/90 font-semibold glow-primary"
+                  className="w-full font-semibold"
                 >
                   Send Enquiry
                   <ArrowRight className="ml-2 h-4 w-4" />

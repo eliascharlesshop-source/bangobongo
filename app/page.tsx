@@ -48,13 +48,13 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/music">
-                <Button className="bg-primary text-background hover:bg-secondary">
+                <Button variant="chrome" size="lg">
                   <Music className="h-4 w-4 mr-2" />
                   Listen Now
                 </Button>
               </Link>
               <Link href="/tour">
-                <Button variant="outline">
+                <Button variant="chromeGlass" size="lg">
                   <CalendarDays className="h-4 w-4 mr-2" />
                   Tour Dates
                 </Button>
@@ -71,21 +71,27 @@ export default function Home() {
       <MerchSection merchItems={merchItems} />
 
       {/* Newsletter Section - Critical for conversion */}
-      <section className="py-16 bg-accent">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-24 chrome-glass relative overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-0 right-0 w-72 h-72 bg-primary/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/10 rounded-full blur-[120px]" />
+        </div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Stay Connected</h2>
-            <p className="text-muted-foreground mb-8">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 chrome-text-mint">Stay Connected</h2>
+            <p className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto">
               Subscribe to our newsletter for exclusive updates, early access to new releases, and special offers.
             </p>
 
-            <form className="flex flex-col sm:flex-row gap-2">
+            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Your email address"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-12 w-full rounded-lg border border-primary/20 bg-background/80 backdrop-blur px-4 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300"
               />
-              <Button type="submit">Subscribe</Button>
+              <Button type="submit" variant="chrome" size="lg">
+                Subscribe
+              </Button>
             </form>
           </div>
         </div>

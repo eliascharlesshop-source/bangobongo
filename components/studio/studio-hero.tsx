@@ -47,6 +47,7 @@ export function StudioHero() {
           <div className="flex flex-wrap gap-4">
             <Button
               asChild
+              variant="chrome"
               size="lg"
               className="bg-primary text-background hover:bg-primary/90 font-semibold px-8 glow-primary"
             >
