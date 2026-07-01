@@ -169,24 +169,6 @@ export function ServiceDetail({ service, onClose }: ServiceDetailProps) {
             </Button>
           </div>
         )}
-            <p className="text-xs text-muted-foreground text-right max-w-[160px]">
-              Custom quotes available for larger projects
-            </p>
-          </div>
-          <Button
-            variant="chrome"
-            size="lg"
-            asChild
-          >
-            <a href="mailto:studio@bangobongo.com">
-              Book {service.title} Session
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </a>
-          </Button>
-          <p className="text-xs text-muted-foreground text-center mt-3">
-            Response within 24 hours
-          </p>
-        </div>
       </aside>
     </>
   )
