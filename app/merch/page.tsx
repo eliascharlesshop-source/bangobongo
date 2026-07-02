@@ -189,7 +189,7 @@ export default function MerchPage() {
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-background to-background-lighter">
           <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-30 mix-blend-overlay"></div>
         </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
               <span className="text-primary">Official</span> <br />
