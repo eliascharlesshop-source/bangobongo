@@ -66,81 +66,16 @@ const sortOptions = [
 const tourDatesSample: TourDate[] = [
   {
     id: "1",
-    date: "March 15, 2024",
-    venue: "Fabric London",
-    city: "London",
-    country: "UK",
+    date: "August 15, 2026",
+    venue: "SOhO Restaurant & Music Club",
+    city: "Santa Barbara",
+    country: "USA",
     ticketLink: "#",
     status: "upcoming",
-    price: { general: 45, vip: 85 },
-    description: "Cheers Tour opens in London. An unforgettable night of electronic music at Fabric.",
+    price: { general: 25, vip: 60 },
+    description: "Cheers Tour kicks off in Santa Barbara. A night of live music at one of the Central Coast's most beloved venues.",
     image: "/images/tour/cheers-tour-card.png",
-    coordinates: { lat: 51.5195, lng: -0.0935 }
-  },
-  {
-    id: "2",
-    date: "April 22, 2024",
-    venue: "Berghain",
-    city: "Berlin",
-    country: "Germany",
-    ticketLink: "#",
-    status: "upcoming",
-    price: { general: 35, vip: 75 },
-    description: "Cheers Tour hits Berlin at one of the world's most iconic venues.",
-    image: "/images/tour/cheers-tour-card.png",
-    coordinates: { lat: 52.5200, lng: 13.4050 }
-  },
-  {
-    id: "3",
-    date: "May 10, 2024",
-    venue: "Awakenings Festival",
-    city: "Amsterdam",
-    country: "Netherlands",
-    ticketLink: "#",
-    status: "upcoming",
-    price: { general: 55, vip: 95 },
-    description: "Cheers Tour — festival appearance with a special extended DJ set.",
-    image: "/images/tour/cheers-tour-card.png",
-    coordinates: { lat: 52.3676, lng: 4.9041 }
-  },
-  {
-    id: "4",
-    date: "June 5, 2024",
-    venue: "Printworks",
-    city: "London",
-    country: "UK",
-    ticketLink: "#",
-    status: "upcoming",
-    price: { general: 50, vip: 90 },
-    description: "Cheers Tour returns to London with a full live production setup.",
-    image: "/images/tour/cheers-tour-card.png",
-    coordinates: { lat: 51.5195, lng: -0.0935 }
-  },
-  {
-    id: "5",
-    date: "July 12, 2024",
-    venue: "Tomorrowland",
-    city: "Boom",
-    country: "Belgium",
-    ticketLink: "#",
-    status: "upcoming",
-    price: { general: 150, vip: 250 },
-    description: "Cheers Tour — headlining slot at Tomorrowland Main Stage.",
-    image: "/images/tour/cheers-tour-card.png",
-    coordinates: { lat: 51.1534, lng: 4.6889 }
-  },
-  {
-    id: "6",
-    date: "August 3, 2024",
-    venue: "Sónar Festival",
-    city: "Barcelona",
-    country: "Spain",
-    ticketLink: "#",
-    status: "upcoming",
-    price: { general: 65, vip: 105 },
-    description: "Cheers Tour closes the summer at one of Europe's biggest electronic music festivals.",
-    image: "/images/tour/cheers-tour-card.png",
-    coordinates: { lat: 41.3851, lng: 2.1734 }
+    coordinates: { lat: 34.4208, lng: -119.6982 }
   }
 ]
 
