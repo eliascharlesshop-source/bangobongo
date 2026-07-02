@@ -401,11 +401,11 @@ export default function TourPage() {
             <div className="flex flex-col lg:flex-row">
               <div className="lg:w-1/2 relative">
                 <Image
-                  src="/placeholder.svg?height=800&width=1200"
-                  alt="VIP Experience"
+                  src="/images/tour/vip-experience.png"
+                  alt="VIP Experience — exclusive backstage access at a BangoBongo show"
                   width={600}
                   height={400}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover min-h-[320px]"
                 />
               </div>
 
