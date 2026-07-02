@@ -348,26 +348,6 @@ export default function MerchPage() {
 
       {/* FAQ */}
       <FAQ />
-
-      {/* Crypto Payment */}
-      <section className="py-16 bg-accent">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-4">Pay with Cryptocurrency</h2>
-            <p className="text-muted-foreground mb-8">
-              We accept ETH and BTC payments. Connect your wallet to enable crypto checkout options.
-            </p>
-            <Button onClick={handleConnectWallet} className="bg-primary text-background hover:bg-secondary">
-              {walletConnected ? "Wallet Connected" : "Connect Wallet"}
-            </Button>
-            {walletConnected && (
-              <p className="text-sm text-primary mt-4">
-                Wallet connected! You can now purchase merchandise using cryptocurrency.
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
