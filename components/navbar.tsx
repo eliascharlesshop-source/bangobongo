@@ -71,11 +71,6 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-4">
             <CartIcon />
             <ThemeToggle />
-            <Link href="/cart">
-              <Button variant="ghost" size="icon">
-                <ShoppingCart className="h-5 w-5" />
-              </Button>
-            </Link>
             <Link href="/music">
               <Button className="bg-primary text-background hover:bg-secondary">
                 <Music className="h-4 w-4 mr-2" />
@@ -134,11 +129,6 @@ export default function Navbar() {
             <div className="flex items-center space-x-4 px-3 py-2">
               <CartIcon />
               <ThemeToggle />
-              <Link href="/cart" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" size="icon">
-                  <ShoppingCart className="h-5 w-5" />
-                </Button>
-              </Link>
               <Link href="/music" onClick={() => setIsMenuOpen(false)}>
                 <Button className="bg-primary text-background hover:bg-secondary">
                   <Music className="h-4 w-4 mr-2" />
