@@ -184,6 +184,24 @@ export default function MerchPage() {
 
   return (
     <div className="min-h-screen">
+      {/* Ad Space Banner */}
+      <section className="bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 border-b border-primary/20 py-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="chrome-glass rounded-lg p-6 text-center">
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-primary uppercase tracking-wide">Limited Time Offer</p>
+              <h3 className="text-2xl md:text-3xl font-bold chrome-text-mint">Summer Collection Sale</h3>
+              <p className="text-muted-foreground max-w-2xl mx-auto">Get 20% off all merchandise with code SUMMER2026 — Free worldwide shipping on orders over $50</p>
+              <div className="pt-2">
+                <Button variant="chrome" size="sm">
+                  Shop Now
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Section */}
       <section className="relative h-[50vh] flex items-center">
         <div className="absolute inset-0 z-0 bg-gradient-to-b from-background to-background-lighter">
