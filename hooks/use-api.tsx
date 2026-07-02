@@ -68,11 +68,25 @@ export function useMusic(params?: { page?: number; limit?: number; published?: b
 }
 
 export const useGear = (params?: { category?: string; page?: number; limit?: number }) => {
-  return useApi<{ gear: any[]; total: number }>('gear', { params })
+  // Gear data is managed locally on the page, return empty state
+  // This triggers the fallback to sample data in the component
+  return {
+    data: null,
+    loading: false,
+    error: null,
+    refetch: () => Promise.resolve()
+  }
 }
 
 export const useTours = (params?: { upcoming?: boolean; page?: number; limit?: number }) => {
-  return useApi<{ tours: any[]; total: number }>('tours', { params })
+  // Tours data is managed locally on the page, return empty state
+  // This triggers the fallback to sample data in the component
+  return {
+    data: null,
+    loading: false,
+    error: null,
+    refetch: () => Promise.resolve()
+  }
 }
 
 export function useCart(token?: string) {

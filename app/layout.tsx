@@ -5,6 +5,7 @@ import "./globals.css"
 import dynamic from "next/dynamic"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ClientProviders } from "@/components/client-providers"
 
 // Dynamically import heavy components
 const Navbar = dynamic(() => import("@/components/navbar"), {
@@ -17,21 +18,8 @@ const Footer = dynamic(() => import("@/components/footer"), {
   ssr: true
 })
 
-const AudioProvider = dynamic(() => import("@/contexts/audio-context").then(mod => ({ default: mod.AudioProvider })), {
-  ssr: false
-})
-
-const NotificationProvider = dynamic(() => import("@/contexts/notification-context").then(mod => ({ default: mod.NotificationProvider })), {
-  ssr: false
-})
-
 const ErrorBoundary = dynamic(() => import("@/components/error-boundary").then(mod => ({ default: mod.ErrorBoundary })), {
   ssr: true
-})
-
-const FixedMediaPlayerWrapper = dynamic(() => import("@/components/fixed-media-player-wrapper"), {
-  loading: () => null,
-  ssr: false
 })
 
 /**
@@ -109,7 +97,7 @@ export default function RootLayout({
         <link rel="icon" href="/logo/BangoBongo-Trans.png" />
         <link rel="apple-touch-icon" href="/logo/BangoBongo-Trans.png" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#8B5CF6" />
+        <meta name="theme-color" content="#141D27" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="BangoBongo" />
@@ -123,21 +111,18 @@ export default function RootLayout({
       <body className={inter.className} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ErrorBoundary>
-            <NotificationProvider>
-              <AudioProvider>
-                <div className="min-h-screen flex flex-col">
-                  <Navbar />
-                  <main className="flex-1 pb-[72px]">
-                    <ErrorBoundary>
-                      {children}
-                    </ErrorBoundary>
-                  </main>
-                  <Footer />
-                  <FixedMediaPlayerWrapper />
-                </div>
-                <Toaster />
-              </AudioProvider>
-            </NotificationProvider>
+            <ClientProviders>
+              <div className="min-h-screen flex flex-col">
+                <Navbar />
+                <main className="flex-1 pb-[72px]">
+                  <ErrorBoundary>
+                    {children}
+                  </ErrorBoundary>
+                </main>
+                <Footer />
+              </div>
+              <Toaster />
+            </ClientProviders>
           </ErrorBoundary>
         </ThemeProvider>
       </body>

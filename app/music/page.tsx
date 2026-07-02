@@ -41,10 +41,158 @@ const sortOptions = [
   { id: "duration", name: "Duration" },
 ]
 
-// Sample data - removed
+// Chrome Hearts — First Album
+const chromeHeartsAlbum: Album = {
+  id: "chrome-hearts",
+  title: "Chrome Hearts",
+  year: 2024,
+  type: "album",
+  cover: "/placeholder.svg?height=400&width=400",
+  artist: "BangoBongo",
+  tracks: 19,
+  trackList: [
+    // Side A — Chrome Hearts
+    {
+      id: "ch-01",
+      title: "What I'm Afraid Of (Intro)",
+      duration: 185,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-02",
+      title: "Angel Baby",
+      duration: 234,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-03",
+      title: "Either Way",
+      duration: 198,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-04",
+      title: "Emotional",
+      duration: 215,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-05",
+      title: "Guts",
+      duration: 201,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-06",
+      title: "Heartless",
+      duration: 187,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-07",
+      title: "In Time",
+      duration: 223,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-08",
+      title: "Jealous",
+      duration: 209,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-09",
+      title: "Never Buy",
+      duration: 195,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    // Side B — Night Runs
+    {
+      id: "ch-10",
+      title: "Nightshift",
+      duration: 212,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-11",
+      title: "Paradise Lost",
+      duration: 201,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-12",
+      title: "Pretty But Tough",
+      duration: 189,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-13",
+      title: "Save Me",
+      duration: 218,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-14",
+      title: "She",
+      duration: 176,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-15",
+      title: "Summer Reign",
+      duration: 224,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-16",
+      title: "Recovering Lungs",
+      duration: 241,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-17",
+      title: "Timing",
+      duration: 207,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-18",
+      title: "Trap Soul II",
+      duration: 213,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+    {
+      id: "ch-19",
+      title: "Whatever You Don't Do (Outro)",
+      duration: 197,
+      albumArt: "/placeholder.svg?height=400&width=400",
+      artist: "BangoBongo",
+    },
+  ],
+}
+
+// Sample data
 const singles: Single[] = []
 const eps: Album[] = []
-const albums: Album[] = []
+const albums: Album[] = [chromeHeartsAlbum]
 
 // Helper function to format time
 const formatTime = (time: number): string => {
@@ -485,36 +633,51 @@ const AlbumCard = ({ item }: { item: any }) => {
             <p className="text-muted-foreground mt-2">{item.tracks} tracks • Full Album</p>
 
             <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
-              {Array.from({ length: Math.min(6, item.tracks) }).map((_, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center text-sm hover:bg-accent/30 p-1 rounded cursor-pointer group/track"
-                >
-                  <div className="flex items-center">
-                    <span className="w-5 text-muted-foreground">{index + 1}</span>
-                    <span className="group-hover/track:text-primary transition-colors">
-                      {index === 0
-                        ? "Intro"
-                        : index === 1
-                          ? item.title.split(" ")[0] + " Rhythm"
-                          : index === 2
-                            ? "Electric " + (item.title.split(" ")[1] || "Beat")
-                            : index === 3
-                              ? "Digital Dreams"
-                              : index === 4
-                                ? "Midnight Echo"
-                                : "Outro"}
-                    </span>
+              {item.trackList && item.trackList.length > 0 ? (
+                item.trackList.slice(0, 6).map((track: any, index: number) => (
+                  <div
+                    key={track.id}
+                    className="flex justify-between items-center text-sm hover:bg-accent/30 p-1 rounded cursor-pointer group/track"
+                  >
+                    <div className="flex items-center">
+                      <span className="w-5 text-muted-foreground">{index + 1}</span>
+                      <span className="group-hover/track:text-primary transition-colors line-clamp-1">{track.title}</span>
+                    </div>
+                    <span className="text-muted-foreground">{formatTime(track.duration)}</span>
                   </div>
-                  <span className="text-muted-foreground">{formatTime(180 + index * 15)}</span>
-                </div>
-              ))}
+                ))
+              ) : (
+                Array.from({ length: Math.min(6, item.tracks) }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center text-sm hover:bg-accent/30 p-1 rounded cursor-pointer group/track"
+                  >
+                    <div className="flex items-center">
+                      <span className="w-5 text-muted-foreground">{index + 1}</span>
+                      <span className="group-hover/track:text-primary transition-colors">
+                        {index === 0
+                          ? "Intro"
+                          : index === 1
+                            ? item.title.split(" ")[0] + " Rhythm"
+                            : index === 2
+                              ? "Electric " + (item.title.split(" ")[1] || "Beat")
+                              : index === 3
+                                ? "Digital Dreams"
+                                : index === 4
+                                  ? "Midnight Echo"
+                                  : "Outro"}
+                      </span>
+                    </div>
+                    <span className="text-muted-foreground">{formatTime(180 + index * 15)}</span>
+                  </div>
+                ))
+              )}
             </div>
 
-            {item.tracks > 6 && (
+            {item.trackList && item.trackList.length > 6 && (
               <div className="mt-2 text-right">
                 <Button variant="link" size="sm" className="text-primary hover:text-secondary">
-                  View all {item.tracks} tracks
+                  View all {item.trackList.length} tracks
                 </Button>
               </div>
             )}
