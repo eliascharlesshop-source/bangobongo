@@ -11,7 +11,6 @@ import {
   Upload, 
   FileAudio, 
   FileMusic, 
-  FileWaveform,
   Play,
   Pause,
   Download,
@@ -210,7 +209,7 @@ export default function FileUploadPage() {
   const getFileIcon = (format: string) => {
     switch (format.toUpperCase()) {
       case 'MP3': return <FileAudio className="h-8 w-8" />
-      case 'WAV': return <FileWaveform className="h-8 w-8" />
+      case 'WAV': return <Music className="h-8 w-8" />
       default: return <FileMusic className="h-8 w-8" />
     }
   }

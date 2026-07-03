@@ -1,6 +1,6 @@
 'use client'
 
-import { Zap, Music, Drum, Bass, Plus, Trash2 } from 'lucide-react'
+import { Zap, Music, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
@@ -22,8 +22,8 @@ interface InstrumentPanelProps {
 
 const instruments = [
   { id: 'synth', name: 'Synth', icon: Zap, color: 'text-primary' },
-  { id: 'drums', name: 'Drums', icon: Drum, color: 'text-accent' },
-  { id: 'bass', name: 'Bass', icon: Bass, color: 'text-secondary' },
+  { id: 'drums', name: 'Drums', icon: Music, color: 'text-accent' },
+  { id: 'bass', name: 'Bass', icon: Music, color: 'text-secondary' },
   { id: 'piano', name: 'Piano', icon: Music, color: 'text-primary' },
 ]
 

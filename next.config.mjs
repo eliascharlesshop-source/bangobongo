@@ -22,6 +22,7 @@ const nextConfig = {
   },
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    activityIndicator: true,
   },
   // Performance headers
   headers: async () => {

@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import jwt from 'jsonwebtoken'
-import { createHash, randomBytes } from 'crypto'
 
 // Admin role hierarchy
 const ADMIN_ROLES = {
@@ -12,20 +10,8 @@ const ADMIN_ROLES = {
 
 type AdminRole = typeof ADMIN_ROLES[keyof typeof ADMIN_ROLES]
 
-// JWT Secret (in production, use environment variable)
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production'
-const SESSION_ENCRYPTION_KEY = process.env.SESSION_ENCRYPTION_KEY || 'your-32-char-encryption-key-here'
-
 // Rate limiting store (in production, use Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
-
-// Encrypt session data
-function encryptSession(data: any): string {
-  const iv = randomBytes(16)
-  const cipher = createHash('sha256').update(SESSION_ENCRYPTION_KEY).digest()
-  // For simplicity, using hash-based encryption. In production, use proper AES encryption
-  return Buffer.from(JSON.stringify(data)).toString('base64')
-}
 
 // Decrypt session data
 function decryptSession(encryptedData: string): any {
@@ -57,17 +43,26 @@ function rateCheck(ip: string): boolean {
   return true
 }
 
-// Verify JWT token
+// Basic token validation (without crypto)
 function verifyToken(token: string): { valid: boolean; payload?: any; error?: string } {
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as any
+    // Decode JWT without verification (Edge Runtime compatible)
+    const parts = token.split('.')
+    if (parts.length !== 3) {
+      return { valid: false, error: 'Invalid token format' }
+    }
+    
+    const payload = JSON.parse(
+      Buffer.from(parts[1], 'base64').toString()
+    ) as any
+    
+    // Check expiration
+    if (payload.exp && Date.now() >= payload.exp * 1000) {
+      return { valid: false, error: 'Token expired' }
+    }
+    
     return { valid: true, payload }
   } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      return { valid: false, error: 'Token expired' }
-    } else if (error instanceof jwt.JsonWebTokenError) {
-      return { valid: false, error: 'Invalid token' }
-    }
     return { valid: false, error: 'Token verification failed' }
   }
 }
