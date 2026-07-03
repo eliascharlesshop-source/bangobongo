@@ -719,10 +719,17 @@ export default function TourPage() {
 
                 <div className="bg-background rounded-lg p-6 border border-accent">
                   <h3 className="text-xl font-semibold text-foreground mb-4">Pricing</h3>
-                  <div className="bg-accent/30 rounded-lg p-4 mb-4">
-                    <div className="text-sm text-muted-foreground mb-1">Standard DJ Services</div>
-                    <div className="text-3xl font-bold text-primary mb-1">$100</div>
-                    <div className="text-sm text-muted-foreground">per hour</div>
+                  <div className="space-y-4 mb-4">
+                    <div className="bg-accent/30 rounded-lg p-4">
+                      <div className="text-sm text-muted-foreground mb-1">Standard DJ Services</div>
+                      <div className="text-3xl font-bold text-primary mb-1">$100</div>
+                      <div className="text-sm text-muted-foreground">per hour</div>
+                    </div>
+                    <div className="bg-primary/10 rounded-lg p-4 border border-primary/30">
+                      <div className="text-sm text-muted-foreground mb-1">Premium Performance Package</div>
+                      <div className="text-3xl font-bold text-primary mb-1">$5,000</div>
+                      <div className="text-sm text-muted-foreground">per performance</div>
+                    </div>
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
                     Rate is for remote DJ services. Custom packages and longer-term bookings available at discounted rates.
