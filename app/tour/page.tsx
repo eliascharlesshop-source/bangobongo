@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import {
   Play,
   ExternalLink,
@@ -195,16 +196,20 @@ export default function TourPage() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-primary text-background hover:bg-secondary">
-                  Book a DJ
+                <Button size="lg" className="bg-primary text-background hover:bg-secondary" asChild>
+                  <a href="https://tiktok.com/@bangobongo.ece" target="_blank" rel="noopener noreferrer">
+                    Book a DJ - Message on TikTok
+                  </a>
                 </Button>
-                <Button size="lg" variant="outline">
-                  Learn More About Rates
+                <Button size="lg" variant="outline" asChild>
+                  <Link href="/studio/cart">
+                    Add to Cart
+                  </Link>
                 </Button>
               </div>
 
               <p className="text-center text-sm text-muted-foreground mt-6">
-                Contact us with your event details for custom quotes and availability.
+                Message us on TikTok @bangobongo.ece to book a DJ session, or add to cart to get started with checkout.
               </p>
             </div>
           </div>
