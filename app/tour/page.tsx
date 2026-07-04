@@ -15,8 +15,6 @@ export default function TourPage() {
       {/* TikTok Live Sessions Section */}
       <section className="py-16 bg-card">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      <section className="py-16 bg-card">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-3">TikTok DJ Sessions</h2>
             <p className="text-lg text-muted-foreground mb-8">
