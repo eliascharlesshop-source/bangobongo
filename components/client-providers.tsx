@@ -5,17 +5,17 @@ import { CartProvider } from "@/contexts/cart-context"
 
 const AudioProvider = dynamic(
   () => import("@/contexts/audio-context").then((mod) => ({ default: mod.AudioProvider })),
-  { ssr: false }
+  { loading: () => null }
 )
 
 const NotificationProvider = dynamic(
   () => import("@/contexts/notification-context").then((mod) => ({ default: mod.NotificationProvider })),
-  { ssr: false }
+  { loading: () => null }
 )
 
 const FixedMediaPlayerWrapper = dynamic(
   () => import("@/components/fixed-media-player-wrapper"),
-  { loading: () => null, ssr: false }
+  { loading: () => null }
 )
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {

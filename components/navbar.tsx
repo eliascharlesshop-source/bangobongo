@@ -3,9 +3,8 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, Music } from "lucide-react"
+import { Menu, X, Music, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { CartIcon } from "@/components/cart-icon"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Navbar() {
@@ -59,7 +58,6 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <CartIcon />
             <ThemeToggle />
             <Link href="/cart">
               <Button variant="ghost" size="icon">
@@ -122,7 +120,6 @@ export default function Navbar() {
               Merch
             </Link>
             <div className="flex items-center space-x-4 px-3 py-2">
-              <CartIcon />
               <ThemeToggle />
               <Link href="/cart" onClick={() => setIsMenuOpen(false)}>
                 <Button variant="ghost" size="icon">
