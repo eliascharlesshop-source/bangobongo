@@ -3,20 +3,9 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import dynamic from "next/dynamic"
-import { Menu, X, Music } from "lucide-react"
+import { Menu, X, Music, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-// Lazy load non-critical components
-const CartIcon = dynamic(() => import("@/components/cart-icon").then(mod => ({ default: mod.CartIcon })), {
-  loading: () => <div className="w-9 h-9 rounded-md bg-muted animate-pulse" />,
-  ssr: false
-})
-
-const ThemeToggle = dynamic(() => import("@/components/theme-toggle").then(mod => ({ default: mod.ThemeToggle })), {
-  loading: () => <div className="w-9 h-9 rounded-md bg-muted animate-pulse" />,
-  ssr: false
-})
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
@@ -69,7 +58,6 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <CartIcon />
             <ThemeToggle />
             <Link href="/cart">
               <Button variant="ghost" size="icon">
@@ -132,7 +120,6 @@ export default function Navbar() {
               Merch
             </Link>
             <div className="flex items-center space-x-4 px-3 py-2">
-              <CartIcon />
               <ThemeToggle />
               <Link href="/cart" onClick={() => setIsMenuOpen(false)}>
                 <Button variant="ghost" size="icon">
