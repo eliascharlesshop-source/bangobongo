@@ -2,25 +2,11 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
-import dynamic from "next/dynamic"
 import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ClientProviders } from "@/components/client-providers"
-
-// Dynamically import heavy components
-const Navbar = dynamic(() => import("@/components/navbar"), {
-  loading: () => <div className="h-16 bg-background/80 backdrop-blur-md border-b border-accent animate-pulse" />,
-  ssr: true
-})
-
-const Footer = dynamic(() => import("@/components/footer"), {
-  loading: () => <div className="h-12 bg-background animate-pulse" />,
-  ssr: true
-})
-
-const ErrorBoundary = dynamic(() => import("@/components/error-boundary").then(mod => ({ default: mod.ErrorBoundary })), {
-  ssr: true
-})
+import { ErrorBoundary } from "@/components/error-boundary"
+import { LayoutWrapper } from "@/components/layout-wrapper"
 
 /**
  * Note: This application supports cryptocurrency payments but avoids
@@ -112,15 +98,9 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
           <ErrorBoundary>
             <ClientProviders>
-              <div className="min-h-screen flex flex-col">
-                <Navbar />
-                <main className="flex-1 pb-[72px]">
-                  <ErrorBoundary>
-                    {children}
-                  </ErrorBoundary>
-                </main>
-                <Footer />
-              </div>
+              <LayoutWrapper>
+                {children}
+              </LayoutWrapper>
               <Toaster />
             </ClientProviders>
           </ErrorBoundary>
