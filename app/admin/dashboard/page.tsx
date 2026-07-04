@@ -2,8 +2,6 @@
 
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
-
-export const dynamic = 'force-dynamic'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
