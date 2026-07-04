@@ -3,20 +3,10 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import dynamic from "next/dynamic"
 import { Menu, X, Music } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-// Lazy load non-critical components
-const CartIcon = dynamic(() => import("@/components/cart-icon").then(mod => ({ default: mod.CartIcon })), {
-  loading: () => <div className="w-9 h-9 rounded-md bg-muted animate-pulse" />,
-  ssr: false
-})
-
-const ThemeToggle = dynamic(() => import("@/components/theme-toggle").then(mod => ({ default: mod.ThemeToggle })), {
-  loading: () => <div className="w-9 h-9 rounded-md bg-muted animate-pulse" />,
-  ssr: false
-})
+import { CartIcon } from "@/components/cart-icon"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
