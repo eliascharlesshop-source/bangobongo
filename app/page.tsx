@@ -1,101 +1,466 @@
-import Image from "next/image"
-import Link from "next/link"
-import dynamic from "next/dynamic"
-import { CalendarDays, MapPin, Music, Package, ShoppingBag, ExternalLink, Play } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import type { Track, Album, TourDate, GearItem, MerchItem } from "@/types"
+'use client'
 
-// Sample data - removed
-const featuredTracks: Track[] = []
-const albums: Album[] = []
-const tourDates: TourDate[] = []
-const favoriteGear: GearItem[] = []
-const merchItems: MerchItem[] = []
+import { useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import {
+  Music,
+  CalendarDays,
+  MapPin,
+  Play,
+  ShoppingBag,
+  ExternalLink,
+  Mail,
+  Instagram,
+  Twitter,
+  Youtube,
+  Facebook,
+  CreditCard,
+  Bitcoin,
+  Menu,
+  X,
+  ShoppingCart,
+  Clock,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { CheckoutModal } from '@/components/checkout-modal'
+import { PRODUCTS } from '@/lib/products'
+import type { Product } from '@/lib/products'
 
-// Lazy load sections below the fold
-const MusicSection = dynamic(() => import("@/components/sections/music-section"), {
-  loading: () => <div className="py-16 bg-background animate-pulse"><div className="h-64 bg-background-lighter rounded-lg mx-auto max-w-4xl"></div></div>
-})
+/* ─────────────────── Static data ─────────────────── */
+const tracklist = [
+  'What I\'m Afraid Of (Intro)', 'Angel Baby', 'Either Way', 'Emotional',
+  'Guts', 'Heartless', 'In Time', 'Jealous', 'Never Buy', 'Nightshift',
+  'Paradise Lost', 'Pretty But Tough', 'Save Me', 'She', 'Summer Reign',
+  'Recovering Lungs', 'Timing', 'Trap Soul II', 'Whatever You Don\'t Do (Outro)',
+]
 
-const TourSection = dynamic(() => import("@/components/sections/tour-section"), {
-  loading: () => <div className="py-16 bg-background-lighter animate-pulse"><div className="h-64 bg-background rounded-lg mx-auto max-w-4xl"></div></div>
-})
+const tourDates = [
+  { id: '1', date: 'Aug 15, 2025', venue: 'Fabric London', city: 'London, UK', link: '#' },
+  { id: '2', date: 'Aug 28, 2025', venue: 'Watergate', city: 'Berlin, DE', link: '#' },
+  { id: '3', date: 'Sep 12, 2025', venue: 'Output Brooklyn', city: 'New York, US', link: '#' },
+  { id: '4', date: 'Sep 27, 2025', venue: 'Shelter', city: 'Amsterdam, NL', link: '#' },
+]
 
-const GearSection = dynamic(() => import("@/components/sections/gear-section"), {
-  loading: () => <div className="py-16 bg-background animate-pulse"><div className="h-64 bg-background-lighter rounded-lg mx-auto max-w-4xl"></div></div>
-})
+const gearItems = [
+  { id: '1', name: 'Pioneer CDJ-3000', category: 'Media Player', link: 'https://www.pioneerdj.com' },
+  { id: '2', name: 'Pioneer DJM-A9', category: 'Mixer', link: 'https://www.pioneerdj.com' },
+  { id: '3', name: 'Ableton Live 12', category: 'DAW', link: 'https://www.ableton.com' },
+  { id: '4', name: 'Native Instruments Maschine+', category: 'Groovebox', link: 'https://www.native-instruments.com' },
+]
 
-const MerchSection = dynamic(() => import("@/components/sections/merch-section"), {
-  loading: () => <div className="py-16 bg-background-lighter animate-pulse"><div className="h-64 bg-background rounded-lg mx-auto max-w-4xl"></div></div>
-})
+const navLinks = [
+  { href: '#music', label: 'Music' },
+  { href: '#tour', label: 'Tour' },
+  { href: '#store', label: 'Store' },
+  { href: '#gear', label: 'Gear' },
+  { href: '#contact', label: 'Contact' },
+]
 
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [storeTab, setStoreTab] = useState<'merch' | 'license'>('merch')
+
+  const merch = PRODUCTS.filter((p) => p.category === 'merch')
+  const licenses = PRODUCTS.filter((p) => p.category === 'license')
+
   return (
-    <div className="min-h-screen">
-      {/* Hero Section - Critical for initial paint */}
-      <section className="relative h-[80vh] flex items-center">
-        <div className="absolute inset-0 z-0 bg-gradient-to-b from-background to-background-lighter">
-          <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-20 mix-blend-overlay"></div>
+    <>
+      {/* ── Checkout Modal ── */}
+      {selectedProduct && (
+        <CheckoutModal product={selectedProduct} onClose={() => setSelectedProduct(null)} />
+      )}
+
+      {/* ── Sticky Nav ── */}
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-primary/10">
+        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <Link href="#" className="flex items-center gap-2">
+            <Image src="/logo/BangoBongo-Trans.png" alt="BangoBongo" width={32} height={32} />
+            <span className="font-bold text-primary text-lg tracking-tight">BangoBongo</span>
+          </Link>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-6 text-sm">
+            {navLinks.map((l) => (
+              <a key={l.href} href={l.href} className="text-muted-foreground hover:text-primary transition-colors">
+                {l.label}
+              </a>
+            ))}
+          </nav>
+
+          <div className="hidden md:flex items-center gap-3">
+            <a href="#store">
+              <Button size="sm" className="chrome-mint text-background gap-2">
+                <ShoppingCart className="h-4 w-4" />
+                Shop
+              </Button>
+            </a>
+          </div>
+
+          {/* Mobile toggle */}
+          <button
+            className="md:hidden text-muted-foreground hover:text-primary"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
         </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-              <span className="text-primary">BangoBongo</span> <br />
-              Electronic Music Artist
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="md:hidden bg-background border-t border-primary/10 px-4 py-3 flex flex-col gap-3 text-sm">
+            {navLinks.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => setMenuOpen(false)}
+              >
+                {l.label}
+              </a>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <main className="max-w-6xl mx-auto px-4">
+
+        {/* ── Hero ── */}
+        <section className="py-12 md:py-16 flex flex-col md:flex-row items-center gap-8">
+          <div className="flex-1 space-y-4">
+            <p className="text-xs text-primary uppercase tracking-widest font-semibold">Electronic Music Artist</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight text-balance">
+              <span className="chrome-text-mint">BangoBongo</span>
             </h1>
-            <p className="text-xl text-muted-foreground mb-8">
-              Experience the fusion of electronic beats and innovative sounds that define the future of music.
+            <p className="text-muted-foreground max-w-md leading-relaxed">
+              Electronic beats, innovative sounds, and live energy that define the future of music.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link href="/music">
-                <Button variant="chrome" size="lg">
-                  <Music className="h-4 w-4 mr-2" />
+            <div className="flex flex-wrap gap-3 pt-2">
+              <a href="#music">
+                <Button size="sm" className="chrome-mint text-background gap-2">
+                  <Play className="h-4 w-4" />
                   Listen Now
                 </Button>
-              </Link>
-              <Link href="/tour">
-                <Button variant="chromeGlass" size="lg">
-                  <CalendarDays className="h-4 w-4 mr-2" />
+              </a>
+              <a href="#tour">
+                <Button size="sm" variant="outline" className="gap-2">
+                  <CalendarDays className="h-4 w-4" />
                   Tour Dates
                 </Button>
-              </Link>
+              </a>
+              <a href="#store">
+                <Button size="sm" variant="outline" className="gap-2">
+                  <ShoppingBag className="h-4 w-4" />
+                  Shop
+                </Button>
+              </a>
+            </div>
+            {/* Payment badges */}
+            <div className="flex items-center gap-2 pt-1">
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+              <Bitcoin className="h-4 w-4 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Stripe & Crypto accepted</span>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Lazy-loaded sections below the fold */}
-      <MusicSection albums={albums} />
-      <TourSection tourDates={tourDates} />
-      <GearSection favoriteGear={favoriteGear} />
-      <MerchSection merchItems={merchItems} />
+          {/* Album art */}
+          <div className="w-52 h-52 md:w-64 md:h-64 relative rounded-2xl overflow-hidden chrome-border glow-primary flex-shrink-0">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/10 flex items-center justify-center">
+              <Music className="h-16 w-16 text-primary/40" />
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-background/90 to-transparent">
+              <p className="text-xs font-semibold text-foreground">Chrome Hearts</p>
+              <p className="text-xs text-muted-foreground">2024 · 19 tracks</p>
+            </div>
+          </div>
+        </section>
 
-      {/* Newsletter Section - Critical for conversion */}
-      <section className="py-24 chrome-glass relative overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-primary/10 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/10 rounded-full blur-[120px]" />
-        </div>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 chrome-text-mint">Stay Connected</h2>
-            <p className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto">
-              Subscribe to our newsletter for exclusive updates, early access to new releases, and special offers.
-            </p>
+        {/* ── Divider ── */}
+        <div className="border-t border-primary/10" />
 
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="flex h-12 w-full rounded-lg border border-primary/20 bg-background/80 backdrop-blur px-4 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-300"
-              />
-              <Button type="submit" variant="chrome" size="lg">
-                Subscribe
-              </Button>
-            </form>
+        {/* ── Music ── */}
+        <section id="music" className="py-10">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-foreground">
+              <span className="chrome-text-mint">Chrome Hearts</span>
+              <span className="text-muted-foreground text-base font-normal ml-3">2024 · Album</span>
+            </h2>
+            <Link href="/music" className="text-primary text-sm hover:underline flex items-center gap-1">
+              Full Discography <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+            {tracklist.map((title, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-primary/5 cursor-pointer group transition-colors"
+              >
+                <span className="text-xs text-muted-foreground w-5 text-right">{i + 1}</span>
+                <button className="text-muted-foreground group-hover:text-primary transition-colors">
+                  <Play className="h-3.5 w-3.5" />
+                </button>
+                <span className="text-sm text-foreground group-hover:text-primary transition-colors flex-1 truncate">
+                  {title}
+                </span>
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {Math.floor(180 + Math.random() * 60)}s
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Divider ── */}
+        <div className="border-t border-primary/10" />
+
+        {/* ── Tour ── */}
+        <section id="tour" className="py-10">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-foreground">Upcoming Shows</h2>
+            <Link href="/tour" className="text-primary text-sm hover:underline flex items-center gap-1">
+              All dates <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
+
+          <div className="space-y-2">
+            {tourDates.map((tour) => (
+              <div
+                key={tour.id}
+                className="flex items-center justify-between px-4 py-3 rounded-xl chrome-glass border border-primary/10 hover:border-primary/30 transition-colors"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="text-center w-16 flex-shrink-0">
+                    <p className="text-xs text-muted-foreground">{tour.date.split(' ')[0]}</p>
+                    <p className="text-lg font-bold text-primary leading-none">{tour.date.split(' ')[1]?.replace(',', '')}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{tour.venue}</p>
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      {tour.city}
+                    </p>
+                  </div>
+                </div>
+                <a href={tour.link}>
+                  <Button size="sm" variant="outline">Tickets</Button>
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Divider ── */}
+        <div className="border-t border-primary/10" />
+
+        {/* ── Store ── */}
+        <section id="store" className="py-10">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold text-foreground">Store</h2>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <CreditCard className="h-3.5 w-3.5" />
+              <Bitcoin className="h-3.5 w-3.5" />
+              <span>Stripe &amp; Crypto</span>
+            </div>
+          </div>
+
+          {/* Tab switcher */}
+          <div className="flex gap-1 mb-6 p-1 rounded-lg bg-secondary inline-flex w-fit">
+            {(['merch', 'license'] as const).map((t) => (
+              <button
+                key={t}
+                onClick={() => setStoreTab(t)}
+                className={`px-4 py-1.5 text-sm rounded-md font-medium transition-colors capitalize ${
+                  storeTab === t
+                    ? 'bg-primary text-background'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t === 'merch' ? 'Merch' : 'Beat Licenses'}
+              </button>
+            ))}
+          </div>
+
+          {/* Merch grid */}
+          {storeTab === 'merch' && (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {merch.map((item) => (
+                <div key={item.id} className="chrome-glass rounded-xl border border-primary/10 overflow-hidden group">
+                  <div className="aspect-square bg-gradient-to-br from-secondary to-background flex items-center justify-center">
+                    <ShoppingBag className="h-10 w-10 text-primary/30 group-hover:text-primary/60 transition-colors" />
+                  </div>
+                  <div className="p-3">
+                    <p className="text-sm font-semibold text-foreground truncate">{item.name}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{item.description}</p>
+                    <div className="flex items-center justify-between mt-2">
+                      <div>
+                        <p className="text-primary font-bold text-sm">${(item.priceInCents / 100).toFixed(2)}</p>
+                        {item.cryptoPrice && (
+                          <p className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</p>
+                        )}
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      className="w-full mt-2 text-xs"
+                      onClick={() => setSelectedProduct(item)}
+                    >
+                      Buy Now
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Licenses grid */}
+          {storeTab === 'license' && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {licenses.map((item, i) => (
+                <div
+                  key={item.id}
+                  className={`rounded-xl border p-5 space-y-3 transition-all ${
+                    i === 1
+                      ? 'border-primary/40 bg-primary/5 relative'
+                      : 'border-primary/10 chrome-glass'
+                  }`}
+                >
+                  {i === 1 && (
+                    <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-background text-xs px-3 py-0.5 rounded-full font-semibold">
+                      Popular
+                    </span>
+                  )}
+                  <div>
+                    <p className="font-bold text-foreground">{item.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.description}</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-primary">${(item.priceInCents / 100).toFixed(0)}</p>
+                    {item.cryptoPrice && (
+                      <p className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</p>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    variant={i === 1 ? 'default' : 'outline'}
+                    onClick={() => setSelectedProduct(item)}
+                  >
+                    Get License
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* ── Divider ── */}
+        <div className="border-t border-primary/10" />
+
+        {/* ── Gear ── */}
+        <section id="gear" className="py-10">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-foreground">Gear</h2>
+            <Link href="/gear" className="text-primary text-sm hover:underline flex items-center gap-1">
+              Full setup <ExternalLink className="h-3 w-3" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {gearItems.map((item) => (
+              <a
+                key={item.id}
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="chrome-glass rounded-xl border border-primary/10 hover:border-primary/30 p-4 transition-all group"
+              >
+                <p className="text-xs text-primary mb-1 font-medium">{item.category}</p>
+                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                  {item.name}
+                </p>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
+                  <ExternalLink className="h-3 w-3" />
+                  Learn more
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Divider ── */}
+        <div className="border-t border-primary/10" />
+
+        {/* ── Contact / Newsletter ── */}
+        <section id="contact" className="py-10">
+          <div className="flex flex-col sm:flex-row gap-8 items-start">
+            <div className="flex-1 space-y-3">
+              <h2 className="text-2xl font-bold text-foreground">Stay Connected</h2>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                Subscribe for exclusive updates, early releases, and special offers.
+              </p>
+              <form className="flex gap-2 max-w-sm">
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  className="flex h-9 w-full rounded-lg border border-primary/20 bg-background/80 backdrop-blur px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/50 transition-all"
+                />
+                <Button size="sm" type="submit">Subscribe</Button>
+              </form>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-semibold text-foreground">Follow</p>
+              <div className="flex gap-3">
+                {[
+                  { icon: Instagram, href: '#', label: 'Instagram' },
+                  { icon: Twitter, href: '#', label: 'Twitter' },
+                  { icon: Youtube, href: '#', label: 'YouTube' },
+                  { icon: Facebook, href: '#', label: 'Facebook' },
+                ].map(({ icon: Icon, href, label }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    className="text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                ))}
+              </div>
+              <a
+                href="mailto:bangobongo.ece@gmail.com"
+                className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Mail className="h-4 w-4" />
+                bangobongo.ece@gmail.com
+              </a>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      {/* ── Footer ── */}
+      <footer className="border-t border-primary/10 py-6">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <p>© {new Date().getFullYear()} BangoBongo. All rights reserved.</p>
+          <div className="flex items-center gap-3">
+            <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy</Link>
+            <Link href="/terms-of-service" className="hover:text-primary transition-colors">Terms</Link>
+            <Link href="/refund-policy" className="hover:text-primary transition-colors">Refunds</Link>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>Payments:</span>
+            {['VISA', 'MC', 'ETH', 'BTC'].map((p) => (
+              <span key={p} className="px-1.5 py-0.5 bg-secondary rounded text-xs">{p}</span>
+            ))}
           </div>
         </div>
-      </section>
-    </div>
+      </footer>
+    </>
   )
 }

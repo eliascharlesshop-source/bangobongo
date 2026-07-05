@@ -6,7 +6,7 @@ import { requireAuth } from '@/lib/auth'
 import { successResponse, errorResponse, validationErrorResponse } from '@/lib/api-response'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20'
+  apiVersion: '2023-10-16'
 })
 
 const createPaymentIntentSchema = z.object({
