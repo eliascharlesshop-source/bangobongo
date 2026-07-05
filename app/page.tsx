@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -26,6 +26,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { CheckoutModal } from '@/components/checkout-modal'
 import { PRODUCTS } from '@/lib/products'
+import { useAudio } from '@/contexts/audio-context'
 import type { Product } from '@/lib/products'
 
 /* ─────────────────── Static data ─────────────────── */
@@ -53,12 +54,42 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [storeTab, setStoreTab] = useState<'merch' | 'license' | 'dj'>('merch')
   const [djTab, setDjTab] = useState<'online' | 'inperson'>('online')
+  
+  const { setTracks, setShowPlayer } = useAudio()
 
   const merch = PRODUCTS.filter((p) => p.category === 'merch')
   const licenses = PRODUCTS.filter((p) => p.category === 'license')
   const djServices = PRODUCTS.filter((p) => p.category === 'dj')
   const djOnline = djServices.filter((p) => p.id.includes('online'))
   const djInPerson = djServices.filter((p) => !p.id.includes('online'))
+
+  // Chrome Hearts album tracks
+  const chromeHeartsTracks = [
+    { id: 'ch-01', title: 'What I\'m Afraid Of (Intro)', artist: 'BangoBongo', duration: 185, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-02', title: 'Angel Baby', artist: 'BangoBongo', duration: 234, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-03', title: 'Either Way', artist: 'BangoBongo', duration: 198, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-04', title: 'Emotional', artist: 'BangoBongo', duration: 215, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-05', title: 'Neon Dreams', artist: 'BangoBongo', duration: 212, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-06', title: 'Paradise Lost', artist: 'BangoBongo', duration: 206, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-07', title: 'Midnight Whispers', artist: 'BangoBongo', duration: 187, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-08', title: 'Chrome Hearts', artist: 'BangoBongo', duration: 203, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-09', title: 'Electric Soul', artist: 'BangoBongo', duration: 192, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-10', title: 'Starlight', artist: 'BangoBongo', duration: 229, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-11', title: 'Paradise Lost (Remix)', artist: 'BangoBongo', duration: 201, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-12', title: 'Infinite', artist: 'BangoBongo', duration: 217, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-13', title: 'Shattered Dreams', artist: 'BangoBongo', duration: 219, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-14', title: 'Ultraviolet', artist: 'BangoBongo', duration: 226, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-15', title: 'Pulse', artist: 'BangoBongo', duration: 208, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-16', title: 'Digital', artist: 'BangoBongo', duration: 183, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-17', title: 'Hypnotic', artist: 'BangoBongo', duration: 195, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-18', title: 'Euphoria', artist: 'BangoBongo', duration: 227, albumArt: '/placeholder.svg?height=400&width=400' },
+    { id: 'ch-19', title: 'The End (Outro)', artist: 'BangoBongo', duration: 217, albumArt: '/placeholder.svg?height=400&width=400' },
+  ]
+
+  // Load tracks into audio context on mount
+  useEffect(() => {
+    setTracks(chromeHeartsTracks)
+  }, [setTracks])
 
   return (
     <>
