@@ -3,7 +3,7 @@
 import { useCallback, useState } from 'react'
 import { EmbeddedCheckout, EmbeddedCheckoutProvider } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
-import { X, Bitcoin, CreditCard } from 'lucide-react'
+import { X, Bitcoin, CreditCard, MapPin, Video } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { startCheckoutSession } from '@/app/actions/stripe'
 import { getWalletAddress, isWalletAvailable } from '@/lib/wallet-utils'
@@ -23,6 +23,13 @@ export function CheckoutModal({ product, onClose }: CheckoutModalProps) {
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [connecting, setConnecting] = useState(false)
   const [cryptoPaid, setCryptoPaid] = useState(false)
+  const [eventDetails, setEventDetails] = useState({
+    eventName: '',
+    eventDate: '',
+    contactEmail: '',
+    notes: '',
+  })
+  const isDJProduct = product.isDJ
 
   const fetchClientSecret = useCallback(
     () => startCheckoutSession(product.id),
@@ -94,6 +101,54 @@ export function CheckoutModal({ product, onClose }: CheckoutModalProps) {
             Crypto (ETH)
           </button>
         </div>
+
+        {/* DJ Event Details Section */}
+        {isDJProduct && (
+          <div className="border-b border-primary/10 p-4 space-y-4">
+            <h4 className="text-sm font-semibold text-foreground">Event Details</h4>
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Event Name *</label>
+                <input
+                  type="text"
+                  placeholder="Wedding, Birthday, Corporate Event, etc."
+                  value={eventDetails.eventName}
+                  onChange={(e) => setEventDetails({ ...eventDetails, eventName: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg bg-input border border-primary/10 text-foreground placeholder-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Event Date *</label>
+                <input
+                  type="date"
+                  value={eventDetails.eventDate}
+                  onChange={(e) => setEventDetails({ ...eventDetails, eventDate: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg bg-input border border-primary/10 text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Contact Email *</label>
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={eventDetails.contactEmail}
+                  onChange={(e) => setEventDetails({ ...eventDetails, contactEmail: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg bg-input border border-primary/10 text-foreground placeholder-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground block mb-1">Additional Notes</label>
+                <textarea
+                  placeholder="Music preferences, venue details, special requests..."
+                  value={eventDetails.notes}
+                  onChange={(e) => setEventDetails({ ...eventDetails, notes: e.target.value })}
+                  rows={2}
+                  className="w-full px-3 py-2 rounded-lg bg-input border border-primary/10 text-foreground placeholder-muted-foreground text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Content */}
         <div className="p-4">

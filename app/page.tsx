@@ -21,6 +21,7 @@ import {
   X,
   ShoppingCart,
   Clock,
+  Video,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CheckoutModal } from '@/components/checkout-modal'
@@ -56,10 +57,13 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [storeTab, setStoreTab] = useState<'merch' | 'license' | 'dj'>('merch')
+  const [djTab, setDjTab] = useState<'online' | 'inperson'>('online')
 
   const merch = PRODUCTS.filter((p) => p.category === 'merch')
   const licenses = PRODUCTS.filter((p) => p.category === 'license')
   const djServices = PRODUCTS.filter((p) => p.category === 'dj')
+  const djOnline = djServices.filter((p) => p.id.includes('online'))
+  const djInPerson = djServices.filter((p) => !p.id.includes('online'))
 
   return (
     <>
@@ -220,46 +224,105 @@ export default function Home() {
               <span className="chrome-text-mint">Hire as DJ</span>
             </h2>
             <p className="text-muted-foreground text-sm mt-2">
-              Professional DJ services for your event — weddings, corporate, private parties, venues, and more.
+              Professional DJ services — online streams or in-person events.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {PRODUCTS.filter((p) => p.category === 'dj').map((item, i) => (
-              <div
-                key={item.id}
-                className={`rounded-xl border p-5 space-y-3 transition-all ${
-                  i === 1
-                    ? 'border-primary/40 bg-primary/5 relative'
-                    : 'border-primary/10 chrome-glass'
-                }`}
-              >
-                {i === 1 && (
-                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-background text-xs px-3 py-0.5 rounded-full font-semibold">
-                    Most Popular
-                  </span>
-                )}
-                <div>
-                  <p className="font-bold text-foreground">{item.name}</p>
-                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.description}</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-primary">${(item.priceInCents / 100).toFixed(0)}</p>
-                  {item.cryptoPrice && (
-                    <p className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</p>
-                  )}
-                </div>
-                <Button
-                  size="sm"
-                  className="w-full"
-                  variant={i === 1 ? 'default' : 'outline'}
-                  onClick={() => setSelectedProduct(item)}
-                >
-                  Book Now
-                </Button>
-              </div>
-            ))}
+          {/* DJ Type Tabs */}
+          <div className="flex gap-1 mb-6 p-1 rounded-lg bg-secondary inline-flex w-fit">
+            <button
+              onClick={() => setDjTab('online')}
+              className={`px-4 py-1.5 text-sm rounded-md font-medium transition-colors flex items-center gap-2 ${
+                djTab === 'online'
+                  ? 'bg-primary text-background'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <Video className="h-4 w-4" />
+              Online
+            </button>
+            <button
+              onClick={() => setDjTab('inperson')}
+              className={`px-4 py-1.5 text-sm rounded-md font-medium transition-colors flex items-center gap-2 ${
+                djTab === 'inperson'
+                  ? 'bg-primary text-background'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <MapPin className="h-4 w-4" />
+              In-Person
+            </button>
           </div>
+
+          {/* Online DJ Services */}
+          {djTab === 'online' && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {djOnline.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-xl border p-5 space-y-3 transition-all border-primary/10 chrome-glass"
+                >
+                  <div>
+                    <p className="font-bold text-foreground">{item.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.description}</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-primary">${(item.priceInCents / 100).toFixed(0)}</p>
+                    {item.cryptoPrice && (
+                      <p className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</p>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    onClick={() => setSelectedProduct(item)}
+                  >
+                    Book Now
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* In-Person DJ Services */}
+          {djTab === 'inperson' && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {djInPerson.map((item, i) => (
+                <div
+                  key={item.id}
+                  className={`rounded-xl border p-5 space-y-3 transition-all ${
+                    i === 0
+                      ? 'border-primary/40 bg-primary/5 relative'
+                      : 'border-primary/10 chrome-glass'
+                  }`}
+                >
+                  {i === 0 && (
+                    <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-background text-xs px-3 py-0.5 rounded-full font-semibold">
+                      Popular
+                    </span>
+                  )}
+                  <div>
+                    <p className="font-bold text-foreground">{item.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.description}</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-primary">${(item.priceInCents / 100).toFixed(0)}</p>
+                    {item.cryptoPrice && (
+                      <p className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</p>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    variant={i === 0 ? 'default' : 'outline'}
+                    onClick={() => setSelectedProduct(item)}
+                  >
+                    Book Now
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* ── Divider ── */}
