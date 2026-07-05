@@ -94,13 +94,6 @@ export default function Navbar() {
               Studio
             </Link>
             <Link
-              href="/tour"
-              className="block px-3 py-2 text-foreground hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Tour
-            </Link>
-            <Link
               href="/gear"
               className="block px-3 py-2 text-foreground hover:text-primary"
               onClick={() => setIsMenuOpen(false)}
