@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS products (
     is_limited BOOLEAN DEFAULT false,
     discount_percentage INTEGER DEFAULT 0,
     related_album TEXT,
-    related_tour TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id)
@@ -185,24 +184,6 @@ CREATE TABLE IF NOT EXISTS beat_analytics (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (track_id) REFERENCES tracks(id),
     UNIQUE(track_id, date)
-);
-
--- Tour dates table
-CREATE TABLE IF NOT EXISTS tour_dates (
-    id TEXT PRIMARY KEY,
-    date TEXT NOT NULL,
-    venue TEXT NOT NULL,
-    city TEXT NOT NULL,
-    country TEXT NOT NULL,
-    ticket_link TEXT,
-    status TEXT DEFAULT 'upcoming' CHECK (status IN ('upcoming', 'soldout', 'cancelled', 'rescheduled')),
-    general_price DECIMAL(10,2),
-    vip_price DECIMAL(10,2),
-    description TEXT,
-    image_url TEXT,
-    latitude DECIMAL(10,8),
-    longitude DECIMAL(11,8),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Cart items table

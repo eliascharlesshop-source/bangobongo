@@ -19,8 +19,7 @@ const createProductSchema = z.object({
   isFeatured: z.boolean().default(false),
   isLimited: z.boolean().default(false),
   discountPercentage: z.number().min(0).max(100).default(0),
-  relatedAlbum: z.string().optional(),
-  relatedTour: z.string().optional()
+  relatedAlbum: z.string().optional()
 })
 
 export async function GET(request: NextRequest) {
@@ -186,8 +185,8 @@ export async function POST(request: NextRequest) {
       INSERT INTO products (
         id, name, description, price, crypto_price, category_id, image_url,
         images, sizes, colors, tags, in_stock, is_featured, is_limited,
-        discount_percentage, related_album, related_tour
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        discount_percentage, related_album
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       productId,
       data.name,
@@ -204,8 +203,7 @@ export async function POST(request: NextRequest) {
       data.isFeatured,
       data.isLimited,
       data.discountPercentage,
-      data.relatedAlbum || null,
-      data.relatedTour || null
+      data.relatedAlbum || null
     )
 
     // Get the created product

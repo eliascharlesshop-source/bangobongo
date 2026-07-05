@@ -225,30 +225,6 @@ class ApiClient {
       })
   }
 
-  // Tours methods
-  tours = {
-    list: (params?: { upcoming?: boolean; city?: string; country?: string }) => {
-      const query = params ? '?' + new URLSearchParams(
-        Object.entries(params).reduce((acc, [key, value]) => {
-          if (value !== undefined) acc[key] = String(value)
-          return acc
-        }, {} as Record<string, string>)
-      ).toString() : ''
-
-      return this.request<{ tours: any[]; total: number }>(`/tours${query}`)
-    },
-
-    get: (id: string) =>
-      this.request<{ tour: any }>(`/tours/${id}`),
-
-    create: (tour: any, token: string) =>
-      this.request<{ tour: any }>('/tours', {
-        method: 'POST',
-        body: tour,
-        token
-      })
-  }
-
   // Licenses methods
   licenses = {
     getTiers: () =>

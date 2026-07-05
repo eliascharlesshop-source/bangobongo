@@ -17,26 +17,6 @@ export function AlbumSkeleton() {
   )
 }
 
-export function TourDateSkeleton() {
-  return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 mb-4 bg-background rounded-lg border border-accent">
-      <div className="flex items-start sm:items-center mb-4 sm:mb-0">
-        <div className="bg-accent p-3 rounded-lg text-center mr-6 hidden sm:block">
-          <Skeleton className="h-6 w-8" />
-        </div>
-        <div>
-          <Skeleton className="h-5 w-48 mb-2" />
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Skeleton className="h-4 w-4 mr-1" />
-            <Skeleton className="h-4 w-32" />
-          </div>
-        </div>
-      </div>
-      <Skeleton className="h-10 w-24" />
-    </div>
-  )
-}
-
 export function GearItemSkeleton() {
   return (
     <div className="bg-background-lighter rounded-lg overflow-hidden border border-accent">

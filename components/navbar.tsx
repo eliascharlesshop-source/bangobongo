@@ -40,11 +40,6 @@ export default function Navbar() {
                 </Link>
               </li>
               <li>
-                <Link href="/tour" className="text-foreground hover:text-primary transition-colors">
-                  Tour
-                </Link>
-              </li>
-              <li>
                 <Link href="/gear" className="text-foreground hover:text-primary transition-colors">
                   Gear
                 </Link>

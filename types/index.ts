@@ -97,26 +97,6 @@ export interface Album {
   trackList?: Track[]
 }
 
-export interface TourDate {
-  id: string
-  date: string
-  venue: string
-  city: string
-  country: string
-  ticketLink: string
-  status?: "upcoming" | "soldout" | "cancelled" | "rescheduled"
-  price?: {
-    general: number
-    vip?: number
-  }
-  description?: string
-  image?: string
-  coordinates?: {
-    lat: number
-    lng: number
-  }
-}
-
 export interface GearItem {
   id: string
   name: string
@@ -173,7 +153,6 @@ export type MerchCategory =
   | "vinyl"
   | "digital"
   | "poster"
-  | "tour"
   | "limited"
   | "collection"
 
