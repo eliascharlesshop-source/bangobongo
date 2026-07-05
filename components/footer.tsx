@@ -1,6 +1,12 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Instagram, Twitter, Youtube, Facebook, Mail } from "lucide-react"
+import { Mail } from "lucide-react"
+
+const TikTokIcon = () => (
+  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.08 1.61 2.88 2.88 0 0 1 4.07-4.77v-3.5a6.34 6.34 0 0 0-5.07 2.86 6.34 6.34 0 0 0 10.86 7.09v-3.5a3.08 3.08 0 0 0 1.96-.64Z" />
+  </svg>
+)
 
 export default function Footer() {
   return (
@@ -23,16 +29,7 @@ export default function Footer() {
             </p>
             <div className="flex space-x-4">
               <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Instagram className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Youtube className="h-5 w-5" />
-              </Link>
-              <Link href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Facebook className="h-5 w-5" />
+                <TikTokIcon />
               </Link>
             </div>
           </div>
