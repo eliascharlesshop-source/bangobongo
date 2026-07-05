@@ -47,11 +47,11 @@ export function ServiceDetail({ service, onClose }: ServiceDetailProps) {
         role="dialog"
         aria-modal="true"
         aria-label={`${service.title} service details`}
-        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-xl bg-[#1A2A37] border-l border-primary/15 overflow-y-auto flex flex-col shadow-2xl"
+        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-xl bg-card border-l border-primary/15 overflow-y-auto flex flex-col shadow-2xl"
         style={{ boxShadow: "-20px 0 80px rgba(113,238,151,0.06)" }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-primary/10 sticky top-0 bg-[#1A2A37] z-10">
+        <div className="flex items-center justify-between p-6 border-b border-primary/10 sticky top-0 bg-card z-10">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-lg bg-primary/10 chrome-border flex items-center justify-center">
               <Icon className="w-4 h-4 text-primary" />
@@ -148,7 +148,7 @@ export function ServiceDetail({ service, onClose }: ServiceDetailProps) {
             />
           </div>
         ) : (
-          <div className="p-6 border-t border-primary/10 bg-gradient-to-r from-[#1A2A37] to-[#141D27] sticky bottom-0 backdrop-blur">
+          <div className="p-6 border-t border-primary/10 bg-card sticky bottom-0 backdrop-blur">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-xs text-muted-foreground">Starting at</p>
