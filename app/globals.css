@@ -3,71 +3,80 @@
 @tailwind utilities;
 
 @layer base {
-  /* BangoBongo — Midnight coastal palette, always dark */
+  /* Light mode — Sophisticated champagne & charcoal */
   :root {
-    /* Midnight Navy #141D27 */
-    --background: 210 31% 11%;
-    --foreground: 213 33% 96%;
+    /* Off-white #F8F7F5 */
+    --background: 40 40% 97%;
+    --foreground: 20 20% 15%;
 
-    /* Ocean Slate #223A49 */
-    --card: 203 35% 20%;
-    --card-foreground: 213 33% 96%;
+    /* Soft beige #F0EAE3 */
+    --card: 36 33% 94%;
+    --card-foreground: 20 20% 15%;
 
-    --popover: 203 35% 20%;
-    --popover-foreground: 213 33% 96%;
+    --popover: 36 33% 94%;
+    --popover-foreground: 20 20% 15%;
 
-    /* Neon Mint #71EE97 */
+    /* Neon Mint #71EE97 (preserved) */
     --primary: 140 80% 69%;
-    --primary-foreground: 210 31% 11%;
+    --primary-foreground: 20 20% 15%;
 
-    /* Deep Steel #1A2A37 */
-    --secondary: 205 37% 15%;
-    --secondary-foreground: 213 33% 96%;
+    /* Warm gray #D4CEC4 */
+    --secondary: 36 20% 82%;
+    --secondary-foreground: 20 20% 15%;
 
-    --muted: 205 37% 15%;
-    --muted-foreground: 210 20% 65%;
+    /* Medium charcoal #6B6B6B */
+    --muted: 0 0% 42%;
+    --muted-foreground: 40 20% 85%;
 
-    /* Seafoam Green #58B579 */
-    --accent: 140 36% 52%;
-    --accent-foreground: 210 31% 11%;
+    /* Sage green #A8B8A0 */
+    --accent: 110 12% 65%;
+    --accent-foreground: 20 20% 15%;
 
-    --destructive: 0 63% 48%;
-    --destructive-foreground: 213 33% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 40 40% 97%;
 
-    /* Neon Mint border at 15% opacity */
-    --border: 140 80% 69% / 0.15;
-    --input: 203 35% 20%;
+    /* Neon Mint border at 12% opacity */
+    --border: 140 80% 69% / 0.12;
+    --input: 36 33% 94%;
     --ring: 140 80% 69%;
     --radius: 0.5rem;
   }
 
+  /* Dark mode — Rich charcoal & champagne */
   .dark {
-    --background: 210 31% 11%;
-    --foreground: 213 33% 96%;
+    /* Deep charcoal #1A1816 */
+    --background: 24 17% 10%;
+    --foreground: 40 25% 92%;
 
-    --card: 203 35% 20%;
-    --card-foreground: 213 33% 96%;
+    /* Dark taupe #2D2925 */
+    --card: 30 16% 17%;
+    --card-foreground: 40 25% 92%;
 
-    --popover: 203 35% 20%;
-    --popover-foreground: 213 33% 96%;
+    --popover: 30 16% 17%;
+    --popover-foreground: 40 25% 92%;
 
+    /* Neon Mint #71EE97 (preserved) */
     --primary: 140 80% 69%;
-    --primary-foreground: 210 31% 11%;
+    --primary-foreground: 24 17% 10%;
 
-    --secondary: 205 37% 15%;
-    --secondary-foreground: 213 33% 96%;
+    /* Warm gray #464340 */
+    --secondary: 24 12% 28%;
+    --secondary-foreground: 40 25% 92%;
 
-    --muted: 205 37% 15%;
-    --muted-foreground: 210 20% 65%;
+    /* Light gray #A9A9A9 */
+    --muted: 24 12% 28%;
+    --muted-foreground: 40 15% 60%;
 
-    --accent: 140 36% 52%;
-    --accent-foreground: 210 31% 11%;
+    /* Sage green #A8B8A0 */
+    --accent: 110 12% 65%;
+    --accent-foreground: 24 17% 10%;
 
-    --destructive: 0 63% 48%;
-    --destructive-foreground: 213 33% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 24 17% 10%;
 
-    --border: 203 35% 25%;
-    --input: 203 35% 20%;
+    /* Neon Mint border at 15% opacity */
+    --border: 140 80% 69% / 0.15;
+    --input: 30 16% 17%;
     --ring: 140 80% 69%;
   }
 }
@@ -78,8 +87,17 @@
   }
   body {
     @apply text-foreground;
-    background: linear-gradient(135deg, #141D27 0%, #1A2A37 45%, #223A49 100%);
     min-height: 100vh;
+  }
+  
+  /* Light mode background */
+  body:not(.dark) {
+    background: #F8F7F5;
+  }
+  
+  /* Dark mode background */
+  body.dark {
+    background: linear-gradient(135deg, #1A1816 0%, #2D2925 50%, #3D3530 100%);
   }
 }
 
@@ -114,6 +132,7 @@
       inset 0 -2px 4px rgba(0, 0, 0, 0.2),
       0 8px 16px rgba(113, 238, 151, 0.2);
     position: relative;
+    color: #1A1816;
   }
 
   .chrome-mint::after {
@@ -124,50 +143,72 @@
     border-radius: inherit;
   }
 
-  /* Chrome Ocean — Ocean Slate to Deep Steel metallic flow */
+  /* Chrome Ocean — Warm gray to charcoal metallic flow */
   .chrome-ocean {
     background: linear-gradient(
       135deg,
-      rgba(34, 58, 73, 0.95) 0%,
-      rgba(26, 42, 55, 0.85) 50%,
-      rgba(34, 58, 73, 0.75) 100%
+      rgba(212, 206, 196, 0.8) 0%,
+      rgba(169, 169, 169, 0.7) 50%,
+      rgba(212, 206, 196, 0.6) 100%
     );
     box-shadow:
-      inset 0 1px 2px rgba(113, 238, 151, 0.15),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.4),
+      inset 0 1px 2px rgba(255, 255, 255, 0.2),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.15),
       0 8px 16px rgba(113, 238, 151, 0.1);
     position: relative;
+    color: #1A1816;
   }
 
   .chrome-ocean::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(113, 238, 151, 0.1), transparent);
+    background: linear-gradient(90deg, transparent, rgba(113, 238, 151, 0.08), transparent);
     border-radius: inherit;
   }
+  
+  .dark .chrome-ocean {
+    background: linear-gradient(
+      135deg,
+      rgba(77, 77, 77, 0.9) 0%,
+      rgba(70, 67, 64, 0.85) 50%,
+      rgba(77, 77, 77, 0.8) 100%
+    );
+    color: #F8F7F5;
+  }
 
-  /* Chrome Midnight — Deep Steel with subtle mint highlight */
+  /* Chrome Midnight — Charcoal with subtle mint highlight */
   .chrome-midnight {
     background: linear-gradient(
       135deg,
-      rgba(20, 29, 39, 0.98) 0%,
-      rgba(26, 42, 55, 0.95) 50%,
-      rgba(20, 29, 39, 0.92) 100%
+      rgba(240, 234, 227, 0.9) 0%,
+      rgba(212, 206, 196, 0.85) 50%,
+      rgba(240, 234, 227, 0.8) 100%
     );
     box-shadow:
-      inset 0 1px 2px rgba(113, 238, 151, 0.1),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.6),
-      0 8px 16px rgba(0, 0, 0, 0.4);
+      inset 0 1px 2px rgba(113, 238, 151, 0.08),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+      0 8px 16px rgba(0, 0, 0, 0.08);
     position: relative;
+    color: #1A1816;
   }
 
   .chrome-midnight::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(113, 238, 151, 0.08), transparent);
+    background: linear-gradient(90deg, transparent, rgba(113, 238, 151, 0.05), transparent);
     border-radius: inherit;
+  }
+  
+  .dark .chrome-midnight {
+    background: linear-gradient(
+      135deg,
+      rgba(61, 53, 48, 0.95) 0%,
+      rgba(45, 41, 37, 0.9) 50%,
+      rgba(61, 53, 48, 0.85) 100%
+    );
+    color: #F8F7F5;
   }
 
   /* Chrome Dual — Neon Mint + Seafoam Green blend */
@@ -197,17 +238,18 @@
   .chrome-glass {
     background: linear-gradient(
       135deg,
-      rgba(34, 58, 73, 0.85) 0%,
-      rgba(26, 42, 55, 0.75) 50%,
-      rgba(34, 58, 73, 0.65) 100%
+      rgba(240, 234, 227, 0.7) 0%,
+      rgba(212, 206, 196, 0.6) 50%,
+      rgba(240, 234, 227, 0.5) 100%
     );
     backdrop-filter: blur(10px);
     box-shadow:
-      inset 0 1px 2px rgba(113, 238, 151, 0.2),
-      inset 0 -2px 4px rgba(0, 0, 0, 0.3),
-      0 8px 32px rgba(113, 238, 151, 0.12);
-    border: 1px solid rgba(113, 238, 151, 0.15);
+      inset 0 1px 2px rgba(113, 238, 151, 0.12),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.08),
+      0 8px 32px rgba(113, 238, 151, 0.08);
+    border: 1px solid rgba(113, 238, 151, 0.12);
     position: relative;
+    color: #1A1816;
   }
 
   .chrome-glass::after {
@@ -216,6 +258,16 @@
     inset: 0;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
     border-radius: inherit;
+  }
+  
+  .dark .chrome-glass {
+    background: linear-gradient(
+      135deg,
+      rgba(61, 53, 48, 0.8) 0%,
+      rgba(45, 41, 37, 0.7) 50%,
+      rgba(61, 53, 48, 0.6) 100%
+    );
+    color: #F8F7F5;
   }
 
   /* Chrome Accent — Full Neon Mint chrome with intense glow */
