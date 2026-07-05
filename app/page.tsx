@@ -35,12 +35,7 @@ const tracklist = [
   'Recovering Lungs', 'Timing', 'Trap Soul II', 'Whatever You Don\'t Do (Outro)',
 ]
 
-const tourDates = [
-  { id: '1', date: 'Aug 15, 2025', venue: 'Fabric London', city: 'London, UK', link: '#' },
-  { id: '2', date: 'Aug 28, 2025', venue: 'Watergate', city: 'Berlin, DE', link: '#' },
-  { id: '3', date: 'Sep 12, 2025', venue: 'Output Brooklyn', city: 'New York, US', link: '#' },
-  { id: '4', date: 'Sep 27, 2025', venue: 'Shelter', city: 'Amsterdam, NL', link: '#' },
-]
+
 
 const gearItems = [
   { id: '1', name: 'Pioneer CDJ-3000', category: 'Media Player', link: 'https://www.pioneerdj.com' },
@@ -51,7 +46,7 @@ const gearItems = [
 
 const navLinks = [
   { href: '#music', label: 'Music' },
-  { href: '#tour', label: 'Tour' },
+  { href: '#dj', label: 'Hire DJ' },
   { href: '#store', label: 'Store' },
   { href: '#gear', label: 'Gear' },
   { href: '#contact', label: 'Contact' },
@@ -60,10 +55,11 @@ const navLinks = [
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
-  const [storeTab, setStoreTab] = useState<'merch' | 'license'>('merch')
+  const [storeTab, setStoreTab] = useState<'merch' | 'license' | 'dj'>('merch')
 
   const merch = PRODUCTS.filter((p) => p.category === 'merch')
   const licenses = PRODUCTS.filter((p) => p.category === 'license')
+  const djServices = PRODUCTS.filter((p) => p.category === 'dj')
 
   return (
     <>
@@ -144,10 +140,10 @@ export default function Home() {
                   Listen Now
                 </Button>
               </a>
-              <a href="#tour">
+              <a href="#dj">
                 <Button size="sm" variant="outline" className="gap-2">
-                  <CalendarDays className="h-4 w-4" />
-                  Tour Dates
+                  <Music className="h-4 w-4" />
+                  Hire DJ
                 </Button>
               </a>
               <a href="#store">
@@ -217,37 +213,50 @@ export default function Home() {
         {/* ── Divider ── */}
         <div className="border-t border-primary/10" />
 
-        {/* ── Tour ── */}
-        <section id="tour" className="py-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-foreground">Upcoming Shows</h2>
-            <Link href="/tour" className="text-primary text-sm hover:underline flex items-center gap-1">
-              All dates <ExternalLink className="h-3 w-3" />
-            </Link>
+        {/* ── Hire DJ ── */}
+        <section id="dj" className="py-10">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-foreground">
+              <span className="chrome-text-mint">Hire as DJ</span>
+            </h2>
+            <p className="text-muted-foreground text-sm mt-2">
+              Professional DJ services for your event — weddings, corporate, private parties, venues, and more.
+            </p>
           </div>
 
-          <div className="space-y-2">
-            {tourDates.map((tour) => (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {PRODUCTS.filter((p) => p.category === 'dj').map((item, i) => (
               <div
-                key={tour.id}
-                className="flex items-center justify-between px-4 py-3 rounded-xl chrome-glass border border-primary/10 hover:border-primary/30 transition-colors"
+                key={item.id}
+                className={`rounded-xl border p-5 space-y-3 transition-all ${
+                  i === 1
+                    ? 'border-primary/40 bg-primary/5 relative'
+                    : 'border-primary/10 chrome-glass'
+                }`}
               >
-                <div className="flex items-center gap-4">
-                  <div className="text-center w-16 flex-shrink-0">
-                    <p className="text-xs text-muted-foreground">{tour.date.split(' ')[0]}</p>
-                    <p className="text-lg font-bold text-primary leading-none">{tour.date.split(' ')[1]?.replace(',', '')}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">{tour.venue}</p>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {tour.city}
-                    </p>
-                  </div>
+                {i === 1 && (
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-background text-xs px-3 py-0.5 rounded-full font-semibold">
+                    Most Popular
+                  </span>
+                )}
+                <div>
+                  <p className="font-bold text-foreground">{item.name}</p>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.description}</p>
                 </div>
-                <a href={tour.link}>
-                  <Button size="sm" variant="outline">Tickets</Button>
-                </a>
+                <div>
+                  <p className="text-2xl font-bold text-primary">${(item.priceInCents / 100).toFixed(0)}</p>
+                  {item.cryptoPrice && (
+                    <p className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</p>
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  className="w-full"
+                  variant={i === 1 ? 'default' : 'outline'}
+                  onClick={() => setSelectedProduct(item)}
+                >
+                  Book Now
+                </Button>
               </div>
             ))}
           </div>
@@ -268,18 +277,18 @@ export default function Home() {
           </div>
 
           {/* Tab switcher */}
-          <div className="flex gap-1 mb-6 p-1 rounded-lg bg-secondary inline-flex w-fit">
-            {(['merch', 'license'] as const).map((t) => (
+          <div className="flex gap-1 mb-6 p-1 rounded-lg bg-secondary inline-flex w-fit flex-wrap">
+            {(['merch', 'license', 'dj'] as const).map((t) => (
               <button
                 key={t}
                 onClick={() => setStoreTab(t)}
-                className={`px-4 py-1.5 text-sm rounded-md font-medium transition-colors capitalize ${
+                className={`px-4 py-1.5 text-sm rounded-md font-medium transition-colors ${
                   storeTab === t
                     ? 'bg-primary text-background'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
-                {t === 'merch' ? 'Merch' : 'Beat Licenses'}
+                {t === 'merch' ? 'Merch' : t === 'license' ? 'Beat Licenses' : 'DJ Services'}
               </button>
             ))}
           </div>
@@ -350,6 +359,46 @@ export default function Home() {
                     onClick={() => setSelectedProduct(item)}
                   >
                     Get License
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* DJ Services grid */}
+          {storeTab === 'dj' && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {djServices.map((item, i) => (
+                <div
+                  key={item.id}
+                  className={`rounded-xl border p-5 space-y-3 transition-all ${
+                    i === 1
+                      ? 'border-primary/40 bg-primary/5 relative'
+                      : 'border-primary/10 chrome-glass'
+                  }`}
+                >
+                  {i === 1 && (
+                    <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-background text-xs px-3 py-0.5 rounded-full font-semibold">
+                      Popular
+                    </span>
+                  )}
+                  <div>
+                    <p className="font-bold text-foreground">{item.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.description}</p>
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold text-primary">${(item.priceInCents / 100).toFixed(0)}</p>
+                    {item.cryptoPrice && (
+                      <p className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</p>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    className="w-full"
+                    variant={i === 1 ? 'default' : 'outline'}
+                    onClick={() => setSelectedProduct(item)}
+                  >
+                    Book Now
                   </Button>
                 </div>
               ))}

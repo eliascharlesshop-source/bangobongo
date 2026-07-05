@@ -3,7 +3,7 @@ export interface Product {
   name: string
   description: string
   priceInCents: number
-  category: 'merch' | 'license' | 'beats'
+  category: 'merch' | 'license' | 'beats' | 'dj'
   cryptoPrice?: number
 }
 
@@ -63,5 +63,29 @@ export const PRODUCTS: Product[] = [
     priceInCents: 49900,
     category: 'license',
     cryptoPrice: 0.215,
+  },
+  {
+    id: 'bb-dj-local',
+    name: 'Local DJ Service',
+    description: 'Up to 4 hours — lounge, bar, or private event (within 30 miles)',
+    priceInCents: 50000,
+    category: 'dj',
+    cryptoPrice: 0.215,
+  },
+  {
+    id: 'bb-dj-regional',
+    name: 'Regional DJ Service',
+    description: 'Up to 6 hours — regional venue or event (30–150 miles)',
+    priceInCents: 100000,
+    category: 'dj',
+    cryptoPrice: 0.43,
+  },
+  {
+    id: 'bb-dj-destination',
+    name: 'Destination DJ Service',
+    description: 'Up to 8 hours — anywhere in North America, travel included',
+    priceInCents: 250000,
+    category: 'dj',
+    cryptoPrice: 1.075,
   },
 ]
