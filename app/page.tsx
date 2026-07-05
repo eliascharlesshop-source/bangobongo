@@ -38,12 +38,7 @@ const tracklist = [
 
 
 
-const gearItems = [
-  { id: '1', name: 'Pioneer CDJ-3000', category: 'Media Player', link: 'https://www.pioneerdj.com' },
-  { id: '2', name: 'Pioneer DJM-A9', category: 'Mixer', link: 'https://www.pioneerdj.com' },
-  { id: '3', name: 'Ableton Live 12', category: 'DAW', link: 'https://www.ableton.com' },
-  { id: '4', name: 'Native Instruments Maschine+', category: 'Groovebox', link: 'https://www.native-instruments.com' },
-]
+const gearItems: Array<{ id: string; name: string; category: string; link: string }> = []
 
 const navLinks = [
   { href: '#music', label: 'Music' },
@@ -358,33 +353,12 @@ export default function Home() {
 
           {/* Merch grid */}
           {storeTab === 'merch' && (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {merch.map((item) => (
-                <div key={item.id} className="chrome-glass rounded-xl border border-primary/10 overflow-hidden group">
-                  <div className="aspect-square bg-gradient-to-br from-secondary to-background flex items-center justify-center">
-                    <ShoppingBag className="h-10 w-10 text-primary/30 group-hover:text-primary/60 transition-colors" />
-                  </div>
-                  <div className="p-3">
-                    <p className="text-sm font-semibold text-foreground truncate">{item.name}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{item.description}</p>
-                    <div className="flex items-center justify-between mt-2">
-                      <div>
-                        <p className="text-primary font-bold text-sm">${(item.priceInCents / 100).toFixed(2)}</p>
-                        {item.cryptoPrice && (
-                          <p className="text-xs text-muted-foreground">ETH {item.cryptoPrice}</p>
-                        )}
-                      </div>
-                    </div>
-                    <Button
-                      size="sm"
-                      className="w-full mt-2 text-xs"
-                      onClick={() => setSelectedProduct(item)}
-                    >
-                      Buy Now
-                    </Button>
-                  </div>
-                </div>
-              ))}
+            <div className="py-16 text-center">
+              <ShoppingBag className="h-16 w-16 text-primary/30 mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">Merch Coming Soon</h3>
+              <p className="text-muted-foreground max-w-md mx-auto">
+                Exclusive BangoBongo merchandise including apparel, vinyl, and limited editions will be available soon.
+              </p>
             </div>
           )}
 
@@ -474,32 +448,16 @@ export default function Home() {
 
         {/* ── Gear ── */}
         <section id="gear" className="py-10">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-foreground">Gear</h2>
-            <Link href="/gear" className="text-primary text-sm hover:underline flex items-center gap-1">
-              Full setup <ExternalLink className="h-3 w-3" />
-            </Link>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-foreground">Gear Setup</h2>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {gearItems.map((item) => (
-              <a
-                key={item.id}
-                href={item.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="chrome-glass rounded-xl border border-primary/10 hover:border-primary/30 p-4 transition-all group"
-              >
-                <p className="text-xs text-primary mb-1 font-medium">{item.category}</p>
-                <p className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
-                  {item.name}
-                </p>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground mt-2">
-                  <ExternalLink className="h-3 w-3" />
-                  Learn more
-                </div>
-              </a>
-            ))}
+          <div className="py-16 text-center">
+            <Music className="h-16 w-16 text-primary/30 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-foreground mb-2">Equipment Guide Coming Soon</h3>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              A complete breakdown of the equipment and setup used to create BangoBongo tracks will be available soon.
+            </p>
           </div>
         </section>
 
