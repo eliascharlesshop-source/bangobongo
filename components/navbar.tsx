@@ -1,79 +1,83 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Menu, X, Music, ShoppingCart } from "lucide-react"
+import { Menu, X, ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { cn } from "@/lib/utils"
+
+const links = [
+  { href: "/music", label: "Music" },
+  { href: "/studio", label: "Studio" },
+  { href: "/tour", label: "Tour" },
+  { href: "/gear", label: "Gear" },
+  { href: "/merch", label: "Merch" },
+]
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const [scrolled, setScrolled] = useState<boolean>(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-accent">
+    <header
+      className={cn(
+        "sticky top-0 z-50 transition-all duration-300",
+        scrolled
+          ? "bg-background/80 backdrop-blur-xl border-b border-border"
+          : "bg-transparent border-b border-transparent",
+      )}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <Image
-                src="/logo/BangoBongo-Trans.png"
-                alt="BangoBongo Logo"
-                width={40}
-                height={40}
-                className="mr-2"
-              />
-              <span className="text-primary font-bold text-xl">BangoBongo</span>
-            </Link>
-          </div>
+          <Link href="/" className="flex items-center gap-2 group">
+            <Image
+              src="/logo/BangoBongo-Trans.png"
+              alt="BangoBongo Logo"
+              width={32}
+              height={32}
+              className="transition-transform duration-300 group-hover:scale-105"
+            />
+            <span className="font-semibold text-lg tracking-tight text-foreground">BangoBongo</span>
+          </Link>
 
           <nav className="hidden md:block">
-            <ul className="flex space-x-8">
-              <li>
-                <Link href="/music" className="text-foreground hover:text-primary transition-colors">
-                  Music
-                </Link>
-              </li>
-              <li>
-                <Link href="/studio" className="text-foreground hover:text-primary transition-colors">
-                  Studio
-                </Link>
-              </li>
-              <li>
-                <Link href="/tour" className="text-foreground hover:text-primary transition-colors">
-                  Tour
-                </Link>
-              </li>
-              <li>
-                <Link href="/gear" className="text-foreground hover:text-primary transition-colors">
-                  Gear
-                </Link>
-              </li>
-              <li>
-                <Link href="/merch" className="text-foreground hover:text-primary transition-colors">
-                  Merch
-                </Link>
-              </li>
+            <ul className="flex items-center gap-8">
+              {links.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="link-underline text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
 
-          <div className="hidden md:flex items-center space-x-4">
-            <ThemeToggle />
-            <Link href="/cart">
+          <div className="hidden md:flex items-center gap-2">
+            <Link href="/cart" aria-label="Cart">
               <Button variant="ghost" size="icon">
                 <ShoppingCart className="h-5 w-5" />
               </Button>
             </Link>
             <Link href="/music">
-              <Button className="bg-primary text-background hover:bg-secondary">
-                <Music className="h-4 w-4 mr-2" />
+              <Button variant="chrome" size="sm">
                 Listen Now
               </Button>
             </Link>
           </div>
 
           <div className="md:hidden flex items-center">
-            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Button variant="ghost" size="icon" onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Menu">
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </Button>
           </div>
@@ -81,61 +85,37 @@ export default function Navbar() {
       </div>
 
       {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-background border-b border-accent">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      <div
+        className={cn(
+          "md:hidden overflow-hidden border-b border-border bg-background/95 backdrop-blur-xl transition-all duration-300 ease-out",
+          isMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 border-transparent",
+        )}
+      >
+        <div className="px-4 py-4 flex flex-col gap-1">
+          {links.map((link) => (
             <Link
-              href="/music"
-              className="block px-3 py-2 text-foreground hover:text-primary"
+              key={link.href}
+              href={link.href}
+              className="px-2 py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
-              Music
+              {link.label}
             </Link>
-            <Link
-              href="/studio"
-              className="block px-3 py-2 text-foreground hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Studio
+          ))}
+          <div className="flex items-center gap-3 pt-3 mt-2 border-t border-border">
+            <Link href="/cart" onClick={() => setIsMenuOpen(false)} aria-label="Cart">
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
             </Link>
-            <Link
-              href="/tour"
-              className="block px-3 py-2 text-foreground hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Tour
+            <Link href="/music" onClick={() => setIsMenuOpen(false)} className="flex-1">
+              <Button variant="chrome" size="sm" className="w-full">
+                Listen Now
+              </Button>
             </Link>
-            <Link
-              href="/gear"
-              className="block px-3 py-2 text-foreground hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Gear
-            </Link>
-            <Link
-              href="/merch"
-              className="block px-3 py-2 text-foreground hover:text-primary"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Merch
-            </Link>
-            <div className="flex items-center space-x-4 px-3 py-2">
-              <ThemeToggle />
-              <Link href="/cart" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="ghost" size="icon">
-                  <ShoppingCart className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link href="/music" onClick={() => setIsMenuOpen(false)}>
-                <Button className="bg-primary text-background hover:bg-secondary">
-                  <Music className="h-4 w-4 mr-2" />
-                  Listen Now
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   )
 }
