@@ -226,7 +226,7 @@ export default function BeatsStore() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
             <div>
               <label className="text-sm font-medium">Search</label>
               <Input
@@ -296,7 +296,7 @@ export default function BeatsStore() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-3">
         {/* Beats List */}
         <div className="lg:col-span-2 space-y-4">
           <h2 className="text-2xl font-bold">Available Beats ({sortedTracks.length})</h2>
@@ -304,8 +304,8 @@ export default function BeatsStore() {
             {sortedTracks.map((track) => (
               <Card key={track.id} className={`cursor-pointer transition-all hover:shadow-lg ${selectedTrack?.id === track.id ? 'ring-2 ring-primary' : ''}`}>
                 <CardContent className="p-4">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                    <div className="relative shrink-0">
                       <img
                         src={track.albumArt}
                         alt={track.title}

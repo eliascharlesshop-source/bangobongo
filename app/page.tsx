@@ -34,7 +34,7 @@ export default function Home() {
             <p className="animate-fade-up text-sm uppercase tracking-[0.25em] text-muted-foreground mb-6">
               Electronic Music Artist
             </p>
-            <h1 className="animate-fade-up text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-balance leading-[0.95] mb-8">
+            <h1 className="animate-fade-up text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-semibold tracking-tight text-balance leading-[0.95] mb-8">
               BangoBongo
             </h1>
             <p
@@ -75,13 +75,13 @@ export default function Home() {
             <p className="text-muted-foreground mb-10 leading-relaxed text-pretty">
               Exclusive updates, early access to new releases, and the occasional secret.
             </p>
-            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <form className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto w-full">
               <input
                 type="email"
                 placeholder="Your email address"
                 className="flex h-12 w-full rounded-full border border-border bg-card px-5 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background transition-all duration-300"
               />
-              <Button type="submit" variant="chrome" size="lg" className="shrink-0">
+              <Button type="submit" variant="chrome" size="lg" className="shrink-0 w-full sm:w-auto">
                 Subscribe
                 <ArrowUpRight className="h-4 w-4 ml-1" />
               </Button>
