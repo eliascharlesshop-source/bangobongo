@@ -2,14 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
-import { Shield, Lock, User, AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { Shield, Lock, Mail, Eye, EyeOff, AlertCircle, ArrowLeft } from 'lucide-react'
 
 export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false)
@@ -18,9 +16,9 @@ export default function AdminLogin() {
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
-    twoFactorCode: ''
+    twoFactorCode: '',
   })
-  
+
   const router = useRouter()
   const searchParams = useSearchParams()
   const redirectTo = searchParams.get('redirect') || '/admin/dashboard'
@@ -33,22 +31,15 @@ export default function AdminLogin() {
     try {
       const response = await fetch('/api/admin/auth/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData),
       })
 
       const data = await response.json()
+      if (!response.ok) throw new Error(data.error || 'Login failed')
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed')
-      }
-
-      // Set secure cookies
       document.cookie = `admin-token=${data.token}; path=/; max-age=3600; secure; samesite=strict; httponly`
       document.cookie = `admin-session=${data.sessionData}; path=/; max-age=3600; secure; samesite=strict; httponly`
-      
       router.push(redirectTo)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -58,122 +49,101 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-purple-600 rounded-full">
-              <Shield className="h-8 w-8 text-white" />
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 py-12">
+      {/* Back link */}
+      <div className="w-full max-w-sm mb-8">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to site
+        </Link>
+      </div>
+
+      <div className="w-full max-w-sm">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center mb-5">
+            <Shield className="h-5 w-5 text-muted-foreground" />
+          </div>
+          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Restricted</p>
+          <h1 className="text-2xl font-semibold tracking-tight text-foreground">Admin access</h1>
+          <p className="text-sm text-muted-foreground mt-1">Sign in to manage BangoBongo.</p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-sm text-foreground">Email</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="email"
+                type="email"
+                placeholder="bangobongo.ece@gmail.com"
+                value={loginData.email}
+                onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
+                className="pl-10"
+                required
+              />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">Admin Portal</h1>
-          <p className="text-purple-200">Secure access to music generation platform</p>
-        </div>
 
-        <Card className="bg-white/10 backdrop-blur-lg border-white/20">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-white">Sign In</CardTitle>
-            <CardDescription className="text-purple-200">
-              Enter your credentials to access the admin panel
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleLogin} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-white">Email</Label>
-                <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-purple-300" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="bangobongo.ece@gmail.com"
-                    value={loginData.email}
-                    onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                    className="pl-10 bg-white/10 border-white/20 text-white placeholder-purple-300"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-white">Password</Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-purple-300" />
-                  <Input
-                    id="password"
-                    type={showPassword ? 'text' : 'password'}
-                    placeholder="Enter your password"
-                    value={loginData.password}
-                    onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
-                    className="pl-10 pr-10 bg-white/10 border-white/20 text-white placeholder-purple-300"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-3 text-purple-300 hover:text-white"
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="twoFactorCode" className="text-white">2FA Code (Optional)</Label>
-                <Input
-                  id="twoFactorCode"
-                  type="text"
-                  placeholder="Enter 6-digit code"
-                  value={loginData.twoFactorCode}
-                  onChange={(e) => setLoginData(prev => ({ ...prev, twoFactorCode: e.target.value }))}
-                  className="bg-white/10 border-white/20 text-white placeholder-purple-300"
-                  maxLength={6}
-                />
-              </div>
-
-              {error && (
-                <Alert className="bg-red-500/20 border-red-500/50">
-                  <AlertCircle className="h-4 w-4 text-red-400" />
-                  <AlertDescription className="text-red-200">{error}</AlertDescription>
-                </Alert>
-              )}
-
-              <Button
-                type="submit"
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                disabled={isLoading}
+          <div className="space-y-1.5">
+            <Label htmlFor="password" className="text-sm text-foreground">Password</Label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                value={loginData.password}
+                onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
+                className="pl-10 pr-10"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
               >
-                {isLoading ? 'Signing in...' : 'Sign In'}
-              </Button>
-            </form>
-
-            <div className="mt-6 pt-6 border-t border-white/20">
-              <div className="text-center">
-                <p className="text-sm text-purple-200 mb-3">Security Features</p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  <Badge variant="secondary" className="bg-purple-600/20 text-purple-200">
-                    <Shield className="h-3 w-3 mr-1" />
-                    JWT Auth
-                  </Badge>
-                  <Badge variant="secondary" className="bg-purple-600/20 text-purple-200">
-                    <Lock className="h-3 w-3 mr-1" />
-                    Role-based Access
-                  </Badge>
-                  <Badge variant="secondary" className="bg-purple-600/20 text-purple-200">
-                    <Eye className="h-3 w-3 mr-1" />
-                    Session Encryption
-                  </Badge>
-                </div>
-              </div>
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-purple-200 text-sm">
-            Powered by Next.js with secure middleware protection
-          </p>
-        </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="twoFactorCode" className="text-sm text-foreground">
+              2FA Code <span className="text-muted-foreground font-normal">(optional)</span>
+            </Label>
+            <Input
+              id="twoFactorCode"
+              type="text"
+              placeholder="6-digit code"
+              value={loginData.twoFactorCode}
+              onChange={(e) => setLoginData(prev => ({ ...prev, twoFactorCode: e.target.value }))}
+              maxLength={6}
+              inputMode="numeric"
+            />
+          </div>
+
+          {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? 'Signing in...' : 'Sign in'}
+          </Button>
+        </form>
+
+        <p className="text-xs text-muted-foreground text-center mt-8">
+          Protected by JWT authentication and role-based access control.
+        </p>
       </div>
     </div>
   )

@@ -290,10 +290,10 @@ export default function GearPage() {
 
       {/* Filters */}
       <div className="mb-8 space-y-4">
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[200px]">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Search gear..."
                 value={filters.searchTerm}
@@ -303,47 +303,43 @@ export default function GearPage() {
             </div>
           </div>
 
-          <Select value={filters.category} onValueChange={(value) => updateFilter("category", value)}>
-            <SelectTrigger className="w-[200px]">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Category" />
-            </SelectTrigger>
-            <SelectContent>
-              {gearCategories.map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols-3 gap-3 sm:contents">
+            <Select value={filters.category} onValueChange={(value) => updateFilter("category", value)}>
+              <SelectTrigger className="w-full sm:w-[160px]">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {gearCategories.map((cat) => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select value={filters.priceRange} onValueChange={(value) => updateFilter("priceRange", value)}>
-            <SelectTrigger className="w-[200px]">
-              <DollarSign className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Price Range" />
-            </SelectTrigger>
-            <SelectContent>
-              {priceRanges.map((range) => (
-                <SelectItem key={range.id} value={range.id}>
-                  {range.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <Select value={filters.priceRange} onValueChange={(value) => updateFilter("priceRange", value)}>
+              <SelectTrigger className="w-full sm:w-[160px]">
+                <DollarSign className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Price" />
+              </SelectTrigger>
+              <SelectContent>
+                {priceRanges.map((range) => (
+                  <SelectItem key={range.id} value={range.id}>{range.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select value={filters.sortBy} onValueChange={(value) => updateFilter("sortBy", value)}>
-            <SelectTrigger className="w-[200px]">
-              <ArrowUpDown className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Sort By" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortOptions.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {option.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <Select value={filters.sortBy} onValueChange={(value) => updateFilter("sortBy", value)}>
+              <SelectTrigger className="w-full sm:w-[160px]">
+                <ArrowUpDown className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Sort By" />
+              </SelectTrigger>
+              <SelectContent>
+                {sortOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>{option.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Results count */}

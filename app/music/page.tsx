@@ -326,10 +326,10 @@ export default function MusicPage() {
 
       {/* Filters */}
       <div className="mb-8 space-y-4">
-        <div className="flex flex-wrap gap-4">
-          <div className="flex-1 min-w-[200px]">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+          <div className="w-full sm:flex-1 sm:min-w-[200px]">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <Input
                 placeholder="Search music..."
                 value={filters.searchTerm}
@@ -339,47 +339,43 @@ export default function MusicPage() {
             </div>
           </div>
 
-          <Select value={filters.type} onValueChange={(value) => updateFilter("type", value)}>
-            <SelectTrigger className="w-[150px]">
-              <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
-            <SelectContent>
-              {musicTypes.map((type) => (
-                <SelectItem key={type} value={type}>
-                  {type}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols-3 gap-3 sm:contents">
+            <Select value={filters.type} onValueChange={(value) => updateFilter("type", value)}>
+              <SelectTrigger className="w-full sm:w-[150px]">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Type" />
+              </SelectTrigger>
+              <SelectContent>
+                {musicTypes.map((type) => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select value={filters.year} onValueChange={(value) => updateFilter("year", value)}>
-            <SelectTrigger className="w-[140px]">
-              <Calendar className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Year" />
-            </SelectTrigger>
-            <SelectContent>
-              {years.map((year) => (
-                <SelectItem key={year} value={year}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <Select value={filters.year} onValueChange={(value) => updateFilter("year", value)}>
+              <SelectTrigger className="w-full sm:w-[140px]">
+                <Calendar className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Year" />
+              </SelectTrigger>
+              <SelectContent>
+                {years.map((year) => (
+                  <SelectItem key={year} value={year}>{year}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
 
-          <Select value={filters.sortBy} onValueChange={(value) => updateFilter("sortBy", value)}>
-            <SelectTrigger className="w-[150px]">
-              <Music className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Sort By" />
-            </SelectTrigger>
-            <SelectContent>
-              {sortOptions.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {option.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <Select value={filters.sortBy} onValueChange={(value) => updateFilter("sortBy", value)}>
+              <SelectTrigger className="w-full sm:w-[150px]">
+                <Music className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Sort By" />
+              </SelectTrigger>
+              <SelectContent>
+                {sortOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>{option.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Results count */}

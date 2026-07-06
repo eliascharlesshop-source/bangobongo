@@ -57,14 +57,14 @@ export default function CartPage() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-background-lighter rounded-lg border border-accent p-4 sm:p-6">
+            <div className="border border-border rounded-2xl p-4 sm:p-6">
               <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Cart Items</h2>
 
               <div className="space-y-4 sm:space-y-6">
                 {cartItems.map((item) => (
                   <div
                     key={item.id}
-                    className="flex flex-col sm:flex-row gap-3 sm:gap-4 pb-4 sm:pb-6 border-b border-accent"
+                    className="flex flex-col sm:flex-row gap-3 sm:gap-4 pb-4 sm:pb-6 border-b border-border"
                   >
                     <div className="relative w-full sm:w-24 h-40 sm:h-24 rounded-md overflow-hidden">
                       <Image
@@ -125,7 +125,7 @@ export default function CartPage() {
           </div>
 
           <div>
-            <div className="bg-background-lighter rounded-lg border border-accent p-4 sm:p-6 sticky top-20">
+            <div className="border border-border rounded-2xl p-4 sm:p-6 sticky top-20">
               <h2 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Order Summary</h2>
 
               <div className="space-y-2 mb-6">
@@ -141,7 +141,7 @@ export default function CartPage() {
                     {paymentMethod === "usd" ? `$${shipping.toFixed(2)}` : `ETH ${cryptoShipping.toFixed(4)}`}
                   </span>
                 </div>
-                <div className="border-t border-accent my-2 pt-2 flex justify-between font-semibold">
+                <div className="border-t border-border my-2 pt-2 flex justify-between font-semibold">
                   <span>Total</span>
                   <span className="text-primary">
                     {paymentMethod === "usd" ? `$${total.toFixed(2)}` : `ETH ${cryptoTotal.toFixed(4)}`}
